@@ -1,8 +1,10 @@
 'use strict'
 
-import { app, protocol, BrowserWindow } from 'electron'
+import { app, protocol, BrowserWindow, Menu, ipcMain } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
+import * as path from "path";
+
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Scheme must be registered before the app is ready
@@ -10,19 +12,65 @@ protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
 ])
 
+function createMenu(win) {
+  const template = [
+    {
+      label: 'File',
+      submenu: [
+        {
+          label: 'Save',
+          click: () => { console.log('Save'); }
+        },
+        {
+          label: 'Export',
+          click: () => { console.log('Export'); }
+        },
+        { type: 'separator' },
+        { role: 'quit' }
+      ]
+    },
+    {
+      label: 'Edit',
+      submenu: [
+        {
+          label: 'Expand all',
+          click: () => {
+            win.webContents.send('expandAll');
+          }
+        },
+        {
+          label: 'Collapse all',
+          click: () => {
+            win.webContents.send('collapseAll')
+          }
+        }
+      ]
+    }
+  ]
+  const menu = Menu.buildFromTemplate(template)
+  Menu.setApplicationMenu(menu)
+}
+
+function createIpcListeners(win) {
+  // ipcMain.on('setTitle', (event, args) => {
+  //   win.setTitle(args.title);
+  // });
+}
+
 async function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
-      
+
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
       nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
-      contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
+      contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION,
+      preload: path.join(__dirname, 'preload.js')
     },
-    autoHideMenuBar: true
+    autoHideMenuBar: false
   })
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
@@ -34,6 +82,8 @@ async function createWindow() {
     // Load the index.html when not in development
     win.loadURL('app://./index.html')
   }
+  createMenu(win);
+  createIpcListeners(win);
 }
 
 // Quit when all windows are closed.
