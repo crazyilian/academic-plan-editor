@@ -1,105 +1,85 @@
 <template>
   <v-row justify="center">
     <v-expansion-panels v-model="panels" accordion focusable multiple>
-      <v-expansion-panel
-          v-for="(item, i) in items"
+      <Category
+          v-for="(category, i) in categories"
+          v-bind="category"
+          :id="i"
           :key="i"
-      >
-        <v-expansion-panel-header
-            disable-icon-rotate
-            :class="{
-                'error-category': !item.correct,
-                'correct-category': item.correct
-            }"
-        >
-          <v-row no-gutters>
-            <v-col cols="5">{{ item.header }}</v-col>
-            <v-col cols="5" class="text--secondary">{{ item.correct ? 'All correct' : 'Error message' }}</v-col>
-            <v-col cols="2" class="text--secondary">Information</v-col>
-          </v-row>
-          <template #actions>
-            <v-icon v-if="item.correct" color="teal">
-              mdi-check
-            </v-icon>
-            <v-icon v-else color="error">
-              mdi-alert-circle
-            </v-icon>
-          </template>
-        </v-expansion-panel-header>
-        <v-expansion-panel-content>
-          {{ item.content }}
-          <v-btn class="text-capitalize" @click="item.correct ^= true">
-            toggle
-          </v-btn>
-        </v-expansion-panel-content>
-      </v-expansion-panel>
+          :grades="grades"
+      />
     </v-expansion-panels>
   </v-row>
 </template>
 
 <script>
 
+import Category from "@/components/Category";
+
 export default {
   name: 'Table',
-
+  components: { Category },
   data: () => ({
     panels: [],
-    items: [
+    categories: [
       {
-        'header': 'Item 1',
-        'content': 'abacaba',
-        'correct': true
+        'name': 'Естественные науки',
+        'subjects': [
+          {
+            'name': 'Физика',
+            'required': false,
+          },
+          {
+            'name': 'Химия',
+            'required': false,
+          },
+          {
+            'name': 'Биология',
+            'required': false,
+          },
+          {
+            'name': 'Астрономия',
+            'required': true,
+          },
+        ]
       },
       {
-        'header': 'Item 2',
-        'content': 'qwerty',
-        'correct': false
+        'name': 'Родной язык и родная литература',
+        'subjects': [
+          {
+            'name': 'Родной язык',
+            'required': false,
+          },
+          {
+            'name': 'Родная литература',
+            'required': false,
+          }
+        ]
+      }
+    ],
+    grades: [
+      {
+        name: '10',
+        description: 'Профиль*-универсальный'
+      },
+      {
+        name: '11',
+        description: 'Профиль-универсальный'
       }
     ]
   }),
   mounted() {
     window.ipcRenderer.on('expandAll', this.expandAll);
     window.ipcRenderer.on('collapseAll', this.collapseAll);
+    this.expandAll();
   },
   methods: {
     expandAll() {
-      this.panels = [...Array(this.items.length).keys()];
+      this.panels = [...Array(this.categories.length).keys()];
     },
     collapseAll() {
       this.panels = [];
-    }
+    },
   }
 }
 </script>
-
-<style>
-
-/* .correct-category row styles */
-
-.theme--light.v-expansion-panels.v-expansion-panels--focusable .correct-category.v-expansion-panel-header--active:hover::before {
-  opacity: 0.09;
-}
-
-.theme--light.v-expansion-panels.v-expansion-panels--focusable .correct-category.v-expansion-panel-header--active::before {
-  opacity: 0.05;
-}
-
-.correct-category {
-  background-color: #efe;
-}
-
-
-/* .error-category row styles */
-
-.theme--light.v-expansion-panels.v-expansion-panels--focusable .error-category.v-expansion-panel-header--active:hover::before {
-  opacity: 0.09;
-}
-
-.theme--light.v-expansion-panels.v-expansion-panels--focusable .error-category.v-expansion-panel-header--active::before {
-  opacity: 0.05;
-}
-
-.error-category {
-  background-color: #fee;
-}
-</style>

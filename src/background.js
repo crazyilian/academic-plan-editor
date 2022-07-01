@@ -45,7 +45,10 @@ function createMenu(win) {
           }
         }
       ]
-    }
+    },
+    ...(isDevelopment ? [
+      { role: 'toggleDevTools' },
+    ] : [])
   ]
   const menu = Menu.buildFromTemplate(template)
   Menu.setApplicationMenu(menu)
@@ -84,6 +87,7 @@ async function createWindow() {
   }
   createMenu(win);
   createIpcListeners(win);
+  win.maximize();
 }
 
 // Quit when all windows are closed.
