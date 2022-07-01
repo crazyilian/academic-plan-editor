@@ -1,11 +1,14 @@
 import { contextBridge, ipcRenderer } from 'electron'
 
+// https://www.electronjs.org/docs/latest/tutorial/ipc
+
 // Expose ipcRenderer to the client
 contextBridge.exposeInMainWorld('ipcRenderer', {
-  send: (channel, data) => {
-    ipcRenderer.send(channel, data);
+  getTemplates: () => ipcRenderer.invoke('get-templates'),
+
+  handle: {
+    showApp: (callback) => ipcRenderer.on('show-app', callback),
+    collapseAll: (callback) => ipcRenderer.on('collapse-all', callback),
+    expandALl: (callback) => ipcRenderer.on('expand-all', callback)
   },
-  on: (channel, func) => {
-    ipcRenderer.on(channel, (event, ...args) => func(...args))
-  }
 })

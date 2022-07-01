@@ -4,60 +4,52 @@ import { app, protocol, BrowserWindow, Menu, ipcMain } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import * as path from "path";
+import yaml from "js-yaml"
+import fs from "fs"
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
+const extraResources = isDevelopment ? path.join(__dirname, '../src/extraResources') : path.join(process.resourcesPath, 'extraResources')
+
+app.setName("Редактор учебных планов")
 
 // Scheme must be registered before the app is ready
-protocol.registerSchemesAsPrivileged([
-  { scheme: 'app', privileges: { secure: true, standard: true } }
-])
+protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }])
+createHandlers();
 
 function createMenu(win) {
-  const template = [
-    {
-      label: 'File',
-      submenu: [
-        {
-          label: 'Save',
-          click: () => { console.log('Save'); }
-        },
-        {
-          label: 'Export',
-          click: () => { console.log('Export'); }
-        },
-        { type: 'separator' },
-        { role: 'quit' }
-      ]
-    },
-    {
-      label: 'Edit',
-      submenu: [
-        {
-          label: 'Expand all',
-          click: () => {
-            win.webContents.send('expandAll');
-          }
-        },
-        {
-          label: 'Collapse all',
-          click: () => {
-            win.webContents.send('collapseAll')
-          }
-        }
-      ]
-    },
-    ...(isDevelopment ? [
-      { role: 'toggleDevTools' },
-    ] : [])
-  ]
+  const template = [{
+    label: 'File', submenu: [{
+      label: 'Save', click: () => { console.log('Save'); }
+    }, {
+      label: 'Export', click: () => { console.log('Export'); }
+    }, { type: 'separator' }, { role: 'quit' }]
+  }, {
+    label: 'Edit', submenu: [{
+      label: 'Expand all', click: () => {
+        win.webContents.send('expand-all');
+      }
+    }, {
+      label: 'Collapse all', click: () => {
+        win.webContents.send('collapse-all')
+      }
+    }]
+  }, ...(isDevelopment ? [{ role: 'toggleDevTools' },] : [])]
   const menu = Menu.buildFromTemplate(template)
   Menu.setApplicationMenu(menu)
 }
 
-function createIpcListeners(win) {
-  // ipcMain.on('setTitle', (event, args) => {
-  //   win.setTitle(args.title);
-  // });
+function createHandlers() {
+  ipcMain.handle('get-templates', getTemplates);
+}
+
+// function createIpcListeners() {
+//
+// }
+
+function showApp(win) {
+  win.setTitle(app.getName());
+  win.maximize();
+  win.webContents.send('show-app');
 }
 
 async function createWindow() {
@@ -73,7 +65,9 @@ async function createWindow() {
       contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION,
       preload: path.join(__dirname, 'preload.js')
     },
-    autoHideMenuBar: false
+    autoHideMenuBar: false,
+    show: false,
+    title: app.getName(),
   })
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
@@ -86,8 +80,12 @@ async function createWindow() {
     win.loadURL('app://./index.html')
   }
   createMenu(win);
-  createIpcListeners(win);
-  win.maximize();
+  // createIpcListeners();
+  if (isDevelopment) {
+    showApp(win);
+  } else {
+    win.once('ready-to-show', () => {showApp(win)});
+  }
 }
 
 // Quit when all windows are closed.
@@ -133,4 +131,32 @@ if (isDevelopment) {
       app.quit()
     })
   }
+}
+
+async function getTemplates() {
+  const templates = [];
+  const templatesPath = path.join(extraResources, 'plan-templates');
+  fs.readdirSync(templatesPath).forEach(file => {
+    templates.push(parseTemplate(path.join(templatesPath, file)));
+  });
+  return templates;
+}
+
+function parseTemplate(path) {
+  const raw = yaml.load(fs.readFileSync(path, 'utf8'));
+  const template = {
+    name: raw.name, grades: raw.grades, categories: [],
+  };
+  for (const [category, subjects_raw] of Object.entries(raw.categories)) {
+    const subjects = [];
+    for (const [subject, required] of Object.entries(subjects_raw)) {
+      subjects.push({
+        name: subject, required: required
+      });
+    }
+    template.categories.push({
+      name: category, subjects: subjects
+    });
+  }
+  return template;
 }

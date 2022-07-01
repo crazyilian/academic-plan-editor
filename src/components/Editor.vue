@@ -1,6 +1,6 @@
 <template>
   <v-container class="pa-4">
-    <Table/>
+    <Table v-if="templates.length > 0" :categories="templates[0].categories" :grades="templates[0].grades"/>
   </v-container>
 </template>
 
@@ -13,6 +13,13 @@ export default {
   components: {
     Table
   },
-  data: () => ({}),
+  data() {
+    return {
+      templates: []
+    }
+  },
+  mounted() {
+    window.ipcRenderer.getTemplates().then((templates) => { this.templates = templates; });
+  }
 }
 </script>
