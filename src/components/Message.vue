@@ -5,7 +5,7 @@
           v-bind="attrs"
           ref="messageContainer"
           :style="containerStyle"
-          class="text--secondary message-container mx-1"
+          class="text--secondary message-container"
           style="width: 100%"
           v-on="on"
           @mouseover="updateTooltip"

@@ -64,10 +64,10 @@ export default {
         if (sub.checkbox)
           includedCount += 1;
         this.correct &= sub.correct;
-        this.messages.push(...sub.messages)
+        // this.messages.push(...sub.messages)
       }
       this.messages = [...new Set(this.messages)];
-      if (includedCount === 0) {
+      if (includedCount === 0 && this.subjects.length > 1) {
         this.messages.push(errorMessages.ONE_SUBJ_PER_CATEG)
         this.correct = false;
       }
