@@ -1,5 +1,5 @@
 <template>
-  <v-row justify="center">
+  <v-row justify="center" class="ma-0">
     <v-expansion-panels v-model="panels" accordion focusable multiple>
       <Category
           v-for="(category, i) in categories"
@@ -35,12 +35,10 @@ export default {
   methods: {
     expandAll() {
       this.panels = [...Array(this.categories.length).keys()];
-    }
-    ,
+    },
     collapseAll() {
       this.panels = [];
-    }
-    ,
+    },
   }
 }
 </script>

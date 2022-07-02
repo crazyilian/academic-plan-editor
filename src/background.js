@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, protocol, BrowserWindow, Menu, ipcMain } from 'electron'
+import { app, protocol, BrowserWindow, Menu, screen } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import * as path from "path";
@@ -14,33 +14,36 @@ app.setName("Редактор учебных планов")
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }])
-createHandlers();
 
 function createMenu(win) {
-  const template = [{
-    label: 'File', submenu: [{
-      label: 'Save', click: () => { console.log('Save'); }
-    }, {
-      label: 'Export', click: () => { console.log('Export'); }
-    }, { type: 'separator' }, { role: 'quit' }]
-  }, {
-    label: 'Edit', submenu: [{
-      label: 'Expand all', click: () => {
-        win.webContents.send('expand-all');
-      }
-    }, {
-      label: 'Collapse all', click: () => {
-        win.webContents.send('collapse-all')
-      }
-    }]
-  }, ...(isDevelopment ? [{ role: 'toggleDevTools' },] : [])]
+  const template = [
+    {
+      label: 'File', submenu: [
+        { label: 'Save', click: () => { console.log('Save'); } },
+        { label: 'Export', click: () => { console.log('Export'); } },
+        { type: 'separator' },
+        { role: 'quit' }
+      ]
+    },
+    {
+      label: 'Edit', submenu: [
+        {
+          label: 'Expand all', click: () => { win.webContents.send('expand-all'); }
+        },
+        {
+          label: 'Collapse all', click: () => { win.webContents.send('collapse-all'); }
+        }
+      ]
+    },
+    ...(isDevelopment ? [{ role: 'toggleDevTools' },] : [])
+  ]
   const menu = Menu.buildFromTemplate(template)
   Menu.setApplicationMenu(menu)
 }
 
-function createHandlers() {
-  ipcMain.handle('get-templates', getTemplates);
-}
+// function createHandlers() {
+//
+// }
 
 // function createIpcListeners() {
 //
@@ -49,14 +52,15 @@ function createHandlers() {
 function showApp(win) {
   win.setTitle(app.getName());
   win.maximize();
+  loadTemplates(win);
   win.webContents.send('show-app');
 }
 
 async function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: screen.width,
+    height: screen.height,
     webPreferences: {
 
       // Use pluginOptions.nodeIntegration, leave this alone
@@ -80,6 +84,7 @@ async function createWindow() {
     win.loadURL('app://./index.html')
   }
   createMenu(win);
+  // createHandlers();
   // createIpcListeners();
   if (isDevelopment) {
     showApp(win);
@@ -133,13 +138,13 @@ if (isDevelopment) {
   }
 }
 
-async function getTemplates() {
+function loadTemplates(win) {
   const templates = [];
   const templatesPath = path.join(extraResources, 'plan-templates');
   fs.readdirSync(templatesPath).forEach(file => {
     templates.push(parseTemplate(path.join(templatesPath, file)));
   });
-  return templates;
+  win.webContents.send('load-templates', templates);
 }
 
 function parseTemplate(path) {

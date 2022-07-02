@@ -1,9 +1,9 @@
 <template>
   <v-app>
     <v-main>
-      <Editor v-if="show"/>
+      <Editor :class="{'display-none' : !checkShowApp() }" :templates="templates"/>
       <div
-          v-else
+          v-if="!checkShowApp()"
           style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column"
       >
         <v-progress-circular
@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import Editor from './components/Editor';
+import Editor from "@/components/Editor";
 
 export default {
   name: 'App',
@@ -30,12 +30,29 @@ export default {
   },
 
   data: () => ({
-    show: false
+    show: false,
+    templates: [],
   }),
   mounted() {
+    window.ipcRenderer.handle.loadTemplates((event, templates) => {
+      // setTimeout(() => this.templates = templates, 1000);
+      this.templates = templates;
+    })
     window.ipcRenderer.handle.showApp(() => {
       this.show = true;
     })
+  },
+  methods: {
+    checkShowApp() {
+      return this.show && this.templates.length > 0;
+    }
   }
 };
 </script>
+<style>
+
+.display-none {
+  display: none !important;
+}
+
+</style>

@@ -7,10 +7,8 @@
                 'correct-category': correct
             }"
     >
-      <div
-          style="display: flex; justify-content: space-between; align-items: center; width: 100%"
-      >
-        <div style="width: 40%; display: inline-block" class="subject-name">{{ name }}</div>
+      <div style="display: flex; justify-content: space-between; align-items: center; width: calc(100% - 24px)">
+        <div style="width: 40%; display: inline-block; word-wrap: break-word" class="subject-name">{{ name }}</div>
         <Message container-style="margin-left: 8px; margin-right: 32px; min-width: 0" :messages="messages"/>
         <div style="">{{ comment }}</div>
       </div>

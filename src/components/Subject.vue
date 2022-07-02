@@ -13,7 +13,7 @@
         :color="!correct ? 'red' : 'teal'"
         @change="checkboxChange"
     />
-      <div style="width: 20%; display: inline-block" class="subject-name">{{ name }}</div>
+      <div style="width: 20%; display: inline-block; word-wrap: break-word" class="subject-name">{{ name }}</div>
       <Message container-style="width: 80%; margin-left: 24px; margin-right: 24px; min-width: 0" :messages="messages"/>
     <Counter
         v-for="(grade, i) in grades"
