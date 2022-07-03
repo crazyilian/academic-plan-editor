@@ -8,6 +8,7 @@ module.exports = defineConfig({
       builderOptions: {
         appId: 'com.electron.academic-plan-editor',
         productName: "Редактор учебных планов",
+        copyright: "Copyright © 2022 Ilian Andrianov",
         win: {
           target: "nsis",
           // icon: 'public/favicon.ico'

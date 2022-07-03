@@ -1,7 +1,7 @@
 {
   "name": "academic-plan-editor",
   "version": "0.1.0",
-  "author": "Ilian Andrianov",
+  "author": "Илиан Андрианов",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",

@@ -7,6 +7,7 @@
           :templates="templates"
           @close-tab="closeTab"
           @add-tab="addTab"
+          @edit-name="editName"
       />
     </div>
     <div style="width: 100%; min-width: 0">
@@ -37,10 +38,16 @@ export default {
   },
   methods: {
     closeTab(i) {
-      console.log('close tab', i);
+      this.tabsTemplates.splice(i, 1);
+      if (this.activeTab > 0 && this.activeTab >= this.tabsTemplates.length) {
+        this.activeTab = this.tabsTemplates.length - 1;
+      }
     },
     addTab(i) {
       this.tabsTemplates.push(structuredClone(this.templates[i]));
+    },
+    editName(i, name) {
+      this.tabsTemplates[i].name = name;
     }
   }
 }

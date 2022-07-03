@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, protocol, BrowserWindow, Menu, screen } from 'electron'
+import { app, protocol, BrowserWindow, Menu, screen, ipcMain, dialog } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import * as path from "path";
@@ -41,9 +41,11 @@ function createMenu(win) {
   Menu.setApplicationMenu(menu)
 }
 
-// function createHandlers() {
-//
-// }
+function createHandlers(win) {
+  ipcMain.handle('message-box', (event, options) => {
+    return dialog.showMessageBoxSync(win, options)
+  })
+}
 
 // function createIpcListeners() {
 //
@@ -84,7 +86,7 @@ async function createWindow() {
     win.loadURL('app://./index.html')
   }
   createMenu(win);
-  // createHandlers();
+  createHandlers(win);
   // createIpcListeners();
   if (isDevelopment) {
     showApp(win);
@@ -144,6 +146,7 @@ function loadTemplates(win) {
   fs.readdirSync(templatesPath).forEach(file => {
     templates.push(parseTemplate(path.join(templatesPath, file)));
   });
+  // setTimeout(() => win.webContents.send('load-templates', templates), 1000)
   win.webContents.send('load-templates', templates);
 }
 
