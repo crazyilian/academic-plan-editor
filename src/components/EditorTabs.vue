@@ -1,8 +1,5 @@
 <template>
-  <v-container
-      class="rounded-lg pb-2"
-      style="background-color: #58536b; display: flex; flex-direction: column;  width: 250px; align-items: center"
-  >
+  <v-container class="rounded-lg pb-2 tabs-container">
     <v-btn
         v-for="(template, i) in tabsTemplates"
         :key="i"
@@ -112,7 +109,7 @@ export default {
     },
     nameChange(editFlag) {
       if (editFlag && this.editingName !== null) {
-        const newName = this.editingName.trim();
+        const newName = this.editingName.trim().substring(0, 250).trim();
         if (newName.length > 0) {
           this.$emit('edit-name', this.editingNameId, newName);
         }
@@ -250,6 +247,23 @@ export default {
 .edit-name-area > .v-input__control {
   min-height: 0 !important;
   height: 100%;
+}
+
+/* Other */
+
+.tabs-container {
+  /*background-color: #58536b;*/
+  background-color: #525252;
+  display: flex;
+  flex-direction: column;
+  width: 250px;
+  align-items: center;
+  height: 100%;
+  overflow: auto;
+}
+
+.tabs-container::-webkit-scrollbar {
+  display: none;
 }
 
 </style>

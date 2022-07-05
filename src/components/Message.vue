@@ -1,6 +1,10 @@
 <template>
-  <v-tooltip bottom :disabled="messages.length === 0 || (messages.length === 1 && !tooltipVisible)">
-    <template #activator="{ on, attrs }">
+  <v-tooltip
+      bottom
+      :disabled="messages.length === 0 || (messages.length === 1 && !tooltipVisible)"
+      :open-delay="500"
+  >
+    <template #activator="{ on, attrs} ">
       <div
           v-bind="attrs"
           ref="messageContainer"
@@ -45,7 +49,7 @@ export default {
     updateTooltip() {
       const el = this.$refs.messageContainer;
       this.tooltipVisible = el.offsetWidth < el.scrollWidth;
-    }
+    },
   }
 }
 </script>

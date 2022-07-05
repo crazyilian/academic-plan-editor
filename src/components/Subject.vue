@@ -6,21 +6,30 @@
         'error-subject': !correct
       }"
   >
-    <v-checkbox
-        v-model="checkbox"
-        :disabled="required"
-        class="pr-4 py-0 ma-0"
-        :color="!correct ? 'red' : 'teal'"
-        @change="checkboxChange"
-    />
-      <div style="width: 22%; display: inline-block; word-wrap: break-word" class="subject-name">{{ name }}</div>
-      <Message container-style="width: 80%; margin-left: 24px; margin-right: 24px; min-width: 0" :messages="messages"/>
+    <v-tooltip bottom :disabled="!required" :open-delay="500">
+      <template #activator="{ on, attrs} ">
+        <div v-bind="attrs" v-on="on">
+          <v-checkbox
+              v-model="checkbox"
+              :disabled="required"
+              class="pr-4 py-0 ma-0"
+              :color="!correct ? 'red' : 'teal'"
+              @change="checkboxChange"
+          />
+        </div>
+      </template>
+      <div class="pa-2" style="text-align: center">Обязательный<br>предмет</div>
+    </v-tooltip>
+
+    <div style="width: 30%; display: inline-block; word-wrap: break-word" class="subject-name">{{ name }}</div>
+    <Message container-style="width: 80%; margin-left: 24px; margin-right: 24px; min-width: 0" :messages="messages"/>
     <Counter
         v-for="(grade, i) in grades"
         :id="i"
         :key="i"
         ref="counter"
         :correct="countersCorrect[i]"
+        :highlight="gradeHighlight[i]"
         @input="counterChange"
     />
   </div>
@@ -40,12 +49,13 @@ export default {
     'name': { type: String, default: "" },
     'required': { type: Boolean, default: false },
     'grades': { type: Array, default: () => [] },
+    'gradeHighlight': { type: Array, default: () => [] },
   },
   data() {
     return {
       checkbox: this.required,
       messages: [],
-      correct: true,
+      correct: false,
       countersCorrect: Array(this.grades.length).fill(true),
     }
   },

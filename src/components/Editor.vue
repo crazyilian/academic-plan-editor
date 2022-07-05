@@ -1,6 +1,6 @@
 <template>
-  <div style="display: flex">
-    <div>
+  <div style="display: flex; height: 100%">
+    <div style="height: 100%">
       <EditorTabs
           v-model="activeTab"
           :tabs-templates="tabsTemplates"
@@ -11,10 +11,26 @@
       />
     </div>
     <div style="width: 100%; min-width: 0">
-      <div v-for="(template, i) in tabsTemplates" :key="i">
-        <EditorContent :class="{ 'display-none': i !== activeTab }" :template="template"/>
+      <div
+          v-for="(template, i) in tabsTemplates"
+          :key="i"
+          style="height: 100%"
+          :class="{ 'display-none': i !== activeTab }"
+      >
+        <EditorContent :template="template"/>
       </div>
     </div>
+<!--    <div style="height: 100%">-->
+<!--      <EditorTabs-->
+<!--          v-model="activeTab"-->
+<!--          style="width: 340px"-->
+<!--          :tabs-templates="tabsTemplates"-->
+<!--          :templates="templates"-->
+<!--          @close-tab="closeTab"-->
+<!--          @add-tab="addTab"-->
+<!--          @edit-name="editName"-->
+<!--      />-->
+<!--    </div>-->
   </div>
 </template>
 
@@ -45,6 +61,7 @@ export default {
     },
     addTab(i) {
       this.tabsTemplates.push(structuredClone(this.templates[i]));
+      this.activeTab = this.tabsTemplates.length - 1;
     },
     editName(i, name) {
       this.tabsTemplates[i].name = name;

@@ -1,7 +1,9 @@
 <template>
   <v-app>
     <v-main>
-      <Editor :class="{'display-none' : !checkShowApp() }" :templates="templates"/>
+      <v-container style="height: 100vh; max-width: 100%" :class="{'display-none' : !checkShowApp() }">
+        <Editor :templates="templates"/>
+      </v-container>
       <div
           v-if="!checkShowApp()"
           style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column"
@@ -44,6 +46,7 @@ export default {
   },
   methods: {
     checkShowApp() {
+      // return true;
       return this.show && this.templates.length > 0;
     }
   }
@@ -53,6 +56,10 @@ export default {
 
 .display-none {
   display: none !important;
+}
+
+body::-webkit-scrollbar {
+  display: none;
 }
 
 </style>

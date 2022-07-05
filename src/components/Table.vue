@@ -1,15 +1,18 @@
 <template>
-  <v-row justify="center" class="ma-0">
-    <v-expansion-panels v-model="panels" accordion focusable multiple>
-      <Category
-          v-for="(category, i) in categories"
-          v-bind="category"
-          :id="i"
-          :key="i"
-          :grades="grades"
-      />
-    </v-expansion-panels>
-  </v-row>
+  <div style="height: 100%; overflow-y: scroll">
+    <div style="display: flex; flex-direction: column; justify-content: center" class="ma-0">
+      <v-expansion-panels v-model="panels" accordion focusable multiple>
+        <Category
+            v-for="(category, i) in categories"
+            v-bind="category"
+            :id="i"
+            :key="i"
+            :grades="grades"
+            :grade-highlight="gradeHighlight"
+        />
+      </v-expansion-panels>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -22,6 +25,7 @@ export default {
   props: {
     'categories': { type: Array, default: () => [] },
     'grades': { type: Array, default: () => [] },
+    'gradeHighlight': { type: Array, default: () => [] },
   },
   data() {
     return {

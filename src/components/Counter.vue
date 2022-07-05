@@ -1,5 +1,5 @@
 <template>
-  <v-container class="pa-0 mx-1" style="width: 40px; min-width: 40px">
+  <v-container class="pa-0 mx-1" style="width: 40px; min-width: 40px;" :class="{ 'counter-highlight': highlight }">
     <v-text-field
         ref="input"
         v-model="stringValue"
@@ -25,7 +25,8 @@ export default {
   components: {},
   props: {
     'id': { type: Number, default: -1 },
-    'correct': { type: Boolean, default: true }
+    'correct': { type: Boolean, default: true },
+    'highlight': { type: Boolean, default: false }
   },
   data: () => ({
     min: 0,
@@ -64,6 +65,11 @@ export default {
 
 <style>
 
+.counter-field {
+  height: 100%;
+  margin-top: 0 !important;
+}
+
 .counter-field input {
   text-align: right;
 }
@@ -82,6 +88,11 @@ export default {
 
 .error-counter {
   color: red !important;
+}
+
+.counter-highlight {
+  background-color: #f5f5aa !important;
+  /*font-weight: bold;*/
 }
 
 </style>
