@@ -44,7 +44,7 @@ function createMenu(win) {
 function createHandlers(win) {
   ipcMain.handle('message-box', (event, options) => {
     return dialog.showMessageBoxSync(win, options)
-  })
+  });
 }
 
 // function createIpcListeners() {
@@ -59,6 +59,7 @@ function showApp(win) {
 }
 
 async function createWindow() {
+  ipcMain.handle('is-development', () => isDevelopment);
   // Create the browser window.
   const win = new BrowserWindow({
     width: screen.width,

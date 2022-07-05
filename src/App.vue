@@ -46,8 +46,7 @@ export default {
   },
   methods: {
     checkShowApp() {
-      // return true;
-      return this.show && this.templates.length > 0;
+      return window.ipcRenderer.isDevelopment() || this.show && this.templates.length > 0;
     }
   }
 };

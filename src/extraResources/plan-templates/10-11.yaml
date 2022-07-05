@@ -1,9 +1,9 @@
 name: 10 и 11 классы
 grades:
-    - name: 10
+    - name: 10 класс
       description: Профиль*-универсальный
       max_hours_per_week: 34
-    - name: 11
+    - name: 11 класс
       description: Профиль-универсальный
       max_hours_per_week: 34
 categories:
