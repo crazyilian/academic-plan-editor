@@ -7,8 +7,10 @@
             v-bind="category"
             :id="i"
             :key="i"
+            ref="categories"
             :grades="grades"
             :grade-highlight="gradeHighlight"
+            :plan="plan[i]"
         />
       </v-expansion-panels>
     </div>
@@ -26,6 +28,7 @@ export default {
     'categories': { type: Array, default: () => [] },
     'grades': { type: Array, default: () => [] },
     'gradeHighlight': { type: Array, default: () => [] },
+    'plan': { type: Array, default: () => [] }
   },
   data() {
     return {

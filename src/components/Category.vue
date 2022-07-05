@@ -26,6 +26,7 @@
           ref="subjects"
           :grades="grades"
           :grade-highlight="gradeHighlight"
+          :plan="plan[i]"
           @validate="validate"
       />
     </v-expansion-panel-content>
@@ -46,7 +47,8 @@ export default {
     'name': { type: String, default: "" },
     'subjects': { type: Array, default: () => [] },
     'grades': { type: Array, default: () => [] },
-    'gradeHighlight': { type: Array, default: () => [] }
+    'gradeHighlight': { type: Array, default: () => [] },
+    'plan': { type: Array, default: () => [] }
   },
   data() {
     return {

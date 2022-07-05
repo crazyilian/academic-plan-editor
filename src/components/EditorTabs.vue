@@ -256,7 +256,8 @@ export default {
   background-color: #525252;
   display: flex;
   flex-direction: column;
-  width: 250px;
+  /*width: 250px;*/
+  width: 100%;
   align-items: center;
   height: 100%;
   overflow: auto;

@@ -27,10 +27,10 @@
         v-for="(grade, i) in grades"
         :id="i"
         :key="i"
-        ref="counter"
+        ref="counters"
         :correct="countersCorrect[i]"
         :highlight="gradeHighlight[i]"
-        @input="counterChange"
+        @input="counterChange(i)"
     />
   </div>
 </template>
@@ -40,6 +40,7 @@
 import Counter from "@/components/Counter";
 import Message from "@/components/Message";
 import errorMessages from "@/errorMessages";
+import Vue from "vue";
 
 export default {
   name: 'Subject',
@@ -50,6 +51,7 @@ export default {
     'required': { type: Boolean, default: false },
     'grades': { type: Array, default: () => [] },
     'gradeHighlight': { type: Array, default: () => [] },
+    'plan': { type: Array, default: () => [] }
   },
   data() {
     return {
@@ -64,12 +66,11 @@ export default {
   },
   methods: {
     getSumHours() {
-      let sumHours = 0;
-      for (let i = 0; i < this.grades.length; ++i)
-        sumHours += this.$refs.counter[i].value;
-      return sumHours;
+      return this.plan.reduce((r, e) => r + e, 0)
     },
-    counterChange() {
+    counterChange(i) {
+      // FIXME: do emits, not mutations of props
+      Vue.set(this.plan, i, this.$refs.counters[i].value)
       const sumHours = this.getSumHours();
       this.checkbox = (sumHours > 0) || this.required;
       this.validate();
@@ -77,7 +78,7 @@ export default {
     checkboxChange() {
       if (!this.checkbox) {
         for (let i = 0; i < this.grades.length; ++i)
-          this.$refs.counter[i].reset();
+          this.$refs.counters[i].reset();
       }
       this.validate();
     },
