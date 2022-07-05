@@ -14,7 +14,7 @@
             @mouseover="highlightGrade(i, true)"
             @mouseleave="highlightGrade(i, false)"
         >
-          <div style="font-weight: bold; text-align: center; word-wrap: break-word; width: 100%">{{ grade.name }}</div>
+          <div class="grade-name">{{ grade.name }}</div>
         </div>
       </div>
     </div>
@@ -49,3 +49,15 @@ export default {
   }
 };
 </script>
+<style>
+
+.grade-name {
+  font-weight: bold;
+  font-size: 11pt;
+  word-wrap: break-word;
+  white-space: pre-line;
+  text-align: center;
+  width: 100%;
+}
+
+</style>
