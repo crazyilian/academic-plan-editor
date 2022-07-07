@@ -3,7 +3,7 @@
     <div
         v-for="(grade, i) in grades"
         :key="i"
-        class="pb-3"
+        class="pb-2"
         style="width: 48px; display: flex; align-items: flex-end; justify-content: center"
         @mouseover="highlightGrade(i, true)"
         @mouseleave="highlightGrade(i, false)"

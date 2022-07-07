@@ -16,17 +16,33 @@ app.setName("Редактор учебных планов")
 protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }])
 
 function createMenu(win) {
+  const exportFileTypes = ['xlsx'];
   const template = [
     {
-      label: 'File', submenu: [
-        { label: 'Save', click: () => { console.log('Save'); } },
-        { label: 'Export', click: () => { console.log('Export'); } },
+      label: 'Файл',
+      submenu: [
+        { label: 'Сохранить', click: () => { console.log('Save project'); } },
+        {
+          label: 'Экспортировать',
+          submenu: exportFileTypes.map(type => ({
+            label: `Экспортировать как ${type}`,
+            click: () => { win.webContents.send('export-project', { all: false, type })}
+          })),
+        },
+        {
+          label: 'Экспортировать всё',
+          submenu: exportFileTypes.map(type => ({
+            label: `Экспортировать всё как ${type}`,
+            click: () => { win.webContents.send('export-project', { all: true, type })}
+          })),
+        },
         { type: 'separator' },
-        { role: 'quit' }
+        { role: 'quit', label: 'Выйти' }
       ]
     },
     {
-      label: 'Edit', submenu: [
+      label: 'Edit',
+      submenu: [
         {
           label: 'Expand all', click: () => { win.webContents.send('expand-all'); }
         },
@@ -47,14 +63,13 @@ function createHandlers(win) {
   });
 }
 
-// function createIpcListeners() {
-//
-// }
+function createIpcListeners(win) {
+  ipcMain.on('ask-templates', () => loadTemplates(win))
+}
 
 function showApp(win) {
   win.setTitle(app.getName());
   win.maximize();
-  loadTemplates(win);
   win.webContents.send('show-app');
 }
 
@@ -70,7 +85,7 @@ async function createWindow() {
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
       nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
       contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION,
-      preload: path.join(__dirname, 'preload.js')
+      preload: path.join(__dirname, 'preload.js'),
     },
     autoHideMenuBar: false,
     show: false,
@@ -88,7 +103,7 @@ async function createWindow() {
   }
   createMenu(win);
   createHandlers(win);
-  // createIpcListeners();
+  createIpcListeners(win);
   if (isDevelopment) {
     showApp(win);
   } else {
@@ -153,19 +168,13 @@ function loadTemplates(win) {
 
 function parseTemplate(path) {
   const raw = yaml.load(fs.readFileSync(path, 'utf8'));
-  const template = {
-    name: raw.name, grades: raw.grades, categories: [],
-  };
+  const template = { config: raw.config, grades: raw.grades, categories: [] };
   for (const [category, subjects_raw] of Object.entries(raw.categories)) {
     const subjects = [];
     for (const [subject, required] of Object.entries(subjects_raw)) {
-      subjects.push({
-        name: subject, required: required
-      });
+      subjects.push({ name: subject, required: required });
     }
-    template.categories.push({
-      name: category, subjects: subjects
-    });
+    template.categories.push({ name: category, subjects: subjects });
   }
   return template;
 }

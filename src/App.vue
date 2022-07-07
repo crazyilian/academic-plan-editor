@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-main>
-      <v-container style="height: 100vh; max-width: 100%" :class="{'display-none' : !checkShowApp() }">
+      <v-container style="height: 100vh; max-width: 100%" :class="{'display-none' : !checkShowApp() }" class="pa-2">
         <Editor :templates="templates"/>
       </v-container>
       <div
@@ -24,6 +24,12 @@
 <script>
 import Editor from "@/components/Editor";
 
+function startInterval(handler, timeout) {
+  const interval = setInterval(handler, timeout);
+  handler();
+  return interval;
+}
+
 export default {
   name: 'App',
 
@@ -31,22 +37,24 @@ export default {
     Editor,
   },
 
-  data: () => ({
-    show: false,
-    templates: [],
-  }),
+  data() {
+    return {
+      templates: [],
+      askTemplatesInterval: undefined,
+    }
+  },
   mounted() {
+    this.askTemplatesInterval = startInterval(() => {
+      window.ipcRenderer.askTemplates();
+    }, 1000);
     window.ipcRenderer.handle.loadTemplates((event, templates) => {
-      // setTimeout(() => this.templates = templates, 1000);
       this.templates = templates;
-    })
-    window.ipcRenderer.handle.showApp(() => {
-      this.show = true;
-    })
+      clearInterval(this.askTemplatesInterval);
+    });
   },
   methods: {
     checkShowApp() {
-      return window.ipcRenderer.isDevelopment() || this.show && this.templates.length > 0;
+      return this.templates.length > 0;
     }
   }
 };

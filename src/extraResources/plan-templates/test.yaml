@@ -1,5 +1,5 @@
 config:
-    name: 10 и 11 классы
+    name: Тест
     hours_total_min: 2170
     hours_total_max: 2590
 grades:
@@ -7,6 +7,18 @@ grades:
       description: Профиль*-универсальный
       max_hours_per_week: 34
     - name: 11 класс
+      description: Профиль-универсальный
+      max_hours_per_week: 34
+    - name: 12 класс
+      description: Профиль-универсальный
+      max_hours_per_week: 34
+    - name: 13 класс
+      description: Профиль-универсальный
+      max_hours_per_week: 34
+    - name: 14 класс
+      description: Профиль-универсальный
+      max_hours_per_week: 34
+    - name: 15 класс
       description: Профиль-универсальный
       max_hours_per_week: 34
 categories:

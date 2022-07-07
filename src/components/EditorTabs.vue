@@ -11,13 +11,13 @@
         @click="$emit('input', i)"
     >
       <span v-if="i !== editingNameId" style="width: 100%; min-width: 0; text-align: left" class="pl-2">
-          {{ template.name }}
+          {{ template.config.name }}
       </span>
       <v-text-field
           v-else
           ref="editName"
           v-model="editingName"
-          :placeholder="template.name"
+          :placeholder="template.config.name"
           solo
           flat
           dense
@@ -46,7 +46,7 @@
     >
       <v-select
           v-model="addSelector"
-          :items="templates.map(e => e.name).concat([ADD_STRING])"
+          :items="templates.map(e => e.config.name).concat([ADD_STRING])"
           color="#51bb19"
           dense
           solo
@@ -81,7 +81,7 @@ export default {
       if (newVal === ADD_STRING)
         return;
       this.$nextTick(() => { this.addSelector = ADD_STRING });
-      const templateIndex = this.templates.findIndex(e => e.name === newVal);
+      const templateIndex = this.templates.findIndex(e => e.config.name === newVal);
       this.$emit('add-tab', templateIndex);
     }
   },
@@ -91,7 +91,7 @@ export default {
         'type': 'question',
         'title': 'Закрытие...',
         'message': 'Вы уверены, что хотите закрыть план?',
-        'detail': `Все введённые данные по учебному плану "${this.tabsTemplates[i].name}" будут удалены.`,
+        'detail': `Все введённые данные по учебному плану "${this.tabsTemplates[i].config.name}" будут удалены.`,
         'buttons': ['Да', 'Нет'],
         'cancelId': 1,
         'defaultId': 1,
@@ -104,7 +104,7 @@ export default {
     },
     editName(i) {
       this.editingNameId = i;
-      this.editingName = this.tabsTemplates[i].name;
+      this.editingName = this.tabsTemplates[i].config.name;
       this.$nextTick(() => { this.$refs.editName[0].focus() });
     },
     nameChange(editFlag) {

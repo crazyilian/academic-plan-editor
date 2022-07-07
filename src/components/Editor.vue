@@ -1,6 +1,6 @@
 <template>
   <div style="display: flex; height: 100%">
-    <div style="height: 100%; width: 16%">
+    <div style="height: 100%; width: 15%">
       <EditorTabs
           v-model="activeTab"
           :tabs-templates="tabsTemplates"
@@ -10,14 +10,14 @@
           @edit-name="editName"
       />
     </div>
-    <div style="width: 84%; min-width: 0">
+    <div style="width: 85%; min-width: 0">
       <div
           v-for="(template, i) in tabsTemplates"
           :key="i"
           style="height: 100%"
           :class="{ 'display-none': i !== activeTab }"
       >
-        <EditorContent :template="template"/>
+        <EditorContent ref="editorContent" :template="template"/>
       </div>
     </div>
   </div>
@@ -41,6 +41,19 @@ export default {
       tabsTemplates: [],
     }
   },
+  mounted() {
+    window.ipcRenderer.handle.exportProject((event, options) => {
+      if (options.all) {
+        window.ipcRenderer.exportProject({
+          type: options.type,
+          templates: this.tabsTemplates,
+          obligatoryPlan: this.$refs.editorContent.map(e => e.obligatoryPlan),
+          formativePlan: this.$refs.editorContent.map(e => e.formativePlan),
+          generalTable: this.$refs.editorContent.map(e => e.$refs.generalTable), // FIXME: do not pass component
+        })
+      }
+    });
+  },
   methods: {
     closeTab(i) {
       this.tabsTemplates.splice(i, 1);
@@ -53,7 +66,7 @@ export default {
       this.activeTab = this.tabsTemplates.length - 1;
     },
     editName(i, name) {
-      this.tabsTemplates[i].name = name;
+      this.tabsTemplates[i].config.name = name;
     }
   }
 }

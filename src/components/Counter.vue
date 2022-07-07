@@ -26,14 +26,17 @@ export default {
   props: {
     'id': { type: Number, default: -1 },
     'correct': { type: Boolean, default: true },
-    'highlight': { type: Boolean, default: false }
+    'highlight': { type: Boolean, default: false },
+    'startValue': { type: Number, default: 0 },
   },
-  data: () => ({
-    min: 0,
-    max: 99,
-    stringValue: "0",
-    value: 0
-  }),
+  data() {
+    return {
+      min: 0,
+      max: 99,
+      stringValue: this.startValue === null ? "" : this.startValue.toString(),
+      value: this.startValue,
+    }
+  },
   methods: {
     onNumberInput() {
       let newStringValue = this.stringValue;

@@ -14,7 +14,7 @@
           v-on="on"
           @mouseover="updateTooltip"
       >
-        {{ messages.concat([""])[0] }}
+        {{ messages.concat([""])[0] + (messages.length > 1 && !tooltipVisible ? '...' : '') }}
       </div>
     </template>
     <div style="max-width: 500px">
@@ -28,7 +28,9 @@
           </li>
         </ol>
       </div>
-      <div v-else style="padding: 8px 12px 8px 12px">{{ messages[0] }}</div>
+      <div v-else style="padding: 8px 12px 8px 12px">
+        {{ messages[0] }}
+      </div>
     </div>
   </v-tooltip>
 </template>
@@ -44,6 +46,12 @@ export default {
     return {
       tooltipVisible: true,
     }
+  },
+  watch: {
+    messages() { this.updateTooltip(); }
+  },
+  mounted() {
+    this.updateTooltip();
   },
   methods: {
     updateTooltip() {

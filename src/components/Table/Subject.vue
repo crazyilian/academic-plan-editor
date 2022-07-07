@@ -1,10 +1,7 @@
 <template>
   <div
       style="display: flex; justify-content: space-between; align-items: center; width: 100%"
-      :class="{
-        'correct-subject': correct,
-        'error-subject': !correct
-      }"
+      :class="{ 'error-subject': !correct }" class="subject"
   >
     <v-tooltip bottom :disabled="!required" :open-delay="500">
       <template #activator="{ on, attrs} ">
@@ -21,8 +18,8 @@
       <div class="pa-2" style="text-align: center">Обязательный<br>предмет</div>
     </v-tooltip>
 
-    <div style="width: 30%; display: inline-block; word-wrap: break-word" class="subject-name">{{ name }}</div>
-    <Message container-style="width: 80%; margin-left: 24px; margin-right: 24px; min-width: 0" :messages="messages"/>
+    <div style="width: 40%; display: inline-block; word-wrap: break-word" class="subject-name">{{ name }}</div>
+    <Message container-style="width: 60%; margin-left: 24px; margin-right: 24px; min-width: 20px" :messages="messages"/>
     <Counter
         v-for="(grade, i) in grades"
         :id="i"
@@ -38,7 +35,7 @@
 <script>
 
 import Counter from "@/components/Counter";
-import Message from "@/components/Message";
+import Message from "@/components/Table/Message";
 import errorMessages from "@/errorMessages";
 import Vue from "vue";
 
@@ -69,7 +66,7 @@ export default {
       return this.plan.reduce((r, e) => r + e, 0)
     },
     counterChange(i) {
-      // FIXME: do emits, not mutations of props
+      // FIXME: do emits, not mutations of props. But it somehow works without warnings :)
       Vue.set(this.plan, i, this.$refs.counters[i].value)
       const sumHours = this.getSumHours();
       this.checkbox = (sumHours > 0) || this.required;
@@ -127,7 +124,7 @@ export default {
   color: #d39292 !important;
 }
 
-.correct-subject .v-input--checkbox.v-input--is-disabled i {
+.subject:not(.error-subject) .v-input--checkbox.v-input--is-disabled i {
   color: #9bc99b !important;
 }
 
