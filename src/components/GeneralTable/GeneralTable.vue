@@ -91,8 +91,8 @@ export default {
     grades: { type: Array, default: () => [] },
     gradeHighlight: { type: Array, default: () => [] },
     obligatoryPlan: { type: Array, default: () => [] },
-    formativePlan: { type: Array, default: () => [] },
-    config: { type: Object, default: () => {} }
+    formativePlan: { type: Object, default: () => ({}) },
+    config: { type: Object, default: () => ({}) }
   },
   data() {
     return {
@@ -107,10 +107,7 @@ export default {
       return this.obligatoryPlan.reduce((r, x) => r.concat(x)).reduce((a, b) => a.map((r, i) => r + b[i]))
     },
     formative() {
-      if (this.formativePlan.length === 0) {
-        return Array(this.grades.length).fill(0);
-      }
-      return this.formativePlan.reduce((r, x) => r.concat(x)).reduce((a, b) => a.map((r, i) => r + b[i]))
+      return this.formativePlan.hours;
     },
     perweek() {
       const a = this.obligatory();

@@ -10,9 +10,13 @@
         style="width: 100%"
         @click="$emit('input', i)"
     >
-      <span v-if="i !== editingNameId" style="width: 100%; min-width: 0; text-align: left" class="pl-2">
-          {{ template.config.name }}
-      </span>
+      <div
+          v-if="i !== editingNameId"
+          style="width: 100%; min-width: 0; text-align: left"
+          class="pl-2"
+      >
+        <span>{{ template.config.name }}</span>
+      </div>
       <v-text-field
           v-else
           ref="editName"

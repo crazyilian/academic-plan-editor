@@ -1,6 +1,6 @@
 <template>
   <div style="display: flex; height: 100%">
-    <div style="height: 100%; width: 15%">
+    <div style="height: 100%; width: 18%">
       <EditorTabs
           v-model="activeTab"
           :tabs-templates="tabsTemplates"
@@ -10,7 +10,7 @@
           @edit-name="editName"
       />
     </div>
-    <div style="width: 85%; min-width: 0">
+    <div style="width: 82%; min-width: 0">
       <div
           v-for="(template, i) in tabsTemplates"
           :key="i"
