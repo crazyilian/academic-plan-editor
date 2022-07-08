@@ -1,5 +1,8 @@
 <template>
   <div class="formation-subject">
+    <div class="mr-1">
+      <span>{{ id + 1 }}.</span>
+    </div>
     <div
         v-if="!editing"
         style="min-width: 0; text-align: left; flex-grow: 1"
@@ -20,7 +23,7 @@
         @keydown.esc="nameChange(false)"
         @focusout="nameChange(true)"
     />
-    <div class="pl-1" @click="editName">
+    <div class="ml-1" @click="editName">
       <v-hover v-slot="{ hover }">
         <div style="display: flex">
           <div class="text--secondary pl-2 pr-1 icon-label">
@@ -108,7 +111,7 @@ export default {
   height: auto;
   min-height: 32px;
   align-items: center;
-  padding: 4px;
+  padding: 8px 4px;
 }
 
 .formation-subject:hover {
@@ -118,6 +121,10 @@ export default {
 
 .formation-subject .edit-name-area.theme--light.v-text-field--solo > .v-input__control > .v-input__slot {
   background-color: inherit !important;
+}
+
+.formation-subject .edit-name-area {
+  font-weight: 500;
 }
 
 .formation-subject .mdi {

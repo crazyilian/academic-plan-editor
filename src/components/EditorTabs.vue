@@ -253,6 +253,10 @@ export default {
   height: 100%;
 }
 
+.edit-name-area input {
+  padding: 0 !important;
+}
+
 /* Other */
 
 .tabs-container {
