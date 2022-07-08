@@ -10,8 +10,6 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
   exportProject: (options) => ipcRenderer.send('export-project', options),
   handle: {
     showApp: (callback) => ipcRenderer.on('show-app', callback),
-    collapseAll: (callback) => ipcRenderer.on('collapse-all', callback),
-    expandALl: (callback) => ipcRenderer.on('expand-all', callback),
     loadTemplates: (callback) => ipcRenderer.on('load-templates', callback),
     exportProject: (callback) => ipcRenderer.on('export-project', callback),
   }

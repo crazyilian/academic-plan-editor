@@ -35,10 +35,6 @@ export default {
       panels: [...Array(this.categories.length).keys()],
     }
   },
-  mounted() {
-    window.ipcRenderer.handle.collapseAll(this.collapseAll)
-    window.ipcRenderer.handle.expandALl(this.expandAll)
-  },
   methods: {
     expandAll() {
       this.panels = [...Array(this.categories.length).keys()];

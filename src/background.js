@@ -41,17 +41,6 @@ function createMenu(win) {
         { role: 'quit', label: 'Выйти' }
       ]
     },
-    {
-      label: 'Edit',
-      submenu: [
-        {
-          label: 'Expand all', click: () => { win.webContents.send('expand-all'); }
-        },
-        {
-          label: 'Collapse all', click: () => { win.webContents.send('collapse-all'); }
-        }
-      ]
-    },
     ...(isDevelopment ? [{ role: 'toggleDevTools' },] : [])
   ]
   const menu = Menu.buildFromTemplate(template)
@@ -70,7 +59,7 @@ function createIpcListeners(win) {
     savePlan[options.type](options.data, (filename, tempFilename) => {
       const path = dialog.showSaveDialogSync(win, {
         defaultPath: filename,
-        filters: [{ name: 'Excel', extensions: ['xlsx'] }]
+        filters: [{ name: 'Excel (.xlsx)', extensions: ['xlsx'] }]
       })
       if (path !== undefined) {
         fs.renameSync(tempFilename, path)
