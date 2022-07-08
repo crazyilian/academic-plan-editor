@@ -6,6 +6,7 @@ import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import * as path from "path";
 import yaml from "js-yaml"
 import fs from "fs"
+import savePlan from "./savePlan"
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const extraResources = isDevelopment ? path.join(__dirname, '../src/extraResources') : path.join(process.resourcesPath, 'extraResources')
@@ -65,6 +66,17 @@ function createHandlers(win) {
 
 function createIpcListeners(win) {
   ipcMain.on('ask-templates', () => loadTemplates(win))
+  ipcMain.on('export-project', (event, options) => {
+    savePlan[options.type](options.data, (filename, tempFilename) => {
+      const path = dialog.showSaveDialogSync(win, {
+        defaultPath: filename,
+        filters: [{ name: 'Excel', extensions: ['xlsx'] }]
+      })
+      if (path !== undefined) {
+        fs.renameSync(tempFilename, path)
+      }
+    });
+  })
 }
 
 function showApp(win) {

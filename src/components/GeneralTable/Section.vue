@@ -99,7 +99,7 @@ export default {
 
 .section-content .v-expansion-panel-content__wrap {
   padding-left: 16px;
-  padding-right: 12px;
+  padding-right: 8px;
 }
 
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div style="display: flex; height: 100%">
-    <div style="height: 100%; width: 18%">
+    <div style="height: 100%; width: 17%">
       <EditorTabs
           v-model="activeTab"
           :tabs-templates="tabsTemplates"
@@ -10,7 +10,7 @@
           @edit-name="editName"
       />
     </div>
-    <div style="width: 82%; min-width: 0">
+    <div style="width: 83%; min-width: 0">
       <div
           v-for="(template, i) in tabsTemplates"
           :key="i"
@@ -43,15 +43,35 @@ export default {
   },
   mounted() {
     window.ipcRenderer.handle.exportProject((event, options) => {
+      if (this.tabsTemplates.length === 0) {
+        window.ipcRenderer.messageBox({
+          'type': 'warning',
+          'title': 'Экспорт...',
+          'message': 'Вы не можете экспортировать пустой план',
+          // 'detail': '',
+          'buttons': ['Ок'],
+          'noLink': true,
+        });
+        return;
+      }
+      let ids = [];
       if (options.all) {
-        window.ipcRenderer.exportProject({
-          type: options.type,
-          templates: this.tabsTemplates,
-          obligatoryPlan: this.$refs.editorContent.map(e => e.obligatoryPlan),
-          formativePlan: this.$refs.editorContent.map(e => e.formativePlan),
-          generalTable: this.$refs.editorContent.map(e => e.$refs.generalTable), // FIXME: do not pass component
+        ids = [...Array(this.$refs.editorContent.length).keys()];
+      } else {
+        ids = [this.activeTab];
+      }
+      const res = { type: options.type, data: [] }
+      for (const id of ids) {
+        const editorContent = this.$refs.editorContent[id];
+        const generalTable = editorContent.$refs.generalTable;
+        res.data.push({
+          template: editorContent.template,
+          obligatoryPlan: editorContent.obligatoryPlan,
+          formativePlan: editorContent.formativePlan,
+          weeknum: generalTable.weeknum
         })
       }
+      window.ipcRenderer.exportProject(res);
     });
   },
   methods: {

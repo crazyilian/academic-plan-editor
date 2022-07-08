@@ -2,6 +2,8 @@ config:
     name: 10 и 11 классы
     hours_total_min: 2170
     hours_total_max: 2590
+    title: Учебный план среднего общего образования на 2021-2023 учебные годы
+    attestation: ""
 grades:
     - name: 10 класс
       description: Профиль*-универсальный

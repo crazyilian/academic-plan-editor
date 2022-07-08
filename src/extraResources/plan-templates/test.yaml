@@ -2,6 +2,7 @@ config:
     name: Тест
     hours_total_min: 2170
     hours_total_max: 2590
+    title: Тестовый учебный план среднего общего образования на 1000-2000 учебные годы
 grades:
     - name: 10 класс
       description: Профиль*-универсальный
