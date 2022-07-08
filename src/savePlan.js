@@ -1,4 +1,5 @@
 const excel = require('excel4node');
+const fs = require('fs');
 
 function cell(x, y) {
   return `${"ABCDEFGHIJKLMNOPQRSTUVWXYZ"[y - 1]}${x}`
@@ -156,8 +157,12 @@ function create_xlsx(alldata, callback) {
     ws.cell(cl, 1, cl, 2 + gn, true).string('обязательные предметы').style(sgray);
   }
 
+  if (!fs.existsSync('./tmp')){
+    fs.mkdirSync('./tmp');
+  }
+
   const filename = 'Учебный план.xlsx'
-  const tempFilename = '~$' + filename
+  const tempFilename = './tmp/~$' + filename
   wb.write(tempFilename, () => callback(filename, tempFilename));
 }
 
