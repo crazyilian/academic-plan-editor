@@ -91,13 +91,13 @@ export default {
     grades: { type: Array, default: () => [] },
     gradeHighlight: { type: Array, default: () => [] },
     obligatoryPlan: { type: Array, default: () => [] },
+    weeknum: { type: Array, default: () => [] },
     formativePlan: { type: Object, default: () => ({}) },
     config: { type: Object, default: () => ({}) }
   },
   data() {
     return {
       panels: [...Array(6).keys()],
-      weeknum: Array(this.grades.length).fill(null),
       eduGrade: [{}],
       eduGradeHighlight: [false],
     }

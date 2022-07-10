@@ -10,30 +10,40 @@ import savePlan from "./savePlan"
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const extraResources = isDevelopment ? path.join(__dirname, '../src/extraResources') : path.join(process.resourcesPath, 'extraResources')
+const savingPath = './savings'
 
 app.setName("Редактор учебных планов")
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }])
 
+
+ipcMain.handle('get-last-project', () => {
+  const filePaths = getAllProjectFiles();
+  if (filePaths.length === 0) {
+    return undefined;
+  }
+  const mtimes = filePaths.map(f => fs.statSync(f).mtime)
+  const lastModifiedId = mtimes.reduce((mxi, cur, i) => mtimes[mxi] > cur ? mxi : i, 0);
+  const lastFile = filePaths[lastModifiedId];
+  return fs.readJsonSync(lastFile);
+});
+
 function createMenu(win) {
-  const exportFileTypes = ['xlsx'];
+  const exportFileTypes = ['xlsx', 'planeditor'];
   const template = [
     {
       label: 'Файл',
       submenu: [
         // { label: 'Сохранить', click: () => { console.log('Save project'); } },
         {
-          label: 'Сохранить',
-          submenu: exportFileTypes.map(type => ({
-            label: `Сохранить как ${type}`,
-            click: () => { win.webContents.send('export-project', { all: false, type })}
-          })),
+          label: 'Сохранить проект',
+          click: () => { win.webContents.send('save-project'); }
         },
         {
-          label: 'Сохранить всё',
+          label: 'Сохранить проект как',
           submenu: exportFileTypes.map(type => ({
-            label: `Сохранить всё как ${type}`,
+            label: `Сохранить проект как .${type}`,
             click: () => { win.webContents.send('export-project', { all: true, type })}
           })),
         },
@@ -47,6 +57,23 @@ function createMenu(win) {
   Menu.setApplicationMenu(menu)
 }
 
+function getAllProjectFiles() {
+  const files = [];
+  if (fs.existsSync(savingPath)) {
+    fs.readdirSync(savingPath).forEach(file => {
+      files.push(path.join(savingPath, file));
+    })
+  }
+  return files;
+}
+
+function saveProject(project, filepath) {
+  if (filepath === undefined) {
+    filepath = path.join(savingPath, project.name + '.planeditor');
+  }
+  fs.outputJsonSync(filepath, project)
+}
+
 function createHandlers(win) {
   ipcMain.handle('message-box', (event, options) => {
     return dialog.showMessageBoxSync(win, options)
@@ -56,15 +83,29 @@ function createHandlers(win) {
 function createIpcListeners(win) {
   ipcMain.on('ask-templates', () => loadTemplates(win))
   ipcMain.on('export-project', (event, options) => {
-    savePlan[options.type](options.data, (filename, tempFilename) => {
+    if (options.type === 'planeditor') {
       const path = dialog.showSaveDialogSync(win, {
-        defaultPath: filename,
-        filters: [{ name: 'Excel (.xlsx)', extensions: ['xlsx'] }]
-      })
-      if (path !== undefined) {
-        fs.moveSync(tempFilename, path)
-      }
-    });
+        defaultPath: options.project.name + '.planeditor',
+        filters: { name: 'Редактор учебных планов (.planeditor)', extensions: ['planeditor'] }
+      });
+      saveProject(options.project, path);
+    } else {
+      savePlan[options.type](options.project.data, (filename, tempFilename) => {
+        const filters = {
+          'xlsx': [{ name: 'Excel (.xlsx)', extensions: ['xlsx'] }],
+        }[options.type];
+        const path = dialog.showSaveDialogSync(win, {
+          defaultPath:
+          filename, filters: filters
+        });
+        if (path !== undefined) {
+          fs.moveSync(tempFilename, path, { overwrite: true })
+        }
+      });
+    }
+  });
+  ipcMain.on('save-project', (event, options) => {
+    saveProject(options);
   })
 }
 

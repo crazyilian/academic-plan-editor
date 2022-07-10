@@ -3,7 +3,7 @@
     <div style="height: 100%; width: 17%">
       <EditorTabs
           v-model="activeTab"
-          :tabs-templates="tabsTemplates"
+          :tabs-templates="project.tabs.map(e => e.template)"
           :templates="templates"
           @close-tab="closeTab"
           @add-tab="addTab"
@@ -12,12 +12,12 @@
     </div>
     <div style="width: 83%; min-width: 0">
       <div
-          v-for="(template, i) in tabsTemplates"
+          v-for="(d, i) in project.tabs"
           :key="i"
           style="height: 100%"
           :class="{ 'display-none': i !== activeTab }"
       >
-        <EditorContent ref="editorContent" :template="template"/>
+        <EditorContent ref="editorContent" v-bind="d"/>
       </div>
     </div>
   </div>
@@ -28,22 +28,23 @@
 
 import EditorContent from "@/components/EditorContent";
 import EditorTabs from "@/components/EditorTabs";
+import Vue from "vue";
 
 export default {
   name: 'Editor',
   components: { EditorTabs, EditorContent },
   props: {
-    templates: { type: Array, default: () => [] }
+    templates: { type: Array, default: () => [] },
+    project: { type: Object, default: () => ({}) }
   },
   data() {
     return {
       activeTab: 0,
-      tabsTemplates: [],
     }
   },
   mounted() {
     window.ipcRenderer.handle.exportProject((event, options) => {
-      if (this.tabsTemplates.length === 0) {
+      if (this.project.tabs.length === 0) {
         window.ipcRenderer.messageBox({
           'type': 'warning',
           'title': 'Экспорт...',
@@ -54,39 +55,30 @@ export default {
         });
         return;
       }
-      let ids = [];
-      if (options.all) {
-        ids = [...Array(this.$refs.editorContent.length).keys()];
-      } else {
-        ids = [this.activeTab];
-      }
-      const res = { type: options.type, data: [] }
-      for (const id of ids) {
-        const editorContent = this.$refs.editorContent[id];
-        const generalTable = editorContent.$refs.generalTable;
-        res.data.push({
-          template: editorContent.template,
-          obligatoryPlan: editorContent.obligatoryPlan,
-          formativePlan: editorContent.formativePlan,
-          weeknum: generalTable.weeknum
-        })
-      }
-      window.ipcRenderer.exportProject(res);
+      window.ipcRenderer.exportProject({
+        type: options.type,
+        project: this.project
+      });
     });
   },
   methods: {
     closeTab(i) {
-      this.tabsTemplates.splice(i, 1);
-      if (this.activeTab > 0 && this.activeTab >= this.tabsTemplates.length) {
-        this.activeTab = this.tabsTemplates.length - 1;
+      Vue.delete(this.project.tabs, i);
+      if (this.activeTab > 0 && this.activeTab >= this.project.tabs.length) {
+        this.activeTab = this.project.tabs.length - 1;
       }
     },
     addTab(i) {
-      this.tabsTemplates.push(structuredClone(this.templates[i]));
-      this.activeTab = this.tabsTemplates.length - 1;
+      Vue.set(this.project.tabs, this.project.tabs.length, {
+        template: structuredClone(this.templates[i]),
+        obligatoryPlan: [],
+        formativePlan: {},
+        weeknum: [],
+      })
+      this.activeTab = this.project.tabs.length - 1;
     },
     editName(i, name) {
-      this.tabsTemplates[i].config.name = name;
+      Vue.set(this.project.tabs[i].template.config, 'name', name);
     }
   }
 }

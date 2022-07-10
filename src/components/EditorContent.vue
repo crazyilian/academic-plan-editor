@@ -54,6 +54,7 @@
           :grade-highlight="gradeHighlight"
           :grades="template.grades"
           :config="template.config"
+          :weeknum="weeknum"
       />
     </div>
   </div>
@@ -78,18 +79,27 @@ export default {
 
   props: {
     template: { type: Object, default: () => ({}) },
+    obligatoryPlan: { type: Array, default: () => [] },
+    formativePlan: { type: Object, default: () => ({}) },
+    weeknum: { type: Array, default: () => [] },
   },
 
   data() {
     const n = this.template.grades.length;
-    const plan = [];
-    for (const category of this.template.categories) {
-      plan.push(Array.from(category.subjects, () => Array(n).fill(0)));
+    if (Object.keys(this.formativePlan).length === 0) {
+      for (const [i, category] of this.template.categories.entries()) {
+        Vue.set(this.obligatoryPlan, i,
+            Array.from(category.subjects, () => Array(n).fill(0))
+        );
+      }
+      Vue.set(this.formativePlan, 'hours', Array(n).fill(0));
+      Vue.set(this.formativePlan, 'subjects', []);
+      for (let i = 0; i < n; ++i) {
+        Vue.set(this.weeknum, i, null);
+      }
     }
     return {
       gradeHighlight: Array(n).fill(false),
-      obligatoryPlan: plan,
-      formativePlan: { hours: Array(n).fill(0), subjects: [] },
       pageNum: 0,
     };
   },

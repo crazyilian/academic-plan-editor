@@ -1,11 +1,11 @@
 <template>
   <v-app>
     <v-main>
-      <v-container style="height: 100vh; max-width: 100%" :class="{'display-none' : !checkShowApp() }" class="pa-2">
-        <Editor :templates="templates"/>
+      <v-container v-if="checkShowApp()" style="height: 100vh; max-width: 100%" class="pa-2">
+        <Editor :templates="templates" :project="project"/>
       </v-container>
       <div
-          v-if="!checkShowApp()"
+          v-else
           style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column"
       >
         <v-progress-circular
@@ -41,6 +41,16 @@ export default {
     return {
       templates: [],
       askTemplatesInterval: undefined,
+      autoSaveInterval: undefined,
+      project: undefined,
+    }
+  },
+  watch: {
+    project: {
+      handler() {
+        window.ipcRenderer.saveProject(this.project);
+      },
+      deep: true
     }
   },
   mounted() {
@@ -51,10 +61,24 @@ export default {
       this.templates = templates;
       clearInterval(this.askTemplatesInterval);
     });
+
+    window.ipcRenderer.getLastProject().then(r => {
+      this.project = r;
+      if (this.project === undefined) {
+        this.project = { name: 'project', tabs: [] };
+      }
+      // this.autoSaveInterval = startInterval(() => {
+      //   window.ipcRenderer.saveProject(this.project);
+      // }, 30 * 1000)
+      window.ipcRenderer.saveProject(this.project);
+    });
+    window.ipcRenderer.handle.saveProject(() => {
+      window.ipcRenderer.saveProject(this.project);
+    })
   },
   methods: {
     checkShowApp() {
-      return this.templates.length > 0;
+      return this.templates.length > 0 && this.project !== undefined;
     }
   }
 };

@@ -17,7 +17,8 @@ module.exports = defineConfig({
           oneClick: false,
           allowToChangeInstallationDirectory: true,
           allowElevation: false,
-          artifactName: "Установщик - ${productName}.${ext}"
+          artifactName: "Установщик - ${productName}.${ext}",
+          perMachine: false,
         },
         extraResources: [
           {
@@ -27,7 +28,11 @@ module.exports = defineConfig({
               "**/*"
             ]
           }
-        ]
+        ],
+        fileAssociations: {
+          ext: 'planeditor',
+          name: 'Проект - Редактор учебных планов',
+        }
       }
     }
   }

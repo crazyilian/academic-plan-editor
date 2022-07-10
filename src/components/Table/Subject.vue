@@ -18,7 +18,11 @@
       <div class="pa-2" style="text-align: center">Обязательный<br>предмет</div>
     </v-tooltip>
 
-    <div style="min-width: 0; width: 40%; display: inline-block; word-wrap: break-word" class="subject-name">{{ name }}</div>
+    <div style="min-width: 0; width: 40%; display: inline-block; word-wrap: break-word" class="subject-name">
+{{
+        name
+      }}
+    </div>
     <Message container-style="width: 60%; margin-left: 24px; margin-right: 24px; min-width: 20px" :messages="messages"/>
     <Counter
         v-for="(grade, i) in grades"
@@ -27,6 +31,7 @@
         ref="counters"
         :correct="countersCorrect[i]"
         :highlight="gradeHighlight[i]"
+        :start-value="plan[i]"
         @input="counterChange(i)"
     />
   </div>
