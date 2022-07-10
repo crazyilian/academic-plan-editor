@@ -5,7 +5,7 @@ import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import * as path from "path";
 import yaml from "js-yaml"
-import fs from "fs"
+import fs from "fs-extra"
 import savePlan from "./savePlan"
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
@@ -22,18 +22,18 @@ function createMenu(win) {
     {
       label: 'Файл',
       submenu: [
-        { label: 'Сохранить', click: () => { console.log('Save project'); } },
+        // { label: 'Сохранить', click: () => { console.log('Save project'); } },
         {
-          label: 'Экспортировать',
+          label: 'Сохранить',
           submenu: exportFileTypes.map(type => ({
-            label: `Экспортировать как ${type}`,
+            label: `Сохранить как ${type}`,
             click: () => { win.webContents.send('export-project', { all: false, type })}
           })),
         },
         {
-          label: 'Экспортировать всё',
+          label: 'Сохранить всё',
           submenu: exportFileTypes.map(type => ({
-            label: `Экспортировать всё как ${type}`,
+            label: `Сохранить всё как ${type}`,
             click: () => { win.webContents.send('export-project', { all: true, type })}
           })),
         },
@@ -62,7 +62,7 @@ function createIpcListeners(win) {
         filters: [{ name: 'Excel (.xlsx)', extensions: ['xlsx'] }]
       })
       if (path !== undefined) {
-        fs.renameSync(tempFilename, path)
+        fs.moveSync(tempFilename, path)
       }
     });
   })
