@@ -10,6 +10,13 @@ import savePlan from "./savePlan"
 import Store from 'electron-store'
 
 
+const gotTheLock = app.requestSingleInstanceLock()
+
+if (!gotTheLock) {
+  app.quit()
+  process.exit();
+}
+
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const extraResources = isDevelopment ? path.join(__dirname, '../src/extraResources') : path.join(process.resourcesPath, 'extraResources')
 const extensionFilters = {
@@ -244,6 +251,14 @@ async function createWindow() {
     win.once('ready-to-show', () => showApp(win));
   }
 }
+
+app.on('second-instance', () => {
+  // Someone tried to run a second instance, we should focus our window.
+  if (mainWindow) {
+    if (mainWindow.isMinimized()) mainWindow.restore()
+    mainWindow.focus()
+  }
+})
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {

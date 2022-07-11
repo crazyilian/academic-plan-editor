@@ -7,7 +7,7 @@
       <div class="px-4" style="width: 100%; display: flex; flex-direction: column; gap: 8px">
         <h3 style="word-wrap: break-word">{{ template.config.name }}</h3>
         <div style="display: flex; justify-content: space-between">
-          <div style="display: flex; align-items: flex-end; gap: 10px; flex-grow: 1; max-width: 370px" class="pb-3">
+          <div class="pb-3 switch-btn-container">
             <v-btn
                 class="switch-btn"
                 color="#525252"
@@ -123,6 +123,15 @@ export default {
 </script>
 <style>
 
+.switch-btn-container {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  flex-grow: 1;
+  max-width: 370px;
+  min-width: 0;
+}
+
 .switch-btn {
   text-transform: none !important;
   width: calc(50% - 10px) !important;
@@ -131,18 +140,21 @@ export default {
   height: auto !important;
   padding: 4px 8px !important;
   min-height: 32px;
+  min-width: 0 !important;
 }
 
 .switch-btn > span {
   /*white-space: break-spaces !important;*/
   /*word-wrap: break-word !important;*/
   width: 100%;
+  min-width: 0;
 }
 
 .switch-btn > span > span {
   text-overflow: ellipsis;
   width: 100%;
   overflow: hidden;
+  min-width: 0;
 }
 
 </style>
