@@ -1,5 +1,5 @@
 config:
-    name: Тестовый шаблон (resources/extraResources/plan-templates/)
+    name: Тестовый шаблон учебного плана
     hours_total_min: 2170
     hours_total_max: 2590
     title: Тестовый учебный план среднего общего образования на 1000-2000 учебные годы

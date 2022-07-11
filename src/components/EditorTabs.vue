@@ -15,7 +15,7 @@
           style="width: 100%; min-width: 0; text-align: left"
           class="pl-2"
       >
-        <span>{{ template.config.name }}</span>
+        <span style="word-break: break-word">{{ template.config.name }}</span>
       </div>
       <v-text-field
           v-else
@@ -45,8 +45,8 @@
     </v-btn>
 
     <v-card
-        flat class="pa-0 pl-2" :class="{'pt-2': tabsTemplates.length > 0}"
-        style="background-color: rgba(0, 0, 0, 0); min-height: 42px"
+        flat class="pa-0" :class="{'pt-2': tabsTemplates.length > 0}"
+        style="background-color: rgba(0, 0, 0, 0); min-height: 42px; width: 100%"
     >
       <v-select
           v-model="addSelector"
@@ -273,6 +273,10 @@ export default {
 
 .tabs-container::-webkit-scrollbar {
   display: none;
+}
+
+.v-menu__content {
+  max-width: 0 !important;
 }
 
 </style>
