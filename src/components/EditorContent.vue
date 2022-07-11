@@ -7,15 +7,26 @@
       <div class="px-4" style="width: 100%; display: flex; flex-direction: column; gap: 8px">
         <h3 style="word-wrap: break-word">{{ template.config.name }}</h3>
         <div style="display: flex; justify-content: space-between">
-          <div style="display: flex; align-items: flex-end" class="pb-3">
+          <div style="display: flex; align-items: flex-end; gap: 10px; flex-grow: 1; max-width: 370px" class="pb-3">
             <v-btn
                 class="switch-btn"
                 color="#525252"
                 dark
                 depressed
-                @click="pageNum = 1 - pageNum"
+                :outlined="pageNum === 0"
+                @click="pageNum = 0"
             >
-              <span>{{ pageNum === 0 ? 'Обязательная часть' : 'Формируемая часть' }}</span>
+              <span>Обязательная часть</span>
+            </v-btn>
+            <v-btn
+                class="switch-btn"
+                color="#525252"
+                dark
+                depressed
+                :outlined="pageNum === 1"
+                @click="pageNum = 1"
+            >
+              <span>Формируемая часть</span>
             </v-btn>
           </div>
           <GradeTitle
@@ -114,7 +125,7 @@ export default {
 
 .switch-btn {
   text-transform: none !important;
-  width: 100% !important;
+  width: calc(50% - 10px) !important;
   font-size: 10pt !important;
   font-weight: normal !important;
   height: auto !important;
@@ -123,13 +134,15 @@ export default {
 }
 
 .switch-btn > span {
-  white-space: break-spaces !important;
-  word-wrap: break-word !important;
+  /*white-space: break-spaces !important;*/
+  /*word-wrap: break-word !important;*/
   width: 100%;
 }
 
 .switch-btn > span > span {
+  text-overflow: ellipsis;
   width: 100%;
+  overflow: hidden;
 }
 
 </style>
