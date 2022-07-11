@@ -11,10 +11,10 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
   getCurrentProject: (options) => ipcRenderer.invoke('get-cur-project', options),
   getTemplates: (options) => ipcRenderer.invoke('get-templates', options),
 
+  openProject: (options) => ipcRenderer.invoke('open-project', options),
+  createProject: (options) => ipcRenderer.invoke('create-project', options),
   exportProject: (options) => ipcRenderer.send('export-project', options),
   saveProject: (options) => ipcRenderer.send('save-project', options),
-  openProject: (options) => ipcRenderer.send('open-project', options),
-  createProject: (options) => ipcRenderer.send('create-project', options),
 
   handle: {
     showApp: (callback) => ipcRenderer.on('show-app', callback),

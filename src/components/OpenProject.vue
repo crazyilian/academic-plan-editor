@@ -7,22 +7,25 @@
                     {
                       title: 'Создать новый проект',
                       button_name: 'Создать',
-                      button_f: createProject
+                      button_f: createProject,
+                      loading: createLoading,
                     },
                     {
                       title: 'Открыть существующий проект',
                       button_name: 'Открыть',
-                      button_f: openProject
+                      button_f: openProject,
+                      loading: openLoading,
                     },
                 ]"
           :key="i"
-          style="width: 20%; min-width: 200px; display: flex; flex-direction: column; justify-content: space-between"
+          ref="buttons"
+          style="width: 25%; min-width: 200px; display: flex; flex-direction: column; justify-content: space-between"
           class="pa-4"
       >
         <div>{{ data.title }}</div>
         <v-divider class="mb-3 mt-10"/>
         <div style="display: flex; justify-content: flex-end">
-          <v-btn @click="data.button_f">{{ data.button_name }}</v-btn>
+          <v-btn :loading="data.loading" @click="data.button_f">{{ data.button_name }}</v-btn>
         </div>
       </v-card>
     </div>
@@ -32,12 +35,20 @@
 <script>
 export default {
   name: "OpenProject",
+  data() {
+    return {
+      openLoading: false,
+      createLoading: false
+    }
+  },
   methods: {
-    openProject() {
-      window.ipcRenderer.openProject();
-    },
     createProject() {
-      window.ipcRenderer.createProject();
+      this.createLoading = true;
+      window.ipcRenderer.createProject().then((r) => this.createLoading = r);
+    },
+    openProject() {
+      this.openLoading = true;
+      window.ipcRenderer.openProject().then((r) => this.openLoading = r);
     }
   }
 }

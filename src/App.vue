@@ -82,7 +82,7 @@ export default {
     openProject(project) {
       this.project = project;
       window.ipcRenderer.saveProject(this.project);
-      if (this.$refs.editor !== undefined) {
+      if (this.$refs.editor !== undefined && this.project !== undefined) {
         if (this.$refs.editor.activeTab >= this.project.tabs.length) {
           this.$refs.editor.activeTab = this.project.tabs.length - 1;
         }

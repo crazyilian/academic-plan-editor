@@ -130,24 +130,28 @@ function openProject(win) {
     properties: ['openFile']
   });
   if (ppaths === undefined) {
-    return;
+    return false;
   }
   const project = applyProject(ppaths[0]);
   win.webContents.send('open-project', project);
+  return true;
 }
 
 function createProject(win) {
   const ppath = dialog.showSaveDialogSync(win, {
     defaultPath: path.join(path.parse(store.get('lastProjectPath') || "").dir, 'Новый проект.planeditor'),
-    filters: [extensionFilters['planeditor']]
+    filters: [extensionFilters['planeditor']],
+    title: 'Создание',
+    buttonLabel: 'Создать'
   });
   if (ppath === undefined) {
-    return;
+    return false;
   }
   const project = emptyProject();
   saveProject(project, ppath);
   applyProject(ppath, project);
   win.webContents.send('open-project', project);
+  return true;
 }
 
 function closeProject(win) {
@@ -196,8 +200,8 @@ function createIpcListeners(win) {
   ipcMain.on('save-project', (event, options) => {
     saveProject(options);
   });
-  ipcMain.on('open-project', () => openProject(win));
-  ipcMain.on('create-project', () => createProject(win));
+  ipcMain.handle('open-project', () => openProject(win));
+  ipcMain.handle('create-project', () => createProject(win));
 }
 
 function showApp(win) {
