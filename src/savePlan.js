@@ -49,6 +49,9 @@ function create_xlsx(alldata, callback) {
       patternType: 'solid'
     }
   });
+  if (alldata.length === 0) {
+    wb.addWorksheet();
+  }
   for (const data of alldata) {
     const ws = wb.addWorksheet(data.template.config.name);
     const gn = data.template.grades.length;
@@ -161,9 +164,8 @@ function create_xlsx(alldata, callback) {
     fs.mkdirSync('./tmp');
   }
 
-  const filename = 'Учебный план.xlsx'
-  const tempFilename = './tmp/~$' + filename
-  wb.write(tempFilename, () => callback(filename, tempFilename));
+  const tempFilename = './tmp/~$tmp.xlsx'
+  wb.write(tempFilename, () => callback(tempFilename));
 }
 
 export default {

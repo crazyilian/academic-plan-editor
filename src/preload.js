@@ -4,16 +4,22 @@ import { contextBridge, ipcRenderer } from 'electron'
 
 // Expose ipcRenderer to the client
 contextBridge.exposeInMainWorld('ipcRenderer', {
-  messageBox: (options) => ipcRenderer.invoke('message-box', options),
   isDevelopment: (options) => ipcRenderer.invoke('is-development', options),
-  getLastProject: (options) => ipcRenderer.invoke('get-last-project', options),
-  askTemplates: (options) => ipcRenderer.send('ask-templates', options),
+
+  messageBox: (options) => ipcRenderer.invoke('message-box', options),
+
+  getCurrentProject: (options) => ipcRenderer.invoke('get-cur-project', options),
+  getTemplates: (options) => ipcRenderer.invoke('get-templates', options),
+
   exportProject: (options) => ipcRenderer.send('export-project', options),
   saveProject: (options) => ipcRenderer.send('save-project', options),
+  openProject: (options) => ipcRenderer.send('open-project', options),
+  createProject: (options) => ipcRenderer.send('create-project', options),
+
   handle: {
     showApp: (callback) => ipcRenderer.on('show-app', callback),
-    loadTemplates: (callback) => ipcRenderer.on('load-templates', callback),
     exportProject: (callback) => ipcRenderer.on('export-project', callback),
     saveProject: (callback) => ipcRenderer.on('save-project', callback),
+    openProject: (callback) => ipcRenderer.on('open-project', callback),
   }
 });

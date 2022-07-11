@@ -7,10 +7,19 @@ import * as path from "path";
 import yaml from "js-yaml"
 import fs from "fs-extra"
 import savePlan from "./savePlan"
+import Store from 'electron-store'
+
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const extraResources = isDevelopment ? path.join(__dirname, '../src/extraResources') : path.join(process.resourcesPath, 'extraResources')
-const savingPath = './savings'
+const extensionFilters = {
+  'xlsx': { name: 'Таблица Excel', extensions: ['xlsx'] },
+  'planeditor': { name: 'Проект - Редактор учебных планов', extensions: ['planeditor'] }
+}
+let mainWindow = undefined;
+const store = new Store({
+  cwd: isDevelopment ? path.join(__dirname, '../savings') : app.getPath('userData')
+})
 
 app.setName("Редактор учебных планов")
 
@@ -18,37 +27,55 @@ app.setName("Редактор учебных планов")
 protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }])
 
 
-ipcMain.handle('get-last-project', () => {
-  const filePaths = getAllProjectFiles();
-  if (filePaths.length === 0) {
-    return undefined;
+ipcMain.handle('get-cur-project', () => {
+  let projectPath = undefined;
+  if (process.argv.length >= (isDevelopment ? 3 : 2)) {
+    projectPath = process.argv[isDevelopment ? 2 : 1];
+  } else {
+    projectPath = store.get('lastProjectPath')
   }
-  const mtimes = filePaths.map(f => fs.statSync(f).mtime)
-  const lastModifiedId = mtimes.reduce((mxi, cur, i) => mtimes[mxi] > cur ? mxi : i, 0);
-  const lastFile = filePaths[lastModifiedId];
-  return fs.readJsonSync(lastFile);
+  return applyProject(projectPath);
 });
+
+ipcMain.handle('get-templates', () => {
+  const templates = [];
+  const templatesPath = path.join(extraResources, 'plan-templates');
+  fs.readdirSync(templatesPath).forEach(file => {
+    templates.push(parseTemplate(path.join(templatesPath, file)));
+  });
+  return templates;
+})
 
 function createMenu(win) {
   const exportFileTypes = ['xlsx', 'planeditor'];
   const template = [
     {
-      label: 'Файл',
-      submenu: [
-        // { label: 'Сохранить', click: () => { console.log('Save project'); } },
+      label: 'Проект', submenu: [
         {
-          label: 'Сохранить проект',
+          label: 'Открыть',
+          click: () => openProject(win),
+        },
+        {
+          label: 'Создать',
+          click: () => createProject(win),
+        },
+        { type: 'separator' },
+        {
+          label: 'Сохранить',
           click: () => { win.webContents.send('save-project'); }
         },
         {
-          label: 'Сохранить проект как',
+          label: 'Сохранить как',
           submenu: exportFileTypes.map(type => ({
-            label: `Сохранить проект как .${type}`,
+            label: `Сохранить как .${type}`,
             click: () => { win.webContents.send('export-project', { all: true, type })}
           })),
         },
         { type: 'separator' },
-        { role: 'quit', label: 'Выйти' }
+        {
+          label: 'Закрыть',
+          click: () => closeProject(win),
+        }
       ]
     },
     ...(isDevelopment ? [{ role: 'toggleDevTools' },] : [])
@@ -57,21 +84,84 @@ function createMenu(win) {
   Menu.setApplicationMenu(menu)
 }
 
-function getAllProjectFiles() {
-  const files = [];
-  if (fs.existsSync(savingPath)) {
-    fs.readdirSync(savingPath).forEach(file => {
-      files.push(path.join(savingPath, file));
-    })
+function emptyProject() {
+  return { tabs: [] };
+}
+
+function applyProject(projectPath, project) {
+  if (projectPath === undefined) {
+    store.delete('lastProjectPath');
+    setTitlePath(undefined);
+    return undefined;
   }
-  return files;
+  if (!fs.existsSync(projectPath)) {
+    dialog.showMessageBoxSync(mainWindow, {
+      message: `Невозможно открыть проект ${path.parse(projectPath).base}`,
+      detail: `Проекта ${projectPath} больше не существует`,
+      title: 'Ошибка',
+      type: 'error',
+    })
+    store.delete('lastProjectPath');
+    setTitlePath(undefined);
+    return undefined;
+  }
+  setTitlePath(projectPath);
+  store.set('lastProjectPath', projectPath);
+  if (project === undefined) {
+    project = fs.readJSONSync(projectPath);
+  }
+  return project;
 }
 
 function saveProject(project, filepath) {
+  if (project === undefined) {
+    return;
+  }
   if (filepath === undefined) {
-    filepath = path.join(savingPath, project.name + '.planeditor');
+    filepath = store.get('lastProjectPath');
   }
   fs.outputJsonSync(filepath, project)
+}
+
+function openProject(win) {
+  const ppaths = dialog.showOpenDialogSync(win, {
+    defaultPath: store.get('lastProjectPath'),
+    filters: [extensionFilters['planeditor']],
+    properties: ['openFile']
+  });
+  if (ppaths === undefined) {
+    return;
+  }
+  const project = applyProject(ppaths[0]);
+  win.webContents.send('open-project', project);
+}
+
+function createProject(win) {
+  const ppath = dialog.showSaveDialogSync(win, {
+    defaultPath: path.join(path.parse(store.get('lastProjectPath') || "").dir, 'Новый проект.planeditor'),
+    filters: [extensionFilters['planeditor']]
+  });
+  if (ppath === undefined) {
+    return;
+  }
+  const project = emptyProject();
+  saveProject(project, ppath);
+  applyProject(ppath, project);
+  win.webContents.send('open-project', project);
+}
+
+function closeProject(win) {
+  applyProject(undefined);
+  win.webContents.send('open-project', undefined);
+}
+
+function setTitlePath(p) {
+  if (p === undefined) {
+    mainWindow.setTitle(app.getName());
+  } else {
+    const filename = p.replace(/^.*[\\/]/, '')
+    mainWindow.setTitle(`${app.getName()} - ${filename}`)
+  }
 }
 
 function createHandlers(win) {
@@ -81,38 +171,37 @@ function createHandlers(win) {
 }
 
 function createIpcListeners(win) {
-  ipcMain.on('ask-templates', () => loadTemplates(win))
   ipcMain.on('export-project', (event, options) => {
     if (options.type === 'planeditor') {
-      const path = dialog.showSaveDialogSync(win, {
-        defaultPath: options.project.name + '.planeditor',
-        filters: { name: 'Редактор учебных планов (.planeditor)', extensions: ['planeditor'] }
+      const ppath = dialog.showSaveDialogSync(win, {
+        defaultPath: store.get('lastProjectPath') || 'Учебный план.planeditor',
+        filters: [extensionFilters[options.type]]
       });
-      saveProject(options.project, path);
+      if (ppath !== undefined) {
+        saveProject(options.project, ppath);
+        applyProject(ppath, options.project);
+      }
     } else {
-      savePlan[options.type](options.project.data, (filename, tempFilename) => {
-        const filters = {
-          'xlsx': [{ name: 'Excel (.xlsx)', extensions: ['xlsx'] }],
-        }[options.type];
-        const path = dialog.showSaveDialogSync(win, {
-          defaultPath:
-          filename, filters: filters
+      savePlan[options.type](options.project.tabs, (tempFilename) => {
+        const ppath = dialog.showSaveDialogSync(win, {
+          defaultPath: path.parse(store.get('lastProjectPath') || "").name + `.${options.type}`,
+          filters: [extensionFilters[options.type]]
         });
-        if (path !== undefined) {
-          fs.moveSync(tempFilename, path, { overwrite: true })
+        if (ppath !== undefined) {
+          fs.moveSync(tempFilename, ppath, { overwrite: true })
         }
       });
     }
   });
   ipcMain.on('save-project', (event, options) => {
     saveProject(options);
-  })
+  });
+  ipcMain.on('open-project', () => openProject(win));
+  ipcMain.on('create-project', () => createProject(win));
 }
 
 function showApp(win) {
-  win.setTitle(app.getName());
   win.maximize();
-  win.webContents.send('show-app');
 }
 
 async function createWindow() {
@@ -122,7 +211,6 @@ async function createWindow() {
     width: screen.width,
     height: screen.height,
     webPreferences: {
-
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
       nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
@@ -133,7 +221,7 @@ async function createWindow() {
     show: false,
     title: app.getName(),
   })
-
+  mainWindow = win;
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
@@ -149,7 +237,7 @@ async function createWindow() {
   if (isDevelopment) {
     showApp(win);
   } else {
-    win.once('ready-to-show', () => {showApp(win)});
+    win.once('ready-to-show', () => showApp(win));
   }
 }
 
@@ -198,19 +286,13 @@ if (isDevelopment) {
   }
 }
 
-function loadTemplates(win) {
-  const templates = [];
-  const templatesPath = path.join(extraResources, 'plan-templates');
-  fs.readdirSync(templatesPath).forEach(file => {
-    templates.push(parseTemplate(path.join(templatesPath, file)));
-  });
-  // setTimeout(() => win.webContents.send('load-templates', templates), 1000)
-  win.webContents.send('load-templates', templates);
-}
-
-function parseTemplate(path) {
-  const raw = yaml.load(fs.readFileSync(path, 'utf8'));
-  const template = { config: raw.config, grades: raw.grades, categories: [] };
+function parseTemplate(tpath) {
+  const raw = yaml.load(fs.readFileSync(tpath, 'utf8'));
+  const template = {
+    config: raw.config,
+    grades: raw.grades,
+    categories: []
+  };
   for (const [category, subjects_raw] of Object.entries(raw.categories)) {
     const subjects = [];
     for (const [subject, required] of Object.entries(subjects_raw)) {

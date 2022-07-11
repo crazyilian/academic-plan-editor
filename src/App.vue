@@ -2,7 +2,8 @@
   <v-app>
     <v-main>
       <v-container v-if="checkShowApp()" style="height: 100vh; max-width: 100%" class="pa-2">
-        <Editor :templates="templates" :project="project"/>
+        <Editor v-if="project !== undefined" ref="editor" :templates="templates" :project="project"/>
+        <OpenProject v-else/>
       </v-container>
       <div
           v-else
@@ -23,7 +24,9 @@
 
 <script>
 import Editor from "@/components/Editor";
+import OpenProject from "@/components/OpenProject";
 
+// eslint-disable-next-line no-unused-vars
 function startInterval(handler, timeout) {
   const interval = setInterval(handler, timeout);
   handler();
@@ -34,15 +37,16 @@ export default {
   name: 'App',
 
   components: {
+    OpenProject,
     Editor,
   },
 
   data() {
     return {
       templates: [],
-      askTemplatesInterval: undefined,
       autoSaveInterval: undefined,
       project: undefined,
+      cntLoaded: 0
     }
   },
   watch: {
@@ -54,32 +58,36 @@ export default {
     }
   },
   mounted() {
-    this.askTemplatesInterval = startInterval(() => {
-      window.ipcRenderer.askTemplates();
-    }, 1000);
-    window.ipcRenderer.handle.loadTemplates((event, templates) => {
+    window.ipcRenderer.getTemplates().then(templates => {
       this.templates = templates;
-      clearInterval(this.askTemplatesInterval);
+      this.cntLoaded++;
     });
 
-    window.ipcRenderer.getLastProject().then(r => {
-      this.project = r;
-      if (this.project === undefined) {
-        this.project = { name: 'project', tabs: [] };
-      }
-      // this.autoSaveInterval = startInterval(() => {
-      //   window.ipcRenderer.saveProject(this.project);
-      // }, 30 * 1000)
-      window.ipcRenderer.saveProject(this.project);
+    window.ipcRenderer.getCurrentProject().then(project => {
+      this.openProject(project)
+      this.cntLoaded++;
     });
+    window.ipcRenderer.handle.openProject((event, project) => {
+      this.openProject(project);
+    });
+
     window.ipcRenderer.handle.saveProject(() => {
       window.ipcRenderer.saveProject(this.project);
     })
   },
   methods: {
     checkShowApp() {
-      return this.templates.length > 0 && this.project !== undefined;
-    }
+      return this.cntLoaded === 2;
+    },
+    openProject(project) {
+      this.project = project;
+      window.ipcRenderer.saveProject(this.project);
+      if (this.$refs.editor !== undefined) {
+        if (this.$refs.editor.activeTab >= this.project.tabs.length) {
+          this.$refs.editor.activeTab = this.project.tabs.length - 1;
+        }
+      }
+    },
   }
 };
 </script>

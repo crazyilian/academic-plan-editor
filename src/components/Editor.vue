@@ -44,14 +44,12 @@ export default {
   },
   mounted() {
     window.ipcRenderer.handle.exportProject((event, options) => {
-      if (this.project.tabs.length === 0) {
+      if (this.project === undefined) {
         window.ipcRenderer.messageBox({
           'type': 'warning',
-          'title': 'Экспорт...',
-          'message': 'Вы не можете экспортировать пустой план',
-          // 'detail': '',
-          'buttons': ['Ок'],
-          'noLink': true,
+          'title': 'Сохранение...',
+          'message': 'Вы не выбрали проект для сохранения',
+          'detail': 'Чтобы сохранить, откройте существующий или создайте новый проект'
         });
         return;
       }
