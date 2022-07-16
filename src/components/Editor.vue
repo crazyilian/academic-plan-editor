@@ -7,7 +7,6 @@
           :templates="templates"
           @close-tab="closeTab"
           @add-tab="addTab"
-          @edit-name="editName"
       />
     </div>
     <div style="width: 83%; min-width: 0">
@@ -75,9 +74,6 @@ export default {
       })
       this.activeTab = this.project.tabs.length - 1;
     },
-    editName(i, name) {
-      Vue.set(this.project.tabs[i].template.config, 'name', name);
-    }
   }
 }
 </script>

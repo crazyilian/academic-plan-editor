@@ -1,26 +1,17 @@
 config:
-    name: Тестовый шаблон учебного плана
-    hours_total_min: 2170
-    hours_total_max: 2590
-    title: Тестовый учебный план среднего общего образования на 1000-2000 учебные годы
+    name: УП СОО (10-11 классы)
+    hours_total_min: -1
+    hours_total_max: -1
+    title: Учебный план Среднего Общего Образования (10-11 классы)
+    attestation: ""
 grades:
-    - name: 10 класс
-      description: Профиль*-универсальный
+    - name: 10
+      profile:
+        - Универсальный
       max_hours_per_week: 34
-    - name: 11 класс
-      description: Профиль-универсальный
-      max_hours_per_week: 34
-    - name: 12 класс
-      description: Профиль-универсальный
-      max_hours_per_week: 34
-    - name: 13 класс
-      description: Профиль-универсальный
-      max_hours_per_week: 34
-    - name: 14 класс
-      description: Профиль-универсальный
-      max_hours_per_week: 34
-    - name: 15 класс
-      description: Профиль-универсальный
+    - name: 11
+      profile:
+        - Универсальный
       max_hours_per_week: 34
 categories:
     Русский язык и литература:
@@ -52,6 +43,4 @@ categories:
         Экология: false
         Основы безопасноси жизнедеятельности: true
     Индивидуальная проектная деятельность:
-      Индивидуальная проектная деятельность: false
-    Обязательный предмет без предметной области:
-      Обязательный предмет без предметной области: true
+        Индивидуальная проектная деятельность: false

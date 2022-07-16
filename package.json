@@ -21,7 +21,9 @@
     "fs-extra": "^10.1.0",
     "js-yaml": "^4.1.0",
     "vue": "^2.6.14",
-    "vuetify": "^2.6.0"
+    "vuetify": "^2.6.0",
+    "xlsx": "^0.18.5",
+    "xlsx-coordinates": "^1.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

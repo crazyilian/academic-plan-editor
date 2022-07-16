@@ -48,6 +48,8 @@ ipcMain.handle('get-templates', () => {
   const templates = [];
   const templatesPath = path.join(extraResources, 'plan-templates');
   fs.readdirSync(templatesPath).forEach(file => {
+    if (!file.endsWith('.yaml'))
+      return;
     templates.push(parseTemplate(path.join(templatesPath, file)));
   });
   return templates;
@@ -319,5 +321,6 @@ function parseTemplate(tpath) {
     }
     template.categories.push({ name: category, subjects: subjects });
   }
+  console.log(template);
   return template;
 }

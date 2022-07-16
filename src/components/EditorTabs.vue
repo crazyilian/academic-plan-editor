@@ -10,25 +10,10 @@
         style="width: 100%"
         @click="$emit('input', i)"
     >
-      <div
-          v-if="i !== editingNameId"
-          style="width: 100%; min-width: 0; text-align: left"
-          class="pl-2"
-      >
-        <span style="word-break: break-word">{{ template.config.name }}</span>
-      </div>
-      <v-text-field
-          v-else
-          ref="editName"
-          v-model="editingName"
-          :placeholder="template.config.name"
-          solo
-          flat
-          dense
-          class="edit-name-area"
-          @keydown.enter="nameChange(true)"
-          @keydown.esc="nameChange(false)"
-          @focusout="nameChange(true)"
+      <EditableText
+          :value="template.config.name"
+          :editing="editingNameId === i"
+          @change="nameChange(i, $event)"
       />
       <div class="pl-1" @click="editName(i)">
         <v-hover v-slot="{ hover }">
@@ -44,29 +29,47 @@
       </div>
     </v-btn>
 
-    <v-card
-        flat class="pa-0" :class="{'pt-2': tabsTemplates.length > 0}"
-        style="background-color: rgba(0, 0, 0, 0); min-height: 42px; width: 100%"
-    >
-      <v-select
-          v-model="addSelector"
-          :items="templates.map(e => e.config.name).concat([ADD_STRING])"
-          color="#51bb19"
-          dense
-          solo
-          flat
-          class="add-select"
-      />
+    <v-card flat class="pa-0 add-menu-container" :class="{'pt-2': tabsTemplates.length > 0}">
+      <v-menu bottom offset-y>
+        <template #activator="{ on, attrs }">
+          <v-btn
+              text
+              color="#d6d6d6"
+              style="text-transform: none;"
+              dark
+              v-bind="attrs"
+              class="px-3"
+              v-on="on"
+          >
+            <span class="mr-2">{{ ADD_STRING }}</span>
+            <v-icon color="#51BB19">mdi-plus</v-icon>
+          </v-btn>
+        </template>
+
+        <v-list>
+          <v-list-item
+              v-for="(template, i) in templates"
+              :key="i"
+              @click="addTab(i)"
+          >
+            <v-list-item-title>{{ template.config.title }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </v-card>
   </v-container>
 </template>
 
 <script>
 
-const ADD_STRING = "Добавить";
+import EditableText from "@/components/EditableText";
+import Vue from "vue";
+
+const ADD_STRING = "Создать УП";
 
 export default {
   name: "EditorTabs",
+  components: { EditableText },
   props: {
     tabsTemplates: { type: Array, default: () => [] },
     templates: { type: Array, default: () => [] },
@@ -77,19 +80,12 @@ export default {
       ADD_STRING: ADD_STRING,
       addSelector: ADD_STRING,
       editingNameId: null,
-      editingName: null,
-    }
-  },
-  watch: {
-    addSelector(newVal) {
-      if (newVal === ADD_STRING)
-        return;
-      this.$nextTick(() => { this.addSelector = ADD_STRING });
-      const templateIndex = this.templates.findIndex(e => e.config.name === newVal);
-      this.$emit('add-tab', templateIndex);
     }
   },
   methods: {
+    addTab(i) {
+      this.$emit('add-tab', i);
+    },
     async askCloseTab(i) {
       const buttonId = await window.ipcRenderer.messageBox({
         'type': 'question',
@@ -108,18 +104,10 @@ export default {
     },
     editName(i) {
       this.editingNameId = i;
-      this.editingName = this.tabsTemplates[i].config.name;
-      this.$nextTick(() => { this.$refs.editName[0].focus() });
     },
-    nameChange(editFlag) {
-      if (editFlag && this.editingName !== null) {
-        const newName = this.editingName.trim().substring(0, 250).trim();
-        if (newName.length > 0) {
-          this.$emit('edit-name', this.editingNameId, newName);
-        }
-      }
+    nameChange(i, newName) {
+      Vue.set(this.tabsTemplates[i].config, 'name', newName);
       this.editingNameId = null;
-      this.editingName = null;
     }
   }
 }
@@ -170,91 +158,69 @@ export default {
 
 /* New Tab */
 
-.add-select .mdi-menu-down::before {
-  content: "\F0415"
-}
+/*.add-select .mdi-menu-down::before {*/
+/*  content: "\F0415"*/
+/*}*/
 
-.add-select .mdi-menu-down {
-  color: rgb(81, 187, 25);
-  caret-color: rgb(81, 187, 25);
-}
+/*.add-select .mdi-menu-down {*/
+/*  color: rgb(81, 187, 25);*/
+/*  caret-color: rgb(81, 187, 25);*/
+/*}*/
 
-.add-select > .v-input__control > .v-input__slot {
+/*.add-select > .v-input__control > .v-input__slot {*/
+/*  background-color: rgba(0, 0, 0, 0) !important;*/
+/*}*/
+
+/*.add-select > .v-input__control .v-select__slot {*/
+/*  display: flex;*/
+/*  justify-content: center;*/
+/*}*/
+
+/*.add-select > .v-input__control .v-select__slot > .v-input__append-inner {*/
+/*  margin: 0;*/
+/*}*/
+
+/*.add-select > .v-input__control > .v-input__slot:hover {*/
+/*  background-color: rgba(255, 255, 255, 0.1) !important;*/
+/*}*/
+
+/*.add-select > .v-input__control > .v-input__slot {*/
+/*  margin-bottom: 0 !important;*/
+/*}*/
+
+/*.add-select .v-select__selection {*/
+/*  color: #bbbbbb;*/
+/*  overflow: visible;*/
+/*  text-overflow: clip;*/
+/*  max-width: 100%;*/
+/*}*/
+
+/*.add-select .v-select__selections input {*/
+/*  display: none;*/
+/*}*/
+
+/*.add-select .v-select__selections {*/
+/*  flex: 0 1 auto;*/
+/*}*/
+
+/*.add-select .v-text-field__details {*/
+/*  display: none;*/
+/*}*/
+
+/*.v-menu__content > .v-select-list > div:last-child {*/
+/*  display: none;*/
+/*}*/
+
+.add-menu-container {
   background-color: rgba(0, 0, 0, 0) !important;
-}
-
-.add-select > .v-input__control .v-select__slot {
+  min-height: 42px;
+  width: 100%;
   display: flex;
   justify-content: center;
 }
 
-.add-select > .v-input__control .v-select__slot > .v-input__append-inner {
-  margin: 0;
-}
+.add-menu-container button {
 
-.add-select > .v-input__control > .v-input__slot:hover {
-  background-color: rgba(255, 255, 255, 0.1) !important;
-}
-
-.add-select > .v-input__control > .v-input__slot {
-  margin-bottom: 0 !important;
-}
-
-.add-select .v-select__selection {
-  color: #bbbbbb;
-  overflow: visible;
-  text-overflow: clip;
-  max-width: 100%;
-}
-
-.add-select .v-select__selections input {
-  display: none;
-}
-
-.add-select .v-select__selections {
-  flex: 0 1 auto;
-}
-
-.add-select .v-text-field__details {
-  display: none;
-}
-
-.v-menu__content > .v-select-list > div:last-child {
-  display: none;
-}
-
-/* Edit Name */
-
-.edit-name-area > .v-input__control .v-select__slot {
-  display: flex;
-  justify-content: center;
-}
-
-.edit-name-area > .v-input__control .v-select__slot > .v-input__append-inner {
-  margin: 0;
-}
-
-.edit-name-area .v-text-field__details {
-  display: none;
-}
-
-.edit-name-area > .v-input__control > .v-input__slot {
-  margin-bottom: 0 !important;
-  height: 100%;
-  /*background-color: rgba(255, 255, 255, 0.9) !important;*/
-}
-
-.edit-name-area {
-  height: 100%;
-}
-
-.edit-name-area > .v-input__control {
-  min-height: 0 !important;
-  height: 100%;
-}
-
-.edit-name-area input {
-  padding: 0 !important;
 }
 
 /* Other */
@@ -273,10 +239,6 @@ export default {
 
 .tabs-container::-webkit-scrollbar {
   display: none;
-}
-
-.v-menu__content {
-  max-width: 0 !important;
 }
 
 </style>

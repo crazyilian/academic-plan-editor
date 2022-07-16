@@ -1,16 +1,22 @@
 config:
-    name: 10 и 11 классы
-    hours_total_min: 2170
-    hours_total_max: 2590
-    title: Учебный план среднего общего образования на 2021-2023 учебные годы
+    name: УП НОО (1-4 классы)
+    hours_total_min: -1
+    hours_total_max: -1
+    title: Учебный план Начального Общего Образования (1-4 классы)
     attestation: ""
 grades:
-    - name: 10 класс
+    - name: 1
       description: Профиль*-универсальный
-      max_hours_per_week: 34
-    - name: 11 класс
+      max_hours_per_week: 21
+    - name: 2
       description: Профиль-универсальный
-      max_hours_per_week: 34
+      max_hours_per_week: 23
+    - name: 3
+      description: Профиль-универсальный
+      max_hours_per_week: 23
+    - name: 4
+      description: Профиль-универсальный
+      max_hours_per_week: 23
 categories:
     Русский язык и литература:
         Русский язык: true
@@ -41,4 +47,4 @@ categories:
         Экология: false
         Основы безопасноси жизнедеятельности: true
     Индивидуальная проектная деятельность:
-        Индивидуальная проектная деятельность: false
+        Индивидуальная проектная деятельность: true

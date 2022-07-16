@@ -123,7 +123,7 @@ function create_xlsx(alldata, callback) {
       })
     }
 
-    ws.cell(6, 3 + gn, cl - 2, 3 + gn, true).string('см. Приложение')
+    ws.cell(6, 3 + gn, cl - 2, 3 + gn, true).string(data.template.config.attestation)
         .style(scenter).style({ font: { size: 7 } })
 
 

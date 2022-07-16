@@ -5,7 +5,15 @@
         style="min-width: 0; width: 66%; display: flex; flex-direction: column; height: 100%; flex-grow: 1"
     >
       <div class="px-4" style="width: 100%; display: flex; flex-direction: column; gap: 8px">
-        <h3 style="word-wrap: break-word">{{ template.config.name }}</h3>
+        <div class="fullname-container">
+          <EditableText
+              class="hover-background"
+              :value="template.config.title"
+              :editing="editingFullname"
+              @change="changeFullname"
+              @span-click="editFullname"
+          />
+        </div>
         <div style="display: flex; justify-content: space-between">
           <div class="pb-3 switch-btn-container">
             <v-btn
@@ -78,10 +86,12 @@ import GradeTitle from "@/components/GradeTitle";
 import Vue from "vue";
 import GeneralTable from "@/components/GeneralTable/GeneralTable";
 import FormativeTable from "@/components/FormativeTable/FormativeTable";
+import EditableText from "@/components/EditableText";
 
 export default {
   name: 'EditorContent',
   components: {
+    EditableText,
     FormativeTable,
     GeneralTable,
     GradeTitle,
@@ -112,12 +122,20 @@ export default {
     return {
       gradeHighlight: Array(n).fill(false),
       pageNum: 0,
+      editingFullname: false
     };
   },
   methods: {
     highlightGrade(i, flag) {
       Vue.set(this.gradeHighlight, i, flag);
     },
+    editFullname() {
+      this.editingFullname = true;
+    },
+    changeFullname(newName) {
+      Vue.set(this.template.config, 'title', newName);
+      this.editingFullname = false;
+    }
   }
 };
 </script>
@@ -155,6 +173,12 @@ export default {
   width: 100%;
   overflow: hidden;
   min-width: 0;
+}
+
+.fullname-container, .fullname-container .v-input {
+  display: flex;
+  font-size: 1.17rem !important;
+  font-weight: bold;
 }
 
 </style>
