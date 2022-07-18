@@ -7,7 +7,10 @@
     >
       <div style="display: flex; justify-content: space-between; align-items: center; width: calc(100% - 24px)">
         <div style="width: 38%; display: inline-block; word-wrap: break-word" class="subject-name">{{ name }}</div>
-        <Message container-style="width: 62%; margin-left: 12px; margin-right: 32px; min-width: 0" :messages="messages"/>
+        <Message
+container-style="width: 62%; margin-left: 12px; margin-right: 32px; min-width: 0"
+                 :messages="messages"
+/>
         <div style="">{{ comment }}</div>
       </div>
       <template #actions>
@@ -25,6 +28,7 @@
           :grades="grades"
           :grade-highlight="gradeHighlight"
           :plan="plan[i]"
+          :class="{'display-none': sub.is_module}"
           @validate="validate"
       />
     </v-expansion-panel-content>
@@ -62,6 +66,9 @@ export default {
       this.messages = [];
       let includedCount = 0;
       for (let i = 0; i < this.subjects.length; ++i) {
+        if (this.subjects[i].is_module) {
+          continue;
+        }
         const sub = this.$refs['subjects'][i];
         if (sub.checkbox)
           includedCount += 1;

@@ -12,7 +12,7 @@
     <div style="width: 83%; min-width: 0">
       <div
           v-for="(d, i) in project.tabs"
-          :key="i"
+          :key="JSON.stringify(d.config) + `;${i}`"
           style="height: 100%"
           :class="{ 'display-none': i !== activeTab }"
       >

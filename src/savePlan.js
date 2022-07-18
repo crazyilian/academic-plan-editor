@@ -102,11 +102,23 @@ function create_xlsx(alldata, callback) {
     }
     cl = 7;
     let sub = 0;
-    for (const category of data.obligatoryPlan) {
-      for (const subject of category) {
-        for (const [gi, val] of subject.entries()) {
-          if (val !== 0) {
-            ws.cell(cl, 3 + gi).number(val).style(scenter).style(sbold);
+    for (const [i, category] of data.obligatoryPlan.entries()) {
+      let not_module = cl;
+      for (let j = 1; j <= category.length; ++j) {
+        if (j === category.length || !data.template.categories[i].subjects[j].is_module) {
+          for (let gi = 0; gi < gn; ++gi) {
+            ws.cell(not_module, 3 + gi, cl + j - 1, 3 + gi, true);
+          }
+          not_module = cl + j;
+        }
+      }
+
+      for (const [j, subject] of category.entries()) {
+        if (!data.template.categories[i].subjects[j].is_module) {
+          for (const [gi, val] of subject.entries()) {
+            if (val !== 0) {
+              ws.cell(cl, 3 + gi).number(val).style(scenter).style(sbold);
+            }
           }
         }
         cl += 1;

@@ -28,7 +28,7 @@ import fs from "fs-extra";
             name: "Русский язык",
             required: true,
             can_advanced: true,
-            modules: [],
+            is_module: false,
           },
           ...
         ]
@@ -196,19 +196,12 @@ function parseSheet(sh, name) {
       const subjects = template.categories[template.categories.length - 1].subjects;
       for (let xx = x; xx <= last; ++xx) {
         const name = table[xx][1].val;
-        if (!name.toLowerCase().startsWith('учебный модуль:')) {
-          subjects.push({
-            name: name,
-            required: table[xx][1].bg === colors.required_subj,
-            can_advanced: strEq(table[xx][2].val, "Б или У")
-          });
-        } else {
-          const subj = subjects[subjects.length - 1];
-          if (subj.modules === undefined) {
-            subj.modules = [];
-          }
-          subj.modules.push(name);
-        }
+        subjects.push({
+          name: name,
+          required: table[xx][1].bg === colors.required_subj,
+          can_advanced: strEq(table[xx][2].val, "Б или У"),
+          is_module: name.toLowerCase().startsWith('учебный модуль:')
+        });
         subjCoor.push([template.categories.length - 1, subjects.length - 1]);
       }
       x = last + 1;

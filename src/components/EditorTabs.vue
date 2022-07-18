@@ -2,7 +2,7 @@
   <v-container class="rounded-lg pb-2 tabs-container">
     <v-btn
         v-for="(template, i) in tabsTemplates"
-        :key="i"
+        :key="JSON.stringify(template.config) + `;${i}`"
         plain
         :class="{ 'active': i === value, 'mt-2': i !== 0}"
         :color="i === value ? 'black' : 'white'"

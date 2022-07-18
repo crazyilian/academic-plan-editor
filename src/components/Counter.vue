@@ -4,7 +4,7 @@
         ref="input"
         v-model="stringValue"
         class="py-0 counter-field"
-        :class="{'error-counter': !correct}"
+        :class="{'error-counter': !correct, 'display-none': !show}"
         hide-details
         single-line
         type="number"
@@ -28,6 +28,7 @@ export default {
     'correct': { type: Boolean, default: true },
     'highlight': { type: Boolean, default: false },
     'startValue': { type: Number, default: 0 },
+    'show': { type: Boolean, default: true }
   },
   data() {
     return {

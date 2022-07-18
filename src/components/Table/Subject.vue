@@ -19,9 +19,7 @@
     </v-tooltip>
 
     <div style="min-width: 0; width: 40%; display: inline-block; word-wrap: break-word" class="subject-name">
-{{
-        name
-      }}
+      {{ name }}
     </div>
     <Message container-style="width: 60%; margin-left: 24px; margin-right: 24px; min-width: 20px" :messages="messages"/>
     <Counter
