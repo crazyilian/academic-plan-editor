@@ -84,6 +84,7 @@
         right
         temporary
         style="width: 70%"
+        class="general-table-drawer"
     >
       <div style="width: 100%; display: flex; justify-content: space-between" class="mt-2 mb-3">
         <div class="fullname-container ml-6" style="display: flex; align-items: center; min-width: 0">
@@ -224,7 +225,7 @@ export default {
   font-weight: bold;
 }
 
-.v-navigation-drawer__content {
+.general-table-drawer .v-navigation-drawer__content {
   overflow: hidden !important;
   display: flex;
   flex-direction: column;
