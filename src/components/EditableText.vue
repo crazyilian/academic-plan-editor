@@ -110,6 +110,7 @@ export default {
 
 .edit-name-area.theme--light.v-text-field--solo > .v-input__control > .v-input__slot {
   background-color: rgba(0, 0, 0, 0);
+  transition: none;
 }
 
 .edit-name-area.v-input--is-disabled {

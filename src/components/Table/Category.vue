@@ -8,9 +8,9 @@
       <div style="display: flex; justify-content: space-between; align-items: center; width: calc(100% - 24px)">
         <div style="width: 38%; display: inline-block; word-wrap: break-word" class="subject-name">{{ name }}</div>
         <Message
-container-style="width: 62%; margin-left: 12px; margin-right: 32px; min-width: 0"
-                 :messages="messages"
-/>
+            container-style="width: 62%; margin-left: 12px; margin-right: 32px; min-width: 0"
+            :messages="messages"
+        />
         <div style="">{{ comment }}</div>
       </div>
       <template #actions>

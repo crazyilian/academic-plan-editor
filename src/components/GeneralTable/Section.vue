@@ -6,11 +6,11 @@
         :class="{ 'error-category': !correct }"
     >
       <div style="display: flex; justify-content: space-between; align-items: center; width: calc(100% - 24px)">
-        <div style="flex-grow: 1; display: inline-block; word-wrap: break-word" class="subject-name">
+        <div style="flex-grow: 4; display: inline-block; word-wrap: break-word" class="subject-name">
           {{ name }}
         </div>
         <Message
-            container-style="margin-left: 12px; margin-right: 32px; min-width: 0; width: auto"
+            container-style="margin-left: 12px; margin-right: 32px; min-width: 0; width: auto; flex-grow: 1"
             :messages="messages"
         />
       </div>

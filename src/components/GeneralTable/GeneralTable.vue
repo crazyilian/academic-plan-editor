@@ -1,55 +1,70 @@
 <template>
-  <div class="rounded-lg pb-1 general-table pl-2 pt-1">
-    <v-expansion-panels v-model="panels" accordion focusable multiple class="rounded-0">
-      <Section
-          :id="0"
-          name="Обязательная часть"
+  <div style="display: flex; flex-direction: column; height: 100%;">
+    <div style="display: flex; justify-content: flex-end">
+      <GradeTitle
+          style="margin-right: 24px"
           :grades="grades"
-          :grade-highlight="gradeHighlight"
-          :data-raw="[{name: 'Час / нед', values: obligatory(), edit: false}]"
+          @highlight-grade="(i, flag) => $emit('highlight-grade', i, flag)"
       />
-      <Section
-          :id="1"
-          name="Формируемая часть"
-          :grades="grades"
-          :grade-highlight="gradeHighlight"
-          :data-raw="[{name: 'Час / нед', values: formative(), edit: false}]"
-      />
-      <Section
-          :id="2"
-          name="Недельная нагрузка"
-          error-name="Недельная нагрузка"
-          :grades="grades"
-          :grade-highlight="gradeHighlight"
-          :data-raw="[{name: 'Час / нед', values: perweek(), edit: false},
+    </div>
+    <div class="rounded-lg pb-1 general-table pl-2 pt-1">
+      <v-expansion-panels v-model="panels" accordion focusable multiple class="rounded-0">
+        <Section
+            :id="0"
+            ref="s0"
+            name="Обязательная часть"
+            :grades="grades"
+            :grade-highlight="gradeHighlight"
+            :data-raw="[{name: 'Час / нед', values: obligatory(), edit: false}]"
+        />
+        <Section
+            :id="1"
+            ref="s1"
+            name="Формируемая часть"
+            :grades="grades"
+            :grade-highlight="gradeHighlight"
+            :data-raw="[{name: 'Час / нед', values: formative(), edit: false}]"
+        />
+        <Section
+            :id="2"
+            ref="s2"
+            name="Недельная нагрузка"
+            error-name="Недельная нагрузка"
+            :grades="grades"
+            :grade-highlight="gradeHighlight"
+            :data-raw="[{name: 'Час / нед', values: perweek(), edit: false},
                       {type: 'max', values: perweekmax()}]"
-      />
-      <Section
-          :id="3"
-          name="Учебных недель"
-          error-name="Количество учебных недель"
-          :grades="grades"
-          :grade-highlight="gradeHighlight"
-          :data-raw="[{name: 'Итого', values: weeknum, edit: true}]"
-      />
-      <Section
-          :id="4"
-          name="По учебному плану"
-          :grades="grades"
-          :grade-highlight="gradeHighlight"
-          :data-raw="[{name: 'Час / год', values: peryear(), edit: false}]"
-      />
-      <Section
-          :id="5"
-          name="На уровень образования"
-          error-name="Количество часов в год на уровень образования"
-          :grades="eduGrade"
-          :grade-highlight="eduGradeHighlight"
-          :data-raw="[{name: 'Час / год', values: edu(), edit: false},
+        />
+        <Section
+            :id="3"
+            ref="s3"
+            name="Учебных недель"
+            error-name="Количество учебных недель"
+            :grades="grades"
+            :grade-highlight="gradeHighlight"
+            :data-raw="[{name: 'Итого', values: weeknum, edit: true}]"
+        />
+        <Section
+            :id="4"
+            ref="s4"
+            name="По учебному плану"
+            :grades="grades"
+            :grade-highlight="gradeHighlight"
+            :data-raw="[{name: 'Час / год', values: peryear(), edit: false}]"
+        />
+        <Section
+            :id="5"
+            ref="s5"
+            name="На уровень образования"
+            error-name="Количество часов в год на уровень образования"
+            :grades="eduGrade"
+            :grade-highlight="eduGradeHighlight"
+            :data-raw="[{name: 'Час / год', values: edu(), edit: false},
                       {type: 'min', values: edumin()},
                       {type: 'max', values: edumax()}]"
-      />
-    </v-expansion-panels>
+        />
+      </v-expansion-panels>
+    </div>
   </div>
 </template>
 
@@ -83,10 +98,11 @@
  */
 
 import Section from "@/components/GeneralTable/Section";
+import GradeTitle from "@/components/GradeTitle";
 
 export default {
   name: "GeneralTable",
-  components: { Section },
+  components: { GradeTitle, Section },
   props: {
     grades: { type: Array, default: () => [] },
     gradeHighlight: { type: Array, default: () => [] },
@@ -132,6 +148,14 @@ export default {
     edumax() {
       return [this.config.hours_total_max];
     },
+    correct() {
+      const sections = ['s0', 's1', 's2', 's3', 's4', 's5'];
+      let correct = true;
+      for (const s of sections) {
+        correct &&= this.$refs[s].correct;
+      }
+      return correct;
+    }
   }
 }
 </script>

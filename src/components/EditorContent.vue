@@ -2,7 +2,7 @@
   <div style="min-width: 0; width: 100%; height: 100%; display: flex">
     <div
         class="px-2 py-0"
-        style="min-width: 0; width: 66%; display: flex; flex-direction: column; height: 100%; flex-grow: 1"
+        style="min-width: 0; width: 100%; display: flex; flex-direction: column; height: 100%; flex-grow: 1"
     >
       <div class="px-4" style="width: 100%; display: flex; flex-direction: column; gap: 8px">
         <div class="fullname-container">
@@ -13,6 +13,19 @@
               @change="changeFullname"
               @span-click="editFullname"
           />
+          <div style="margin-left: 8px; margin-right: -32px">
+            <v-btn
+                class="rounded-r-0 px-2"
+                style="min-width: 0"
+                :color="generalTableCorrect() ? 'teal' : 'error'"
+                dark
+                @click="switchGeneralTable"
+            >
+              <div style="text-transform: none" class="pr-2">Сводка</div>
+              <v-icon v-if="generalTableCorrect()">mdi-check</v-icon>
+              <v-icon v-else>mdi-alert-circle</v-icon>
+            </v-btn>
+          </div>
         </div>
         <div style="display: flex; justify-content: space-between">
           <div class="pb-3 switch-btn-container">
@@ -65,7 +78,28 @@
       </v-window>
     </div>
     <!--        <div style="height: 100%; width: 35%" class="pl-1">-->
-    <div style="height: 100%; width: 34%; border-left: dashed 2px gray;" class="pl-1">
+    <v-navigation-drawer
+        v-model="showGeneralTable"
+        absolute
+        right
+        temporary
+        style="width: 70%"
+    >
+      <div style="width: 100%; display: flex; justify-content: space-between" class="mt-2 mb-3">
+        <div class="fullname-container ml-6" style="display: flex; align-items: center; min-width: 0">
+          <span style="overflow: hidden; white-space: nowrap">Общие сведения об Учебном плане</span>
+        </div>
+        <v-btn
+            class="rounded-r-0 px-2 ml-4"
+            style="min-width: 0"
+            :color="generalTableCorrect() ? 'teal' : 'error'"
+            dark
+            @click="switchGeneralTable"
+        >
+          <div style="text-transform: none" class="pr-2">Закрыть</div>
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </div>
       <GeneralTable
           ref="generalTable"
           :obligatory-plan="obligatoryPlan"
@@ -74,8 +108,9 @@
           :grades="template.grades"
           :config="template.config"
           :weeknum="weeknum"
+          @highlight-grade="highlightGrade"
       />
-    </div>
+    </v-navigation-drawer>
   </div>
 </template>
 
@@ -122,11 +157,13 @@ export default {
     return {
       gradeHighlight: Array(n).fill(false),
       pageNum: 0,
-      editingFullname: false
+      editingFullname: false,
+      showGeneralTable: false
     };
   },
   methods: {
     highlightGrade(i, flag) {
+      console.log(i, flag);
       Vue.set(this.gradeHighlight, i, flag);
     },
     editFullname() {
@@ -135,6 +172,12 @@ export default {
     changeFullname(newName) {
       Vue.set(this.template.config, 'title', newName);
       this.editingFullname = false;
+    },
+    generalTableCorrect() {
+      return this.$refs.generalTable !== undefined && this.$refs.generalTable.correct();
+    },
+    switchGeneralTable() {
+      this.showGeneralTable = !this.showGeneralTable;
     }
   }
 };
@@ -179,6 +222,12 @@ export default {
   display: flex;
   font-size: 1.17rem !important;
   font-weight: bold;
+}
+
+.v-navigation-drawer__content {
+  overflow: hidden !important;
+  display: flex;
+  flex-direction: column;
 }
 
 </style>
