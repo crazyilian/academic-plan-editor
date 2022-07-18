@@ -1,14 +1,13 @@
 'use strict'
 
-import { app, protocol, BrowserWindow, Menu, screen, ipcMain, dialog } from 'electron'
+import { app, BrowserWindow, dialog, ipcMain, Menu, protocol, screen } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import * as path from "path";
-import yaml from "js-yaml"
 import fs from "fs-extra"
-import savePlan from "./savePlan"
+import savePlan from "@/savePlan"
 import Store from 'electron-store'
-
+import { parseTable } from "@/parseTable"
 
 const gotTheLock = app.requestSingleInstanceLock()
 
@@ -45,14 +44,10 @@ ipcMain.handle('get-cur-project', () => {
 });
 
 ipcMain.handle('get-templates', () => {
-  const templates = [];
   const templatesPath = path.join(extraResources, 'plan-templates');
-  fs.readdirSync(templatesPath).forEach(file => {
-    if (!file.endsWith('.yaml'))
-      return;
-    templates.push(parseTemplate(path.join(templatesPath, file)));
-  });
-  return templates;
+  const filename = fs.readdirSync(templatesPath).find(file => path.parse(file).ext === '.xlsx');
+  const filepath = path.join(templatesPath, filename);
+  return parseTable(filepath);
 })
 
 function createMenu(win) {
@@ -305,22 +300,4 @@ if (isDevelopment) {
       app.quit()
     })
   }
-}
-
-function parseTemplate(tpath) {
-  const raw = yaml.load(fs.readFileSync(tpath, 'utf8'));
-  const template = {
-    config: raw.config,
-    grades: raw.grades,
-    categories: []
-  };
-  for (const [category, subjects_raw] of Object.entries(raw.categories)) {
-    const subjects = [];
-    for (const [subject, required] of Object.entries(subjects_raw)) {
-      subjects.push({ name: subject, required: required });
-    }
-    template.categories.push({ name: category, subjects: subjects });
-  }
-  console.log(template);
-  return template;
 }

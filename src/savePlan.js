@@ -1,8 +1,17 @@
 const excel = require('excel4node');
 const fs = require('fs');
 
+/* 0 -> A, 25 -> Z, 26 -> AA ... */
+function num2col(n) {
+  let ans = '';
+  for (n++; n-- > 0; n = (n - (n % 26)) / 26) {
+    ans = String.fromCharCode((n % 26) + 65) + ans;
+  }
+  return ans;
+}
+
 function cell(x, y) {
-  return `${"ABCDEFGHIJKLMNOPQRSTUVWXYZ"[y - 1]}${x}`
+  return `${num2col(y - 1)}${x}`
 }
 
 function range(x1, y1, x2, y2) {
@@ -20,7 +29,7 @@ function formulaLine(ws, gn, cl, label, f) {
 function create_xlsx(alldata, callback) {
   const wb = new excel.Workbook({
     defaultFont: {
-      size: 8,
+      size: 9,
       name: 'Calibri',
       color: '#000000',
     },
@@ -42,6 +51,7 @@ function create_xlsx(alldata, callback) {
   })
   const scenter = wb.createStyle({ alignment: { horizontal: 'center' } });
   const sbold = wb.createStyle({ font: { bold: true } });
+  const srot90 = wb.createStyle({ alignment: { textRotation: 90 } })
   const sgray = wb.createStyle({
     fill: {
       fgColor: "#CCCCCC",
@@ -55,35 +65,42 @@ function create_xlsx(alldata, callback) {
   for (const data of alldata) {
     const ws = wb.addWorksheet(data.template.config.name);
     const gn = data.template.grades.length;
-    ws.column(1).setWidth(25);
-    ws.column(2).setWidth(50);
-    ws.column(3 + gn).setWidth(13);
-    ws.row(2).setHeight(30.6);
-    ws.row(3).setHeight(105);
-    ws.row(4).setHeight(30.6);
+    ws.column(1).setWidth(28);
+    ws.column(2).setWidth(56);
+    ws.column(3 + gn).setWidth(16);
+    ws.row(2).setHeight(34);
+    ws.row(3).setHeight(80);
+    ws.row(4).setHeight(75);
     ws.cell(1, 1, 1, 3 + gn, true).string(data.template.config.title).style(scenter);
-    ws.cell(2, 1, 4, 1, true).string('Предметные области').style(scenter);
-    ws.cell(2, 2, 4, 2, true).string('Учебные предметы, курсы').style(scenter);
+    ws.cell(2, 1, 5, 1, true).string('Предметные области').style(scenter);
+    ws.cell(2, 2, 5, 2, true).string('Учебные предметы, курсы').style(scenter);
     ws.cell(2, 3, 2, 2 + gn, true).string('Количество часов в неделю').style(scenter);
-    ws.cell(2, 3 + gn, 4, 3 + gn, true).string('Формы промежуточной аттестации').style(scenter);
+    ws.cell(2, 3 + gn, 5, 3 + gn, true).string('Формы промежуточной аттестации').style(scenter);
     for (const [i, grade] of data.template.grades.entries()) {
       ws.column(3 + i).setWidth(6);
-      ws.cell(3, 3 + i).string(grade.description).style({ alignment: { textRotation: 90 } }).style(scenter);
-      ws.cell(4, 3 + i).string(grade.name).style(scenter);
+      ws.cell(5, 3 + i).string(grade.name).style(scenter);
+      const profiles = grade.profile.filter(x => x.length > 0);
+      if (profiles.length === 1) {
+        ws.cell(3, 3 + i, 4, 3 + i, true).string(profiles[0]).style(srot90).style(scenter);
+      } else {
+        ws.cell(4, 3 + i).string(profiles[0]).style(srot90).style(scenter);
+        ws.cell(3, 3 + i).string(profiles[1]).style(srot90).style(scenter);
+      }
     }
 
-    ws.cell(5, 1, 5, 2 + gn, true).string('Обязательная часть').style(sbold);
-    let cl = 6;
+    ws.cell(6, 1, 6, 2 + gn, true).string('Обязательная часть').style(sbold);
+    let cl = 7;
     for (const category of data.template.categories) {
       const n = category.subjects.length;
-      const flag = n === 1 && category.subjects[0].name === category.name;
+      // const flag = n === 1 && category.subjects[0].name === category.name;
+      const flag = false;
       ws.cell(cl, 1, cl + n - 1, 1 + flag, true).string(category.name).style(sbold);
       for (const [i, subject] of category.subjects.entries()) {
         ws.cell(cl + i, 2).string(subject.name).style(subject.required ? sgray : {}).style(sbold);
       }
       cl += n;
     }
-    cl = 6;
+    cl = 7;
     let sub = 0;
     for (const category of data.obligatoryPlan) {
       for (const subject of category) {
@@ -123,7 +140,7 @@ function create_xlsx(alldata, callback) {
       })
     }
 
-    ws.cell(6, 3 + gn, cl - 2, 3 + gn, true).string(data.template.config.attestation)
+    ws.cell(7, 3 + gn, cl - 2, 3 + gn, true).string(data.template.config.attestation)
         .style(scenter).style({ font: { size: 7 } })
 
 
@@ -160,7 +177,7 @@ function create_xlsx(alldata, callback) {
     ws.cell(cl, 1, cl, 2 + gn, true).string('обязательные предметы').style(sgray);
   }
 
-  if (!fs.existsSync('./tmp')){
+  if (!fs.existsSync('./tmp')) {
     fs.mkdirSync('./tmp');
   }
 
