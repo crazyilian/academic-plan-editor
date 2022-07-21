@@ -109,6 +109,7 @@
           :grades="template.grades"
           :config="template.config"
           :weeknum="weeknum"
+          :ready="generalTableReady"
           @highlight-grade="highlightGrade"
       />
     </v-navigation-drawer>
@@ -159,8 +160,12 @@ export default {
       gradeHighlight: Array(n).fill(false),
       pageNum: 0,
       editingFullname: false,
-      showGeneralTable: false
+      showGeneralTable: false,
+      generalTableReady: false,
     };
+  },
+  mounted() {
+    this.generalTableReady = true;  // this fixes rendering issues with content of navigation drawer
   },
   methods: {
     highlightGrade(i, flag) {
