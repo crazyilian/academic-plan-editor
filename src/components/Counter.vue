@@ -11,7 +11,12 @@
   >
     <div v-if="showLabel" style="font-size: 10px; width: 0; height: 0; opacity: 0.6">{{ checkbox ? 'У' : 'Б' }}</div>
     <div class="pt-2 pb-1 counter-container-inner">
-      <div style="margin: 0 -4.5px -4.5px -4.5px; display: none" class="checkbox">
+      <div
+          style="margin: 0 -4.5px -4.5px -4.5px;
+          display: none"
+          class="checkbox"
+          :class="{ 'checkbox-true': checkbox }"
+      >
         <v-checkbox
             v-if="showCheckbox"
             v-model="checkbox"
@@ -211,6 +216,14 @@ export default {
   border-radius: 0;
   transform: scale(0.4);
   opacity: 1 !important;
+}
+
+.counter-error .checkbox.checkbox-true i {
+  color: black !important;
+}
+
+.counter-error .checkbox .v-input--selection-controls__ripple {
+  color: black !important;
 }
 
 /*
