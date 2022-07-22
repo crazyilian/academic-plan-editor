@@ -169,7 +169,6 @@ export default {
   },
   methods: {
     highlightGrade(i, flag) {
-      console.log(i, flag);
       Vue.set(this.gradeHighlight, i, flag);
     },
     editFullname() {
