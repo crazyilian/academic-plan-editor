@@ -10,6 +10,7 @@
             :correct="countersCorrect[i]"
             :disabled="!edit"
             :null-available="nullAvailable"
+            :max="99"
             @input="counterChange(i)"
         />
       </div>

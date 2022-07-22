@@ -9,10 +9,22 @@
               }"
       @click="$refs.input.focus()"
   >
+    <div v-if="showLabel" style="font-size: 10px; width: 0; height: 0; color: #777">{{ checkbox ? 'У' : 'Б' }}</div>
     <div class="pt-2 pb-1 counter-container-inner">
+      <div style="margin: 0 -4.5px -4.5px -4.5px; display: none" class="checkbox">
+        <v-checkbox
+            v-if="showCheckbox"
+            v-model="checkbox"
+            style="transform: scale(0.6);"
+            class="ma-0 pa-0"
+            :color="correct ? 'black' : 'error'"
+            :disabled="checkboxDisabled"
+        />
+        <div v-else style="width: 24px"/>
+      </div>
       <input
           ref="input"
-          style="outline: none; text-align: center;"
+          style="outline: none; text-align: center; margin-right: 1px"
           :value="stringValue"
           :placeholder="nullAvailable ? '-' : min.toString()"
           :disabled="disabled"
@@ -21,15 +33,25 @@
           @input="onNumberInput"
           @change="onNumberChange"
       >
+      <div style="display: none" class="spinner">
+        <Spinner
+            v-if="!disabled"
+            @increase="setValue(value + 1)"
+            @decrease="setValue(value - 1)"
+        />
+        <div v-else style="width: 15px"/>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 
+import Spinner from "@/components/Spinner";
+
 export default {
   name: 'Counter',
-  components: {},
+  components: { Spinner },
   props: {
     'id': { type: Number, default: -1 },
     'correct': { type: Boolean, default: true },
@@ -38,13 +60,18 @@ export default {
     'min': { type: Number, default: 0 },
     'max': { type: Number, default: 9999 },
     'nullAvailable': { type: Boolean, default: false },
-    'disabled': { type: Boolean, default: false }
+    'disabled': { type: Boolean, default: false },
+    'showCheckbox': { type: Boolean, default: false },
+    'checkboxDefault': { type: Boolean, default: false },
+    'checkboxDisabled': { type: Boolean, default: false },
+    'showLabel': { type: Boolean, default: false },
   },
   data() {
     return {
       stringValue: this.startValue === null ? "" : this.startValue.toString(),
       value: this.startValue,
       isfocused: false,
+      checkbox: this.checkboxDefault,
     }
   },
   watch: {
@@ -58,11 +85,10 @@ export default {
   methods: {
     adjustWidth() {
       const inp = this.$refs.input;
-      inp.style.width = `max(${inp.value.length}ch, 20px)`;
+      inp.style.width = `calc(max(${inp.value.length}ch, 10px) + 2px)`;
     },
     onNumberInput() {
       const sval = this.$refs.input.value;
-      console.log('input', sval);
       if (sval === "") {
         this.value = this.nullAvailable ? null : this.min;
         this.stringValue = sval;
@@ -96,6 +122,14 @@ export default {
     update() {
       this.$emit('input');
     },
+    reset() {
+      this.setValue(this.nullAvailable ? null : this.min);
+    },
+    setValue(val) {
+      this.$refs.input.value = val === null ? "" : val.toString();
+      this.onNumberInput();
+      this.onNumberChange();
+    }
   }
 }
 </script>
@@ -125,12 +159,16 @@ export default {
   border-color: red;
 }
 
-.counter-container input {
+.counter-container {
   color: black;
 }
 
-.counter-error input {
+.counter-error {
   color: red;
+}
+
+.counter-container input {
+  color: inherit;
 }
 
 .counter-error input::-webkit-input-placeholder {
@@ -163,6 +201,32 @@ export default {
 
 .counter-highlight {
   background-color: #f5f5aa !important;
+}
+
+.counter-container:hover .spinner, .counter-container:hover .checkbox {
+  display: block !important;
+}
+
+.counter-container .checkbox .v-input--selection-controls__ripple {
+  border-radius: 0;
+  transform: scale(0.4);
+  opacity: 1 !important;
+}
+
+.counter-error .checkbox .v-input--selection-controls__ripple {
+  color: red;
+}
+
+.counter-error .checkbox i {
+  color: red !important;
+}
+
+.counter-error .checkbox .v-input--is-disabled i {
+  color: #d39292 !important;
+}
+
+.counter-container:not(.counter-error) .checkbox .v-input--is-disabled i {
+  color: #9d9d9d !important;
 }
 
 </style>

@@ -9,7 +9,7 @@
           <v-checkbox
               v-model="checkbox"
               :disabled="required"
-              class="pr-4 py-0 ma-0"
+              class="pr-4 py-0 ma-0 checkbox-subj"
               :color="!correct ? 'red' : 'teal'"
               @change="checkboxChange"
           />
@@ -31,6 +31,8 @@
         :highlight="gradeHighlight[i]"
         :start-value="plan[i]"
         :max="99"
+        :show-checkbox="true"
+        :show-label="true"
         @input="counterChange(i)"
     />
   </div>
@@ -120,15 +122,15 @@ export default {
 
 /* other */
 
-.error-subject .v-input--checkbox i {
+.error-subject .checkbox-subj i {
   color: red !important;
 }
 
-.error-subject .v-input--checkbox.v-input--is-disabled i {
+.error-subject .checkbox-subj.v-input--is-disabled i {
   color: #d39292 !important;
 }
 
-.subject:not(.error-subject) .v-input--checkbox.v-input--is-disabled i {
+.subject:not(.error-subject) .checkbox-subj.v-input--is-disabled i {
   color: #9bc99b !important;
 }
 
