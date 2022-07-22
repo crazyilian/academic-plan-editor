@@ -3,20 +3,13 @@
     <div class="general-row-name">{{ name }}</div>
     <div style=" display: flex; flex-wrap: wrap;">
       <div v-for="(grade, i) in grades" :key="i">
-        <NumberContainer
-            v-if="!edit"
-            ref="counters"
-            :value="values[i]"
-            :highlight="gradeHighlight[i]"
-            :correct="countersCorrect[i]"
-            @change="counterChange(i)"
-        />
         <Counter
-            v-else
             ref="counters"
             :start-value="values[i]"
             :highlight="gradeHighlight[i]"
             :correct="countersCorrect[i]"
+            :disabled="!edit"
+            :null-available="nullAvailable"
             @input="counterChange(i)"
         />
       </div>
@@ -28,12 +21,11 @@
 
 import errorMessages from "@/errorMessages";
 import Vue from "vue";
-import NumberContainer from "@/components/NumberContainer";
 import Counter from "@/components/Counter";
 
 export default {
   name: 'Summary',
-  components: { Counter, NumberContainer },
+  components: { Counter },
   props: {
     'id': { type: Number, default: -1 },
     'name': { type: String, default: "" },
@@ -44,6 +36,7 @@ export default {
     'edit': { type: Boolean, default: false },
     'mins': { type: Array, default: () => [] },
     'maxs': { type: Array, default: () => [] },
+    'nullAvailable': { type: Boolean, default: false },
   },
   data() {
     return {
@@ -54,6 +47,9 @@ export default {
   },
   mounted() {
     this.validate();
+    console.log(this.name);
+    console.log(this.mins);
+    console.log(this.maxs);
   },
   methods: {
     counterChange(i) {

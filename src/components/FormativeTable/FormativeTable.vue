@@ -15,6 +15,7 @@
               :correct="true"
               :highlight="gradeHighlight[i]"
               :start-value="plan.hours[i]"
+              :max="99"
               @input="counterChange(i)"
           />
         </div>

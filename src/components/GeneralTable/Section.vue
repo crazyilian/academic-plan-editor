@@ -29,6 +29,7 @@
           :grades="grades"
           v-bind="el"
           :error-name="errorName"
+          null-available
           @validate="validate"
       />
     </v-expansion-panel-content>

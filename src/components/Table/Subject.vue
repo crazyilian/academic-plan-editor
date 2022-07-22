@@ -30,6 +30,7 @@
         :correct="countersCorrect[i]"
         :highlight="gradeHighlight[i]"
         :start-value="plan[i]"
+        :max="99"
         @input="counterChange(i)"
     />
   </div>
