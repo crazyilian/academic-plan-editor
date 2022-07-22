@@ -9,7 +9,7 @@
               }"
       @click="$refs.input.focus()"
   >
-    <div v-if="showLabel" style="font-size: 10px; width: 0; height: 0; color: #777">{{ checkbox ? 'У' : 'Б' }}</div>
+    <div v-if="showLabel" style="font-size: 10px; width: 0; height: 0; opacity: 0.6">{{ checkbox ? 'У' : 'Б' }}</div>
     <div class="pt-2 pb-1 counter-container-inner">
       <div style="margin: 0 -4.5px -4.5px -4.5px; display: none" class="checkbox">
         <v-checkbox
@@ -213,6 +213,7 @@ export default {
   opacity: 1 !important;
 }
 
+/*
 .counter-error .checkbox .v-input--selection-controls__ripple {
   color: red;
 }
@@ -228,5 +229,6 @@ export default {
 .counter-container:not(.counter-error) .checkbox .v-input--is-disabled i {
   color: #9d9d9d !important;
 }
+*/
 
 </style>
