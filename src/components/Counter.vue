@@ -218,11 +218,15 @@ export default {
   opacity: 1 !important;
 }
 
-.counter-error .checkbox.checkbox-true i {
+.counter-container .checkbox.checkbox-true i {
   color: black !important;
 }
 
-.counter-error .checkbox .v-input--selection-controls__ripple {
+.counter-container .checkbox .v-input--is-disabled i {
+  color: rgba(0, 0, 0, 0.38) !important;
+}
+
+.counter-container .checkbox .v-input--selection-controls__ripple {
   color: black !important;
 }
 
