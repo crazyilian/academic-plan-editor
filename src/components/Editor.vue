@@ -28,6 +28,7 @@
 import EditorContent from "@/components/EditorContent";
 import EditorTabs from "@/components/EditorTabs";
 import Vue from "vue";
+import { addGroupToPlan, getDefaultGroup } from "@/gradeProcessing";
 
 export default {
   name: 'Editor',
@@ -66,11 +67,17 @@ export default {
       }
     },
     addTab(i) {
+      const template = structuredClone(this.templates[i]);
+      const default_grades = getDefaultGroup(structuredClone(template.grades))
+          .map(grade => ({ ...grade, highlight: false, weeknum: null }));
+      const gradeGroups = [default_grades];
+      let obligatoryPlan = template.categories.map(c => c.subjects.map(() => []));
+      obligatoryPlan = addGroupToPlan(obligatoryPlan, ...gradeGroups)
       Vue.set(this.project.tabs, this.project.tabs.length, {
         template: structuredClone(this.templates[i]),
-        obligatoryPlan: [],
+        gradeGroups: gradeGroups,
+        obligatoryPlan: obligatoryPlan,
         formativePlan: {},
-        weeknum: [],
       })
       this.activeTab = this.project.tabs.length - 1;
     },

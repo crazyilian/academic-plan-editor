@@ -1,5 +1,5 @@
 <template>
-  <v-expansion-panel>
+  <v-expansion-panel class="category-panel">
     <v-expansion-panel-header
         disable-icon-rotate
         :class="{ 'error-category': !correct }"
@@ -25,8 +25,7 @@
           :key="i"
           v-bind="sub"
           ref="subjects"
-          :grades="grades"
-          :grade-highlight="gradeHighlight"
+          :grade-groups="gradeGroups"
           :plan="plan[i]"
           :class="{'display-none': sub.is_module}"
           @validate="validate"
@@ -48,8 +47,7 @@ export default {
     'id': { type: Number, default: -1 },
     'name': { type: String, default: "" },
     'subjects': { type: Array, default: () => [] },
-    'grades': { type: Array, default: () => [] },
-    'gradeHighlight': { type: Array, default: () => [] },
+    'gradeGroups': { type: Array, default: () => [] },
     'plan': { type: Array, default: () => [] }
   },
   data() {
@@ -64,21 +62,22 @@ export default {
     validate() {
       this.correct = true;
       this.messages = [];
-      let includedCount = 0;
-      for (let i = 0; i < this.subjects.length; ++i) {
-        if (this.subjects[i].is_module) {
-          continue;
+
+      for (const [gi] of this.gradeGroups.entries()) {
+        let includedCount = 0;
+        for (let i = 0; i < this.subjects.length; ++i) {
+          if (this.subjects[i].is_module) {
+            continue;
+          }
+          const sub = this.$refs.subjects[i];
+          if (sub.getSumHoursGroup(gi) > 0)
+            includedCount += 1;
+          this.correct &= sub.correct;
         }
-        const sub = this.$refs['subjects'][i];
-        if (sub.checkbox)
-          includedCount += 1;
-        this.correct &= sub.correct;
-        // this.messages.push(...sub.messages)
-      }
-      this.messages = [...new Set(this.messages)];
-      if (includedCount === 0 && this.subjects.length > 1) {
-        this.messages.push(errorMessages.ONE_SUBJ_PER_CATEG)
-        this.correct = false;
+        if (includedCount === 0 && this.subjects.length > 1) {
+          this.messages.push(errorMessages.ONE_SUBJ_PER_CATEG)
+          this.correct = false;
+        }
       }
     }
   }
@@ -118,12 +117,11 @@ export default {
 
 /* other */
 
-.v-expansion-panel-content__wrap {
-  padding-bottom: 12px !important;
-  padding-top: 8px !important;
+.category-panel .v-expansion-panel-content__wrap {
+  padding: 8px 8px 12px 16px !important;
 }
 
-.v-expansion-panel--active > .v-expansion-panel-header {
+.category-panel.v-expansion-panel--active > .v-expansion-panel-header {
   min-height: 48px !important;
 }
 

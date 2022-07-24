@@ -14,21 +14,24 @@ import fs from "fs-extra";
     },
     grades: [
       {
-        name: "10",
+        name: 10,
         profile: ["Инженерный", "Космический"],
         max_hours_per_week: 34,
+        index: 0,
       },
       ...
     ],
     categories: [
       {
         name: "Русский язык и литература",
+        index: 0,
         subjects: [
           {
             name: "Русский язык",
             required: true,
             can_advanced: true,
             is_module: false,
+            index: 0
           },
           ...
         ]
@@ -157,7 +160,8 @@ function parseSheet(sh, name) {
     const x = 2;
     if (table[x][y].val === "") break;
     template.grades.push({
-      name: table[x][y].val,
+      index: template.grades.length,
+      name: parseInt(table[x][y].val),
       profile: [
         table[x - 1][y].val,
         ...(table[x - 2][y].val ? [table[x - 2][y].val.replace(/^-$/, '')] : [])
@@ -190,6 +194,7 @@ function parseSheet(sh, name) {
     while (x !== OB[1]) {
       const last = mrg(table, x, 0)[2];
       template.categories.push({
+        index: template.categories.length,
         name: table[x][0].val,
         subjects: [],
       });
@@ -197,6 +202,7 @@ function parseSheet(sh, name) {
       for (let xx = x; xx <= last; ++xx) {
         const name = table[xx][1].val;
         subjects.push({
+          index: subjects.length,
           name: name,
           required: table[xx][1].bg === colors.required_subj,
           can_advanced: strEq(table[xx][2].val, "Б или У"),

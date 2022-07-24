@@ -3,19 +3,19 @@
       style="display: flex; justify-content: space-between; align-items: center; width: 100%"
       :class="{ 'error-subject': !correct }" class="subject"
   >
-    <v-tooltip bottom :disabled="!required" :open-delay="500">
+    <v-tooltip bottom :open-delay="500">
       <template #activator="{ on, attrs} ">
         <div v-bind="attrs" v-on="on">
           <v-checkbox
               v-model="checkbox"
-              :disabled="required"
+              :disabled="true"
               class="pr-4 py-0 ma-0 checkbox-subj"
               :color="!correct ? 'red' : 'teal'"
-              @change="checkboxChange"
           />
         </div>
       </template>
-      <div class="pa-2" style="text-align: center">Обязательный<br>предмет</div>
+      <div v-if="required" class="pa-2" style="text-align: center">Обязательный<br>предмет</div>
+      <div v-else class="pa-2" style="text-align: center">Не обязательный<br>предмет</div>
     </v-tooltip>
 
     <div style="min-width: 0; width: 40%; display: inline-block; word-wrap: break-word" class="subject-name">
@@ -23,17 +23,19 @@
     </div>
     <Message container-style="width: 60%; margin-left: 24px; margin-right: 24px; min-width: 20px" :messages="messages"/>
     <Counter
-        v-for="(grade, i) in grades"
+        v-for="(grade, i) in gradeGroups.reduce((o, a, i) => [...o, ...a.map((v, j) => ({'ind': [i, j], 'val': v}))], [])"
         :id="i"
         :key="i"
         ref="counters"
-        :correct="countersCorrect[i]"
-        :highlight="gradeHighlight[i]"
-        :start-value="plan[i]"
+        :correct="groupsCorrect[grade.ind[0]] || countersCorrect[i]"
+        :highlight="grade.val.highlight"
+        :start-value="plan[grade.ind[0]][grade.ind[1]].value"
+        :checkbox="plan[grade.ind[0]][grade.ind[1]].advanced"
         :max="99"
-        :show-checkbox="true"
+        :show-checkbox="can_advanced"
         :show-label="true"
-        @input="counterChange(i)"
+        @input="counterChange(...grade.ind, i, $event)"
+        @checkbox-change="setAdvanced(...grade.ind, $event)"
     />
   </div>
 </template>
@@ -52,49 +54,47 @@ export default {
     'id': { type: Number, default: -1 },
     'name': { type: String, default: "" },
     'required': { type: Boolean, default: false },
-    'grades': { type: Array, default: () => [] },
-    'gradeHighlight': { type: Array, default: () => [] },
-    'plan': { type: Array, default: () => [] }
+    'gradeGroups': { type: Array, default: () => [] },
+    'plan': { type: Array, default: () => [] },
+    'can_advanced': { type: Boolean, default: true },
   },
   data() {
     return {
       checkbox: this.required,
       messages: [],
       correct: false,
-      countersCorrect: Array(this.grades.length).fill(true),
+      countersCorrect: Array(this.gradeGroups.reduce((res, a) => res + a.length, 0)).fill(true),
+      groupsCorrect: Array(this.gradeGroups.length).fill(true)
     }
   },
   mounted() {
     this.validate();
+    console.log(this.gradeGroups.reduce((o, a, i) => [...o, ...a.map((v, j) => ({'ind': [i, j], 'val': v}))], []))
   },
   methods: {
-    getSumHours() {
-      return this.plan.reduce((r, e) => r + e, 0)
+    getSumHoursGroup(i) {
+      return this.plan[i].reduce((r, e) => r + e.value, 0);
     },
-    counterChange(i) {
-      // FIXME: do emits, not mutations of props. But it somehow works without warnings :)
-      Vue.set(this.plan, i, this.$refs.counters[i].value)
-      const sumHours = this.getSumHours();
-      this.checkbox = (sumHours > 0) || this.required;
+    counterChange(i, j, tot, value) {
+      Vue.set(this.plan[i][j], 'value', value)
       this.validate();
     },
-    checkboxChange() {
-      if (!this.checkbox) {
-        for (let i = 0; i < this.grades.length; ++i)
-          this.$refs.counters[i].reset();
-      }
-      this.validate();
+    setAdvanced(i, j, adv) {
+      Vue.set(this.plan[i][j], 'advanced', Boolean(adv));
     },
     validate() {
       this.correct = true;
       this.countersCorrect.fill(true);
+      this.groupsCorrect.fill(true);
       this.messages = [];
 
-      const sumHours = this.getSumHours();
-      if (this.checkbox && sumHours === 0) {
-        this.messages.push(errorMessages.NO_ZERO_HOURS);
-        this.countersCorrect.fill(false);
-        this.correct = false;
+      for (const [i] of this.gradeGroups.entries()) {
+        const sumHours = this.getSumHoursGroup(i);
+        if (this.required && sumHours === 0) {
+          this.messages.push(errorMessages.NO_ZERO_HOURS);
+          this.groupsCorrect[i] = false;
+          this.correct = false;
+        }
       }
 
       this.$emit('validate');

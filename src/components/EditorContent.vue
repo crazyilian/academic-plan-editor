@@ -4,7 +4,7 @@
         class="px-2 py-0"
         style="min-width: 0; width: 100%; display: flex; flex-direction: column; height: 100%; flex-grow: 1"
     >
-      <div class="px-4" style="width: 100%; display: flex; flex-direction: column; gap: 8px">
+      <div class="pl-2 ml-2 pr-4" style="width: calc(100% - 8px); display: flex; flex-direction: column; gap: 8px; border-bottom: solid thin gray">
         <div class="fullname-container">
           <EditableText
               class="hover-background"
@@ -51,8 +51,8 @@
             </v-btn>
           </div>
           <GradeTitle
-              style="margin-right: 24px"
-              :grades="template.grades"
+              style="margin-right: 8px"
+              :grades-groups="gradeGroups"
               @highlight-grade="highlightGrade"
           />
         </div>
@@ -62,16 +62,14 @@
           <Table
               ref="table"
               :categories="template.categories"
-              :grades="template.grades"
-              :grade-highlight="gradeHighlight"
+              :grade-groups="gradeGroups"
               :plan="obligatoryPlan"
           />
         </v-window-item>
         <v-window-item style="width: 100%; height: 100%">
           <FormativeTable
               ref="formativeTable"
-              :grades="template.grades"
-              :grade-highlight="gradeHighlight"
+              :grade-groups="gradeGroups"
               :plan="formativePlan"
           />
         </v-window-item>
@@ -105,10 +103,8 @@
           ref="generalTable"
           :obligatory-plan="obligatoryPlan"
           :formative-plan="formativePlan"
-          :grade-highlight="gradeHighlight"
-          :grades="template.grades"
+          :grade-groups="gradeGroups"
           :config="template.config"
-          :weeknum="weeknum"
           :ready="generalTableReady"
           @highlight-grade="highlightGrade"
       />
@@ -137,27 +133,18 @@ export default {
 
   props: {
     template: { type: Object, default: () => ({}) },
+    gradeGroups: { type: Array, default: () => [] },
     obligatoryPlan: { type: Array, default: () => [] },
     formativePlan: { type: Object, default: () => ({}) },
-    weeknum: { type: Array, default: () => [] },
   },
 
   data() {
     const n = this.template.grades.length;
     if (Object.keys(this.formativePlan).length === 0) {
-      for (const [i, category] of this.template.categories.entries()) {
-        Vue.set(this.obligatoryPlan, i,
-            Array.from(category.subjects, () => Array(n).fill(0))
-        );
-      }
       Vue.set(this.formativePlan, 'hours', Array(n).fill(0));
       Vue.set(this.formativePlan, 'subjects', []);
-      for (let i = 0; i < n; ++i) {
-        Vue.set(this.weeknum, i, null);
-      }
     }
     return {
-      gradeHighlight: Array(n).fill(false),
       pageNum: 0,
       editingFullname: false,
       showGeneralTable: false,
@@ -168,8 +155,8 @@ export default {
     this.generalTableReady = true;  // this fixes rendering issues with content of navigation drawer
   },
   methods: {
-    highlightGrade(i, flag) {
-      Vue.set(this.gradeHighlight, i, flag);
+    highlightGrade(i, j, flag) {
+      Vue.set(this.gradeGroups[i][j], 'highlight', flag);
     },
     editFullname() {
       this.editingFullname = true;

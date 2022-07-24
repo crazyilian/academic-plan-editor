@@ -48,9 +48,6 @@ export default {
   },
   mounted() {
     this.validate();
-    console.log(this.name);
-    console.log(this.mins);
-    console.log(this.maxs);
   },
   methods: {
     counterChange(i) {

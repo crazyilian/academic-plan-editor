@@ -6,7 +6,7 @@
         plain
         :class="{ 'active': i === value, 'mt-2': i !== 0}"
         :color="i === value ? 'black' : 'white'"
-        class="text-none tab-button pa-0 py-2"
+        class="text-none tab-button pa-0"
         style="width: 100%"
         @click="$emit('input', i)"
     >

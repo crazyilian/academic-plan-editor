@@ -19,11 +19,12 @@
       >
         <v-checkbox
             v-if="showCheckbox"
-            v-model="checkbox"
+            v-model="checkboxModel"
             style="transform: scale(0.6);"
             class="ma-0 pa-0"
             :color="correct ? 'black' : 'error'"
             :disabled="checkboxDisabled"
+            @change="$emit('checkbox-change', $event)"
         />
         <div v-else style="width: 24px"/>
       </div>
@@ -67,7 +68,7 @@ export default {
     'nullAvailable': { type: Boolean, default: false },
     'disabled': { type: Boolean, default: false },
     'showCheckbox': { type: Boolean, default: false },
-    'checkboxDefault': { type: Boolean, default: false },
+    'checkbox': { type: Boolean, default: false },
     'checkboxDisabled': { type: Boolean, default: false },
     'showLabel': { type: Boolean, default: false },
   },
@@ -76,7 +77,7 @@ export default {
       stringValue: this.startValue === null ? "" : this.startValue.toString(),
       value: this.startValue,
       isfocused: false,
-      checkbox: this.checkboxDefault,
+      checkboxModel: this.checkbox
     }
   },
   watch: {
@@ -125,7 +126,7 @@ export default {
       }
     },
     update() {
-      this.$emit('input');
+      this.$emit('input', this.value);
     },
     reset() {
       this.setValue(this.nullAvailable ? null : this.min);

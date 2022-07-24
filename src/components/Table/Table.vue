@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 100%; overflow-y: scroll;" class="pl-2 pt-1 pb-1">
+  <div style="height: 100%; overflow-y: scroll;" class="pl-2 pt-0 pb-1">
     <div style="display: flex; flex-direction: column; justify-content: center" class="ma-0">
       <v-expansion-panels v-model="panels" accordion focusable multiple class="rounded-0">
         <Category
@@ -8,8 +8,7 @@
             :id="i"
             :key="i"
             ref="categories"
-            :grades="grades"
-            :grade-highlight="gradeHighlight"
+            :grade-groups="gradeGroups"
             :plan="plan[i]"
         />
       </v-expansion-panels>
@@ -26,8 +25,7 @@ export default {
   components: { Category },
   props: {
     'categories': { type: Array, default: () => [] },
-    'grades': { type: Array, default: () => [] },
-    'gradeHighlight': { type: Array, default: () => [] },
+    'gradeGroups': { type: Array, default: () => [] },
     'plan': { type: Array, default: () => [] }
   },
   data() {

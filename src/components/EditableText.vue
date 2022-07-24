@@ -3,15 +3,17 @@
       class="rounded edit-name-area-container"
       @click="spanClick"
   >
-    <v-text-field
+    <v-textarea
         ref="editField"
         v-model="editingValue"
         :disabled="!editing"
         :placeholder="value"
         solo
+        auto-grow
         flat
+        rows="1"
         dense
-        class="edit-name-area py-1"
+        class="edit-name-area"
         color="black"
         :style="{ 'background-color': editing ? '#eaeaea' : 'rgba(0, 0, 0, 0)'}"
         @keydown.enter="nameChange(true); buttonPress = true;"
@@ -87,8 +89,9 @@ export default {
 .edit-name-area > .v-input__control > .v-input__slot {
   margin-bottom: 0 !important;
   height: 100%;
-  padding-left: 6px !important;
-  padding-right: 8px !important;
+  padding: 0 6px !important;
+  background-color: rgba(0, 0, 0, 0) !important;
+  transition: none !important;
 }
 
 .edit-name-area {
@@ -102,15 +105,10 @@ export default {
   height: 100%;
 }
 
-.edit-name-area input {
+.edit-name-area textarea, .edit-name-area input {
   padding: 0 !important;
   letter-spacing: inherit !important;
   color: inherit !important;
-}
-
-.edit-name-area.theme--light.v-text-field--solo > .v-input__control > .v-input__slot {
-  background-color: rgba(0, 0, 0, 0);
-  transition: none;
 }
 
 .edit-name-area.v-input--is-disabled {
@@ -128,6 +126,10 @@ export default {
 
 .hover-background:hover {
   background-color: rgba(0, 0, 0, 0.05);
+}
+
+.edit-name-area.v-textarea.v-text-field--enclosed .v-text-field__slot {
+  margin: 0 !important;
 }
 
 </style>
