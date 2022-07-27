@@ -117,11 +117,11 @@ export default {
 
 /* other */
 
-.category-panel .v-expansion-panel-content__wrap {
+.v-expansion-panel-content__wrap {
   padding: 8px 8px 12px 16px !important;
 }
 
-.category-panel.v-expansion-panel--active > .v-expansion-panel-header {
+.v-expansion-panel--active > .v-expansion-panel-header {
   min-height: 48px !important;
 }
 

@@ -6,11 +6,12 @@
         plain
         :class="{ 'active': i === value, 'mt-2': i !== 0}"
         :color="i === value ? 'black' : 'white'"
-        class="text-none tab-button pa-0"
+        class="text-none tab-button px-0 py-1"
         style="width: 100%"
         @click="$emit('input', i)"
     >
       <EditableText
+          class="ml-1"
           :value="template.config.name"
           :editing="editingNameId === i"
           @change="nameChange(i, $event)"
@@ -146,14 +147,13 @@ export default {
   flex: 0 1 auto !important;
   display: flex !important;
   justify-content: space-between;
-  align-items: center;
+  align-items: stretch;
   width: 100%;
   height: auto;
 }
 
 .tab-button {
   height: auto !important;
-  min-height: 42px;
 }
 
 /* New Tab */

@@ -31,9 +31,6 @@ export default {
   props: {
     gradesGroups: { type: Array, default: () => [] }
   },
-  mounted() {
-    console.log('gr', this.gradesGroups)
-  },
   methods: {
     highlightGrade(i, j, flag) {
       this.$emit('highlight-grade', i, j, flag);
