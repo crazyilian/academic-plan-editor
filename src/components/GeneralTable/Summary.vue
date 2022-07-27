@@ -61,7 +61,6 @@ export default {
       this.$nextTick(this.validate);
     },
     validate() {
-      console.log('validate');
       this.correct = true;
       this.countersCorrect.forEach((group) => group.forEach((v, i) => Vue.set(group, i, true)));
       this.messages = [];
@@ -84,7 +83,6 @@ export default {
           }
         }
       }
-      console.log(this.countersCorrect);
       this.$emit('validate');
     },
   }

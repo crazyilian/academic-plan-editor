@@ -89,7 +89,7 @@ export default {
 /* correct category styles */
 
 .v-expansion-panels.v-expansion-panels--focusable .category:not(.error-category).v-expansion-panel-header--active:hover::before {
-  opacity: 0.04 !important;
+  opacity: 0.08 !important;
 }
 
 .v-expansion-panels.v-expansion-panels--focusable .category:not(.error-category).v-expansion-panel-header--active::before {
@@ -104,7 +104,7 @@ export default {
 /* .error-category styles */
 
 .v-expansion-panels.v-expansion-panels--focusable .error-category.v-expansion-panel-header--active:hover::before {
-  opacity: 0.04 !important;
+  opacity: 0.08 !important;
 }
 
 .v-expansion-panels.v-expansion-panels--focusable .error-category.v-expansion-panel-header--active::before {

@@ -36,22 +36,26 @@ export default {
     }
   },
   watch: {
-    editing() {
+    editing() { console.log('watch'); this.onStartEditing(); }
+  },
+  mounted() {
+    autosize(this.$refs.editField);
+    this.onStartEditing();
+  },
+  methods: {
+    onStartEditing() {
       if (this.editing) {
         this.editingValue = this.value;
         this.$nextTick(() => this.$refs.editField.focus());
       }
     },
-  },
-  mounted() {
-    autosize(this.$refs.editField);
-  },
-  methods: {
     applyVal(val) {
       this.editingValue = val;
+      console.log(this.editingValue);
       this.$emit('change', val);
     },
     nameChange(editFlag) {
+      console.log(editFlag);
       if (editFlag && this.editingValue !== null) {
         const newVal = this.editingValue.trim();
         if (newVal.length > 0) {
@@ -84,7 +88,11 @@ export default {
 }
 
 .hover-background:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+.edit-name-area-container:focus-within {
+  background-color: rgba(221, 221, 221);
 }
 
 .edit-name-area-container * {
@@ -109,10 +117,6 @@ export default {
   display: flex;
   align-items: center;
   width: 100%;
-}
-
-.edit-name-area-container:focus-within {
-  background-color: rgba(0, 0, 0, 0.13);
 }
 
 </style>

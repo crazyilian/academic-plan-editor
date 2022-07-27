@@ -135,7 +135,8 @@ export default {
 }
 
 .tab-button.v-btn--plain:hover:not(.active) {
-  background-color: rgba(255, 255, 255, 0.1);
+  transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+  background-color: rgba(255, 255, 255, 0.08);
 }
 
 .tab-button .v-icon::after {

@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 100%; overflow-y: scroll;" class="pl-2 pt-1 pb-1">
+  <div style="height: 100%; overflow-y: scroll;" class="pl-2 pb-1">
     <div style="display: flex; flex-direction: column; justify-content: center" class="ma-0">
       <v-card class="mb-2 rounded-0">
         <div class="formative-title">
@@ -28,8 +28,7 @@
               :editing="i === editingId"
               @remove-subject="removeSubject(i)"
               @edit-subject="editSubject(i)"
-              @change-name="changeName(i, $event)"
-              @stop-editing="stopEditing"
+              @change="nameChange(i, $event)"
           />
           <div style="display: flex; width: 100%; justify-content: center">
             <v-btn text style="text-transform: none" class="px-3" @click="addSubject">
@@ -78,12 +77,10 @@ export default {
     editSubject(i) {
       this.editingId = i;
     },
-    changeName(i, name) {
-      Vue.set(this.plan.subjects, i, name)
-    },
-    stopEditing() {
+    nameChange(i, newName) {
+      Vue.set(this.plan.subjects, i, newName)
       this.editingId = null;
-    }
+    },
   }
 }
 </script>

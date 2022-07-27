@@ -58,6 +58,7 @@ export default {
     'required': { type: Boolean, default: false },
     'gradeGroups': { type: Array, default: () => [] },
     'plan': { type: Array, default: () => [] },
+    // eslint-disable-next-line vue/prop-name-casing
     'can_advanced': { type: Boolean, default: true },
   },
   data() {

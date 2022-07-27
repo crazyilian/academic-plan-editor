@@ -3,25 +3,11 @@
     <div class="mr-1">
       <span>{{ id + 1 }}.</span>
     </div>
-    <div
-        v-if="!editing"
-        style="min-width: 0; text-align: left; flex-grow: 1"
-        class="pl-2"
-    >
-      <span>{{ name }}</span>
-    </div>
-    <v-text-field
-        v-else
-        ref="editName"
-        v-model="editingName"
-        :placeholder="name"
-        solo
-        flat
-        dense
-        class="edit-name-area"
-        @keydown.enter="nameChange(true)"
-        @keydown.esc="nameChange(false)"
-        @focusout="nameChange(true)"
+    <EditableText
+        :value="name"
+        :editing="editing"
+        @change="$emit('change', $event)"
+        @span-click="editName"
     />
     <div class="ml-1" @click="editName">
       <v-hover v-slot="{ hover }">
@@ -49,23 +35,15 @@
 </template>
 
 <script>
+import EditableText from "@/components/EditableText";
+
 export default {
   name: "FormativeSubject",
+  components: { EditableText },
   props: {
     id: { type: Number, default: -1 },
     editing: { type: Boolean, default: false },
     name: { type: String, default: "" },
-  },
-  data() {
-    return {
-      editingName: null,
-    }
-  },
-  mounted() {
-    if (this.editing) {
-      this.editingName = "";
-      this.$refs.editName.focus();
-    }
   },
   methods: {
     async askRemove() {
@@ -86,18 +64,6 @@ export default {
     },
     editName() {
       this.$emit('edit-subject');
-      this.editingName = this.name;
-      this.$nextTick(() => { this.$refs.editName.focus(); })
-    },
-    nameChange(editFlag) {
-      if (editFlag && this.editingName !== null) {
-        const newName = this.editingName.trim();
-        if (newName.length > 0) {
-          this.$emit('change-name', newName);
-        }
-      }
-      this.$emit('stop-editing')
-      this.editingName = null;
     }
   }
 }
@@ -116,7 +82,7 @@ export default {
 
 .formation-subject:hover {
   transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
-  background-color: #eeeeee;
+  background-color: rgba(0, 0, 0, 0.08);
 }
 
 .formation-subject .edit-name-area.theme--light.v-text-field--solo > .v-input__control > .v-input__slot {
