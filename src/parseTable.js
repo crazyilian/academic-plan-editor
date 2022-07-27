@@ -229,7 +229,7 @@ function parseSheet(sh, name) {
         x += 2;
       } else if (strEq(val, 'Максимальное количество часов')) {
         for (let y = 1; table[x][y].val !== ""; ++y) {
-          template.grades.filter(g => g.name === table[x][y].val).forEach(g => {
+          template.grades.filter(g => g.name === parseInt(table[x][y].val)).forEach(g => {
             g.max_hours_per_week = parseInt(table[x + 1][y].val);
           })
         }
