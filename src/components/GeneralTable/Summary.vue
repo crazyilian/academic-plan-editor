@@ -1,19 +1,21 @@
 <template>
   <div class="general-row">
     <div class="general-row-name">{{ name }}</div>
-    <div style=" display: flex; flex-wrap: wrap;">
-      <div v-for="(grade, i) in grades" :key="i">
-        <Counter
-            ref="counters"
-            :start-value="values[i]"
-            :highlight="gradeHighlight[i]"
-            :correct="countersCorrect[i]"
-            :disabled="!edit"
-            :null-available="nullAvailable"
-            :max="99"
-            @input="counterChange(i)"
-        />
-      </div>
+    <div style="display: flex; flex-wrap: wrap;">
+      <template v-for="(group, i) in gradeGroups">
+        <div v-for="(grade, j) in group" :key="i * 100 + j">
+          <Counter
+              ref="counters"
+              :start-value="values[i][j]"
+              :highlight="gradeGroups[i][j].highlight"
+              :correct="countersCorrect[i][j]"
+              :disabled="!edit"
+              :null-available="nullAvailable"
+              :max="99"
+              @input="counterChange(i, j, $event)"
+          />
+        </div>
+      </template>
     </div>
   </div>
 </template>
@@ -31,53 +33,58 @@ export default {
     'id': { type: Number, default: -1 },
     'name': { type: String, default: "" },
     'errorName': { type: String, default: "" },
-    'grades': { type: Array, default: () => [] },
-    'gradeHighlight': { type: Array, default: () => [] },
+    'gradeGroups': { type: Array, default: () => [] },
     'values': { type: Array, default: () => [] },
     'edit': { type: Boolean, default: false },
-    'mins': { type: Array, default: () => [] },
-    'maxs': { type: Array, default: () => [] },
+    'mins': { type: Array, default: undefined },
+    'maxs': { type: Array, default: undefined },
     'nullAvailable': { type: Boolean, default: false },
+    'oninput': { type: Function, default: undefined }
   },
   data() {
     return {
       messages: [],
       correct: false,
-      countersCorrect: Array(this.grades.length).fill(true),
+      countersCorrect: this.gradeGroups.map((group) => Array(group.length).fill(true)),
     }
   },
   mounted() {
     this.validate();
   },
   methods: {
-    counterChange(i) {
-      // FIXME: do emits, not mutations of props. But it somehow works without warnings :)
-      Vue.set(this.values, i, this.$refs.counters[i].value)
-      this.validate();
+    counterChange(i, j, val) {
+      if (this.oninput === undefined) {
+        Vue.set(this.values[i], j, val)
+      } else {
+        this.oninput(i, j, val);
+      }
+      this.$nextTick(this.validate);
     },
     validate() {
+      console.log('validate');
       this.correct = true;
-      for (const i of this.countersCorrect.keys()) {
-        Vue.set(this.countersCorrect, i, true);
-      }
+      this.countersCorrect.forEach((group) => group.forEach((v, i) => Vue.set(group, i, true)));
       this.messages = [];
-      for (const [i, value] of this.values.entries()) {
-        let bad = false;
-        if (value === null) {
-          bad = true;
-          this.messages.push(errorMessages.SUMMARY_NULL(this.errorName, this.grades[i].name))
-        } else if (this.mins.length > 0 && value < this.mins[i]) {
-          bad = true;
-          this.messages.push(errorMessages.SUMMARY_TOO_SMALL(this.errorName, this.grades[i].name))
-        } else if (this.maxs.length > 0 && value > this.maxs[i]) {
-          bad = true;
-          this.messages.push(errorMessages.SUMMARY_TOO_BIG(this.errorName, this.grades[i].name))
-        }
-        if (bad) {
-          this.correct = false;
-          Vue.set(this.countersCorrect, i, false);
+      for (const [i, valueGroup] of this.values.entries()) {
+        for (const [j, value] of valueGroup.entries()) {
+          let bad = false;
+          if (value === null) {
+            bad = true;
+            this.messages.push(errorMessages.SUMMARY_NULL(this.errorName, this.gradeGroups[i][j].name))
+          } else if (this.mins !== undefined && value < this.mins[i][j]) {
+            bad = true;
+            this.messages.push(errorMessages.SUMMARY_TOO_SMALL(this.errorName, this.gradeGroups[i][j].name))
+          } else if (this.maxs !== undefined && value > this.maxs[i][j]) {
+            bad = true;
+            this.messages.push(errorMessages.SUMMARY_TOO_BIG(this.errorName, this.gradeGroups[i][j].name))
+          }
+          if (bad) {
+            this.correct = false;
+            Vue.set(this.countersCorrect[i], j, false);
+          }
         }
       }
+      console.log(this.countersCorrect);
       this.$emit('validate');
     },
   }

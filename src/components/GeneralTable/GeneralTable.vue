@@ -1,28 +1,26 @@
 <template>
-  <div style="display: flex; flex-direction: column; height: 100%;">
-    <div style="display: flex; justify-content: flex-end">
+  <div style="display: flex; flex-direction: column; min-height: 0" class="pl-2">
+    <div style="display: flex; justify-content: flex-end; border-bottom: solid thin gray;">
       <GradeTitle
-          style="margin-right: 24px"
-          :grades="grades"
-          @highlight-grade="(i, flag) => $emit('highlight-grade', i, flag)"
+          style="margin-right: 24px; min-height: 44px;"
+          :grades-groups="gradeGroups"
+          @highlight-grade="(i, j, flag) => $emit('highlight-grade', i, j, flag)"
       />
     </div>
-    <div class="rounded-lg pb-1 general-table pl-2 pt-1">
+    <div class="general-table">
       <v-expansion-panels v-model="panels" accordion focusable multiple class="rounded-0">
         <Section
             :id="0"
             ref="s0"
             name="Обязательная часть"
-            :grades="grades"
-            :grade-highlight="gradeHighlight"
+            :grade-groups="gradeGroups"
             :data-raw="[{name: 'Час / нед', values: obligatory(), edit: false}]"
         />
         <Section
             :id="1"
             ref="s1"
             name="Формируемая часть"
-            :grades="grades"
-            :grade-highlight="gradeHighlight"
+            :grade-groups="gradeGroups"
             :data-raw="[{name: 'Час / нед', values: formative(), edit: false}]"
         />
         <Section
@@ -30,8 +28,7 @@
             ref="s2"
             name="Недельная нагрузка"
             error-name="Недельная нагрузка"
-            :grades="grades"
-            :grade-highlight="gradeHighlight"
+            :grade-groups="gradeGroups"
             :data-raw="[{name: 'Час / нед', values: perweek(), edit: false},
                       {type: 'max', values: perweekmax()}]"
         />
@@ -40,16 +37,14 @@
             ref="s3"
             name="Учебных недель"
             error-name="Количество учебных недель"
-            :grades="grades"
-            :grade-highlight="gradeHighlight"
-            :data-raw="[{name: 'Итого', values: weeknum, edit: true}]"
+            :grade-groups="gradeGroups"
+            :data-raw="[{name: 'Итого', values: weeknum(), edit: true, oninput: weeknumChange}]"
         />
         <Section
             :id="4"
             ref="s4"
             name="По учебному плану"
-            :grades="grades"
-            :grade-highlight="gradeHighlight"
+            :grade-groups="gradeGroups"
             :data-raw="[{name: 'Час / год', values: peryear(), edit: false}]"
         />
         <Section
@@ -57,8 +52,7 @@
             ref="s5"
             name="На уровень образования"
             error-name="Количество часов в год на уровень образования"
-            :grades="eduGrade"
-            :grade-highlight="eduGradeHighlight"
+            :grade-groups="gradeGroups.map((group) => [{highlight: group.reduce((r, grade) => r || grade.highlight, false)}])"
             :data-raw="[{name: 'Час / год', values: edu(), edit: false},
                       {type: 'min', values: edumin()},
                       {type: 'max', values: edumax()}]"
@@ -99,54 +93,56 @@
 
 import Section from "@/components/GeneralTable/Section";
 import GradeTitle from "@/components/GradeTitle";
+import Vue from "vue";
 
 export default {
   name: "GeneralTable",
   components: { GradeTitle, Section },
   props: {
-    grades: { type: Array, default: () => [] },
-    gradeHighlight: { type: Array, default: () => [] },
+    gradeGroups: { type: Array, default: () => [] },
     obligatoryPlan: { type: Array, default: () => [] },
-    weeknum: { type: Array, default: () => [] },
     formativePlan: { type: Object, default: () => ({}) },
     config: { type: Object, default: () => ({}) }
   },
   data() {
     return {
       panels: [...Array(6).keys()],
-      eduGrade: [{}],
-      eduGradeHighlight: [false],
     }
   },
   methods: {
     obligatory() {
-      return this.obligatoryPlan.reduce((r, x) => r.concat(x)).reduce((a, b) => a.map((r, i) => r + b[i]))
+      return this.obligatoryPlan.reduce((r, x) => r.concat(x)).reduce((r, v) => r.map((r1, i) => r1.map((r2, j) => r2 + v[i][j].value)), this.gradeGroups.map((group) => Array(group.length).fill(0)));
     },
     formative() {
-      return this.formativePlan.hours;
+      return this.gradeGroups.map((group) => Array(group.length).fill(0));
     },
     perweek() {
       const a = this.obligatory();
       const b = this.formative();
-      return a.map((r, i) => r + b[i]);
+      return a.map((r1, i) => r1.map((r2, j) => r2 + b[i][j]))
     },
     perweekmax() {
-      return this.grades.map((g) => g.max_hours_per_week);
+      return this.gradeGroups.map((group) => group.map((grade) => grade.max_hours_per_week));
     },
     peryear() {
       const a = this.perweek();
-      const w = this.weeknum;
-      return a.map((r, i) => r * w[i]);
+      return a.map((r1, i) => r1.map((r2, j) => r2 * this.gradeGroups[i][j].weeknum))
     },
     edu() {
       const a = this.peryear();
-      return [a.reduce((r, x) => r + x)];
+      return a.map((group) => [group.reduce((r, x) => r + x)]);
     },
     edumin() {
-      return [this.config.hours_total_min];
+      return this.gradeGroups.map(() => [this.config.hours_total_min]);
     },
     edumax() {
-      return [this.config.hours_total_max];
+      return this.gradeGroups.map(() => [this.config.hours_total_max]);
+    },
+    weeknum() {
+      return this.gradeGroups.map((group) => group.map((grade) => grade.weeknum));
+    },
+    weeknumChange(i, j, val) {
+      Vue.set(this.gradeGroups[i][j], 'weeknum', val);
     },
     correct() {
       const sections = ['s0', 's1', 's2', 's3', 's4', 's5'];
@@ -168,7 +164,7 @@ export default {
   display: flex;
   flex-direction: column;
   overflow-y: scroll;
+  padding-bottom: 4px !important;
 }
-
 
 </style>

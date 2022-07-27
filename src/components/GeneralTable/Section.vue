@@ -25,11 +25,11 @@
           :id="i"
           :key="i"
           ref="summaries"
-          :grade-highlight="gradeHighlight"
-          :grades="grades"
+          :grade-groups="gradeGroups"
           v-bind="el"
           :error-name="errorName"
           null-available
+          :oninput="oninput"
           @validate="validate"
       />
     </v-expansion-panel-content>
@@ -48,9 +48,9 @@ export default {
     'id': { type: Number, default: -1 },
     'name': { type: String, default: "" },
     'errorName': { type: String, default: "" },
-    'grades': { type: Array, default: () => [] },
-    'gradeHighlight': { type: Array, default: () => [] },
+    'gradeGroups': { type: Array, default: () => [] },
     'dataRaw': { type: Array, default: () => [] },
+    'oninput': { type: Function, default: undefined }
   },
   data() {
     return {
@@ -72,8 +72,8 @@ export default {
     getData() {
       const data = [];
       const valsId = [];
-      let minVal = [];
-      let maxVal = [];
+      let minVal = undefined;
+      let maxVal = undefined;
       for (const [i, d] of this.dataRaw.entries()) {
         if (d.type === 'max') {
           data.push({ name: 'Максимум', values: d.values, edit: false })
