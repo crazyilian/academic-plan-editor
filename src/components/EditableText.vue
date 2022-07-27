@@ -92,7 +92,7 @@ export default {
 }
 
 .edit-name-area-container:focus-within {
-  background-color: rgba(221, 221, 221);
+  background-color: rgba(0, 0, 0, 0.13);
 }
 
 .edit-name-area-container * {
