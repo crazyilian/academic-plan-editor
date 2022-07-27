@@ -22,21 +22,23 @@
       {{ name }}
     </div>
     <Message container-style="width: 60%; margin-left: 24px; margin-right: 24px; min-width: 20px" :messages="messages"/>
-    <Counter
-        v-for="(grade, i) in gradeGroups.reduce((o, a, i) => [...o, ...a.map((v, j) => ({'ind': [i, j], 'val': v}))], [])"
-        :id="i"
-        :key="i"
-        ref="counters"
-        :correct="groupsCorrect[grade.ind[0]] || countersCorrect[i]"
-        :highlight="grade.val.highlight"
-        :start-value="plan[grade.ind[0]][grade.ind[1]].value"
-        :checkbox="plan[grade.ind[0]][grade.ind[1]].advanced"
-        :max="99"
-        :show-checkbox="can_advanced"
-        :show-label="true"
-        @input="counterChange(...grade.ind, i, $event)"
-        @checkbox-change="setAdvanced(...grade.ind, $event)"
-    />
+    <template v-for="(group, i) in gradeGroups">
+      <Counter
+          v-for="(grade, j) in group"
+          :id="i * 100 + j"
+          :key="i * 100 + j"
+          ref="counters"
+          :correct="countersCorrect[i][j]"
+          :highlight="grade.highlight"
+          :start-value="plan[i][j].value"
+          :checkbox="plan[i][j].advanced"
+          :max="99"
+          :show-checkbox="can_advanced"
+          :show-label="true"
+          @input="counterChange(i, j, $event)"
+          @checkbox-change="setAdvanced(i, j, $event)"
+      />
+    </template>
   </div>
 </template>
 
@@ -63,19 +65,17 @@ export default {
       checkbox: this.required,
       messages: [],
       correct: false,
-      countersCorrect: Array(this.gradeGroups.reduce((res, a) => res + a.length, 0)).fill(true),
-      groupsCorrect: Array(this.gradeGroups.length).fill(true)
+      countersCorrect: this.gradeGroups.map((group) => Array(group.length).fill(true)),
     }
   },
   mounted() {
     this.validate();
-    console.log(this.gradeGroups.reduce((o, a, i) => [...o, ...a.map((v, j) => ({'ind': [i, j], 'val': v}))], []))
   },
   methods: {
     getSumHoursGroup(i) {
       return this.plan[i].reduce((r, e) => r + e.value, 0);
     },
-    counterChange(i, j, tot, value) {
+    counterChange(i, j, value) {
       Vue.set(this.plan[i][j], 'value', value)
       this.validate();
     },
@@ -84,15 +84,14 @@ export default {
     },
     validate() {
       this.correct = true;
-      this.countersCorrect.fill(true);
-      this.groupsCorrect.fill(true);
+      this.countersCorrect.forEach((group) => group.forEach((v, i) => Vue.set(group, i, true)));
       this.messages = [];
 
       for (const [i] of this.gradeGroups.entries()) {
         const sumHours = this.getSumHoursGroup(i);
         if (this.required && sumHours === 0) {
           this.messages.push(errorMessages.NO_ZERO_HOURS);
-          this.groupsCorrect[i] = false;
+          this.countersCorrect[i].forEach((v, j) => Vue.set(this.countersCorrect[i], j, false))
           this.correct = false;
         }
       }
