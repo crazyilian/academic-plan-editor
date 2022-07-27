@@ -56,6 +56,9 @@ function addGroupToPlan(plan, ...groups) {
   }))])), plan);
 }
 
+function fillShape2(gradeGroups, mp) {
+  return gradeGroups.map((group, i) => group.map((grade, j) => mp(i, j, group, grade)));
+}
 
 // const fs = require('fs-extra');
 // const template = fs.readJsonSync('../kek2.json');
@@ -68,5 +71,6 @@ export {
   getDefaultGroup,
   getProfileGroup,
   getProfileAreas,
-  addGroupToPlan
+  addGroupToPlan,
+  fillShape2,
 }

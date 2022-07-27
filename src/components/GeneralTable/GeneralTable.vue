@@ -94,6 +94,7 @@
 import Section from "@/components/GeneralTable/Section";
 import GradeTitle from "@/components/GradeTitle";
 import Vue from "vue";
+import { fillShape2 } from "@/gradeProcessing";
 
 export default {
   name: "GeneralTable",
@@ -111,10 +112,10 @@ export default {
   },
   methods: {
     obligatory() {
-      return this.obligatoryPlan.reduce((r, x) => r.concat(x)).reduce((r, v) => r.map((r1, i) => r1.map((r2, j) => r2 + v[i][j].value)), this.gradeGroups.map((group) => Array(group.length).fill(0)));
+      return this.obligatoryPlan.reduce((r, x) => r.concat(x)).reduce((r, v) => r.map((r1, i) => r1.map((r2, j) => r2 + v[i][j].value)), fillShape2(this.gradeGroups, () => 0));
     },
     formative() {
-      return this.gradeGroups.map((group) => Array(group.length).fill(0));
+      return fillShape2(this.gradeGroups, () => 0);
     },
     perweek() {
       const a = this.obligatory();

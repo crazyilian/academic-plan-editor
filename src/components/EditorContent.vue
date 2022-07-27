@@ -139,11 +139,6 @@ export default {
   },
 
   data() {
-    const n = this.template.grades.length;
-    if (Object.keys(this.formativePlan).length === 0) {
-      Vue.set(this.formativePlan, 'hours', Array(n).fill(0));
-      Vue.set(this.formativePlan, 'subjects', []);
-    }
     return {
       pageNum: 0,
       editingFullname: false,

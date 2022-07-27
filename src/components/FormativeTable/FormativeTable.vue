@@ -7,17 +7,18 @@
             Формируемая часть
           </div>
           <div style="flex-grow: 1"/>
-          <Counter
-              v-for="(grade, i) in grades"
-              :id="i"
-              :key="i"
-              ref="counters"
-              :correct="true"
-              :highlight="gradeHighlight[i]"
-              :start-value="plan.hours[i]"
-              :max="99"
-              @input="counterChange(i)"
-          />
+          <template v-for="(group, i) in gradeGroups">
+            <Counter
+                v-for="(grade, j) in group"
+                :key="i * 100 + j"
+                ref="counters"
+                :correct="true"
+                :highlight="grade.highlight"
+                :start-value="plan.hours[i][j]"
+                :max="99"
+                @input="counterChange(i, j, $event)"
+            />
+          </template>
         </div>
         <div class="formative-list">
           <FormativeSubject
@@ -53,8 +54,7 @@ export default {
   components: { FormativeSubject, Counter },
   props: {
     'categories': { type: Array, default: () => [] },
-    'grades': { type: Array, default: () => [] },
-    'gradeHighlight': { type: Array, default: () => [] },
+    'gradeGroups': { type: Array, default: () => [] },
     'plan': { type: Object, default: () => ({}) }
   },
   data() {
@@ -63,8 +63,8 @@ export default {
     }
   },
   methods: {
-    counterChange(i) {
-      Vue.set(this.plan.hours, i, this.$refs.counters[i].value)
+    counterChange(i, j, val) {
+      Vue.set(this.plan.hours[i], j, val)
     },
     addSubject() {
       const i = this.plan.subjects.length;

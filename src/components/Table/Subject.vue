@@ -25,7 +25,6 @@
     <template v-for="(group, i) in gradeGroups">
       <Counter
           v-for="(grade, j) in group"
-          :id="i * 100 + j"
           :key="i * 100 + j"
           ref="counters"
           :correct="countersCorrect[i][j]"
@@ -48,6 +47,7 @@ import Counter from "@/components/Counter";
 import Message from "@/components/Table/Message";
 import errorMessages from "@/errorMessages";
 import Vue from "vue";
+import { fillShape2 } from "@/gradeProcessing";
 
 export default {
   name: 'Subject',
@@ -66,7 +66,7 @@ export default {
       checkbox: this.required,
       messages: [],
       correct: false,
-      countersCorrect: this.gradeGroups.map((group) => Array(group.length).fill(true)),
+      countersCorrect: fillShape2(this.gradeGroups, () => true),
     }
   },
   mounted() {

@@ -25,6 +25,7 @@
 import errorMessages from "@/errorMessages";
 import Vue from "vue";
 import Counter from "@/components/Counter";
+import { fillShape2 } from "@/gradeProcessing";
 
 export default {
   name: 'Summary',
@@ -45,7 +46,7 @@ export default {
     return {
       messages: [],
       correct: false,
-      countersCorrect: this.gradeGroups.map((group) => Array(group.length).fill(true)),
+      countersCorrect: fillShape2(this.gradeGroups, () => true),
     }
   },
   mounted() {

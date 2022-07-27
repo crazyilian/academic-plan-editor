@@ -38,6 +38,8 @@
           @focusout="isfocused = false"
           @input="onNumberInput"
           @change="onNumberChange"
+          @keydown.enter="$refs.input.blur()"
+          @keydown.esc="$refs.input.blur()"
       >
       <div style="display: none" class="spinner">
         <Spinner
@@ -59,7 +61,6 @@ export default {
   name: 'Counter',
   components: { Spinner },
   props: {
-    'id': { type: Number, default: -1 },
     'correct': { type: Boolean, default: true },
     'highlight': { type: Boolean, default: false },
     'startValue': { type: Number, default: 0 },

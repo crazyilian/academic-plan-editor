@@ -28,7 +28,7 @@
 import EditorContent from "@/components/EditorContent";
 import EditorTabs from "@/components/EditorTabs";
 import Vue from "vue";
-import { addGroupToPlan, getDefaultGroup } from "@/gradeProcessing";
+import { addGroupToPlan, getDefaultGroup, fillShape2 } from "@/gradeProcessing";
 
 export default {
   name: 'Editor',
@@ -68,16 +68,24 @@ export default {
     },
     addTab(i) {
       const template = structuredClone(this.templates[i]);
+
       const default_grades = getDefaultGroup(structuredClone(template.grades))
           .map(grade => ({ ...grade, highlight: false, weeknum: null }));
       const gradeGroups = [default_grades];
+
       let obligatoryPlan = template.categories.map(c => c.subjects.map(() => []));
       obligatoryPlan = addGroupToPlan(obligatoryPlan, ...gradeGroups)
+
+      let formativePlan = {
+        hours: fillShape2(gradeGroups, () => 0),
+        subjects: [],
+      }
+
       Vue.set(this.project.tabs, this.project.tabs.length, {
         template: structuredClone(this.templates[i]),
         gradeGroups: gradeGroups,
         obligatoryPlan: obligatoryPlan,
-        formativePlan: {},
+        formativePlan: formativePlan,
       })
       this.activeTab = this.project.tabs.length - 1;
     },
