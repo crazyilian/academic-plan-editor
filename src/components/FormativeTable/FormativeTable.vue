@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 100%; overflow-y: scroll;" class="pl-2 pb-1">
+  <div style="height: 100%; overflow-y: scroll;" class="pl-2 pb-1 show-scrollbar">
     <div style="display: flex; flex-direction: column; justify-content: center" class="ma-0">
       <v-card class="mb-2 rounded-0">
         <div class="formative-title">
