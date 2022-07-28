@@ -1,10 +1,10 @@
 <template>
   <div style="min-width: 0; width: 100%; height: 100%; display: flex">
     <div
-        class="px-2 py-0"
+        class="pl-2 py-0"
         style="min-width: 0; width: 100%; display: flex; flex-direction: column; height: 100%; flex-grow: 1"
     >
-      <div class="ml-2" style="width: 100%; display: flex; flex-direction: column; gap: 8px;">
+      <div class="pl-2" style="width: 100%; display: flex; flex-direction: column; gap: 8px;">
         <div class="fullname-container ml-2">
           <EditableText
               style="flex-grow: 1"
@@ -29,7 +29,7 @@
           </div>
         </div>
         <HorizontalResizeBar>
-          <div style="display: flex; justify-content: space-between; flex-grow: 1; min-height: 0" class="mr-6">
+          <div style="display: flex; justify-content: space-between; flex-grow: 1; min-height: 0; margin-right: 16px">
             <div class="pb-3 switch-btn-container">
               <v-btn
                   class="switch-btn"
@@ -55,6 +55,7 @@
             <BarGradeGroups
                 style="margin-right: 8px"
                 :grades-groups="gradeGroups"
+                :can-add="true"
             />
           </div>
         </HorizontalResizeBar>
