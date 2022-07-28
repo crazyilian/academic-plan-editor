@@ -159,69 +159,12 @@ export default {
 
 /* New Tab */
 
-/*.add-select .mdi-menu-down::before {*/
-/*  content: "\F0415"*/
-/*}*/
-
-/*.add-select .mdi-menu-down {*/
-/*  color: rgb(81, 187, 25);*/
-/*  caret-color: rgb(81, 187, 25);*/
-/*}*/
-
-/*.add-select > .v-input__control > .v-input__slot {*/
-/*  background-color: rgba(0, 0, 0, 0) !important;*/
-/*}*/
-
-/*.add-select > .v-input__control .v-select__slot {*/
-/*  display: flex;*/
-/*  justify-content: center;*/
-/*}*/
-
-/*.add-select > .v-input__control .v-select__slot > .v-input__append-inner {*/
-/*  margin: 0;*/
-/*}*/
-
-/*.add-select > .v-input__control > .v-input__slot:hover {*/
-/*  background-color: rgba(255, 255, 255, 0.1) !important;*/
-/*}*/
-
-/*.add-select > .v-input__control > .v-input__slot {*/
-/*  margin-bottom: 0 !important;*/
-/*}*/
-
-/*.add-select .v-select__selection {*/
-/*  color: #bbbbbb;*/
-/*  overflow: visible;*/
-/*  text-overflow: clip;*/
-/*  max-width: 100%;*/
-/*}*/
-
-/*.add-select .v-select__selections input {*/
-/*  display: none;*/
-/*}*/
-
-/*.add-select .v-select__selections {*/
-/*  flex: 0 1 auto;*/
-/*}*/
-
-/*.add-select .v-text-field__details {*/
-/*  display: none;*/
-/*}*/
-
-/*.v-menu__content > .v-select-list > div:last-child {*/
-/*  display: none;*/
-/*}*/
-
 .add-menu-container {
   background-color: rgba(0, 0, 0, 0) !important;
   min-height: 42px;
   width: 100%;
   display: flex;
   justify-content: center;
-}
-
-.add-menu-container button {
-
 }
 
 /* Other */
