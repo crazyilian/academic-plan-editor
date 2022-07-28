@@ -50,10 +50,9 @@
               <span>Формируемая часть</span>
             </v-btn>
           </div>
-          <GradeTitle
+          <BarGradeGroups
               style="margin-right: 8px"
               :grades-groups="gradeGroups"
-              @highlight-grade="highlightGrade"
           />
         </div>
       </div>
@@ -106,7 +105,6 @@
           :grade-groups="gradeGroups"
           :config="template.config"
           :ready="generalTableReady"
-          @highlight-grade="highlightGrade"
       />
     </v-navigation-drawer>
   </div>
@@ -115,7 +113,7 @@
 <script>
 
 import Table from "@/components/Table/Table";
-import GradeTitle from "@/components/GradeTitle";
+import BarGradeGroups from "@/components/Grades/BarGradeGroups";
 import Vue from "vue";
 import GeneralTable from "@/components/GeneralTable/GeneralTable";
 import FormativeTable from "@/components/FormativeTable/FormativeTable";
@@ -129,7 +127,7 @@ export default {
     EditableText,
     FormativeTable,
     GeneralTable,
-    GradeTitle,
+    BarGradeGroups,
     Table
   },
 
@@ -153,9 +151,6 @@ export default {
     this.generalTableReady = true;  // this fixes rendering issues with content of navigation drawer
   },
   methods: {
-    highlightGrade(i, j, flag) {
-      Vue.set(this.gradeGroups[i][j], 'highlight', flag);
-    },
     editFullname() {
       this.editingFullname = true;
     },

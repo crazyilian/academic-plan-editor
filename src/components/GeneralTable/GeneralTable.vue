@@ -1,10 +1,9 @@
 <template>
   <div style="display: flex; flex-direction: column; min-height: 0" class="pl-2">
     <div style="display: flex; justify-content: flex-end" :style="{'height': `${upHeight}px`,'min-height': `${upHeight}px`}">
-      <GradeTitle
+      <BarGradeGroups
           style="margin-right: 24px; min-height: 44px;"
           :grades-groups="gradeGroups"
-          @highlight-grade="(i, j, flag) => $emit('highlight-grade', i, j, flag)"
       />
     </div>
     <HorizontalResizeBar :shift="-56" @input="upHeight = $event"/>
@@ -66,14 +65,14 @@
 <script>
 
 import Section from "@/components/GeneralTable/Section";
-import GradeTitle from "@/components/GradeTitle";
+import BarGradeGroups from "@/components/Grades/BarGradeGroups";
 import Vue from "vue";
 import { fillShape2 } from "@/gradeProcessing";
 import HorizontalResizeBar from "@/components/HorizontalResizeBar";
 
 export default {
   name: "GeneralTable",
-  components: { HorizontalResizeBar, GradeTitle, Section },
+  components: { HorizontalResizeBar, BarGradeGroups, Section },
   props: {
     gradeGroups: { type: Array, default: () => [] },
     obligatoryPlan: { type: Array, default: () => [] },

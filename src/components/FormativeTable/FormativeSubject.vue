@@ -9,7 +9,7 @@
         @change="$emit('change', $event)"
         @span-click="editName"
     />
-    <div class="ml-1" @click="editName">
+    <div class="ml-1" style="cursor: pointer" @click="editName" >
       <v-hover v-slot="{ hover }">
         <div style="display: flex">
           <div class="text--secondary pl-2 pr-1 icon-label">
@@ -20,7 +20,7 @@
         </div>
       </v-hover>
     </div>
-    <div class="pr-1 pl-2" @click.stop="askRemove">
+    <div class="mr-1 ml-2" style="cursor: pointer" @click="askRemove">
       <v-hover v-slot="{ hover }">
         <div style="display: flex">
           <div class="text--secondary pr-1 icon-label">
