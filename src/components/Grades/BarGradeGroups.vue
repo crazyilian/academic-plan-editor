@@ -5,9 +5,8 @@
         v-for="(group, i) in gradesGroups"
         :key="i"
         style="display: flex"
-        class="pb-1"
     >
-      <Group :group="group"/>
+      <Group :group="group" class="pb-1"/>
       <VerticalLine/>
     </div>
   </div>

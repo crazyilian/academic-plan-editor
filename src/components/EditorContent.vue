@@ -4,16 +4,17 @@
         class="px-2 py-0"
         style="min-width: 0; width: 100%; display: flex; flex-direction: column; height: 100%; flex-grow: 1"
     >
-      <div class="pl-2 ml-2 pr-4" style="width: calc(100% - 8px); display: flex; flex-direction: column; gap: 8px;">
-        <div class="fullname-container">
+      <div class="ml-2" style="width: 100%; display: flex; flex-direction: column; gap: 8px;">
+        <div class="fullname-container ml-2">
           <EditableText
+              style="flex-grow: 1"
               class="hover-background"
               :value="template.config.title"
               :editing="editingFullname"
               @change="changeFullname"
               @span-click="editFullname"
           />
-          <div style="margin-left: 8px; margin-right: -32px">
+          <div style="margin-left: 8px; margin-right: -8px">
             <v-btn
                 class="rounded-r-0 px-2"
                 style="min-width: 0"
@@ -27,36 +28,37 @@
             </v-btn>
           </div>
         </div>
-        <div style="display: flex; justify-content: space-between; flex-grow: 1; min-height: 0" :style="{'height': `${upHeight}px`,'min-height': `${upHeight}px`}">
-          <div class="pb-3 switch-btn-container">
-            <v-btn
-                class="switch-btn"
-                color="#525252"
-                dark
-                depressed
-                :outlined="pageNum === 0"
-                @click="pageNum = 0"
-            >
-              <span>Обязательная часть</span>
-            </v-btn>
-            <v-btn
-                class="switch-btn"
-                color="#525252"
-                dark
-                depressed
-                :outlined="pageNum === 1"
-                @click="pageNum = 1"
-            >
-              <span>Формируемая часть</span>
-            </v-btn>
+        <HorizontalResizeBar>
+          <div style="display: flex; justify-content: space-between; flex-grow: 1; min-height: 0" class="mr-6">
+            <div class="pb-3 switch-btn-container">
+              <v-btn
+                  class="switch-btn"
+                  color="#525252"
+                  dark
+                  depressed
+                  :outlined="pageNum === 0"
+                  @click="pageNum = 0"
+              >
+                <span>Обязательная часть</span>
+              </v-btn>
+              <v-btn
+                  class="switch-btn"
+                  color="#525252"
+                  dark
+                  depressed
+                  :outlined="pageNum === 1"
+                  @click="pageNum = 1"
+              >
+                <span>Формируемая часть</span>
+              </v-btn>
+            </div>
+            <BarGradeGroups
+                style="margin-right: 8px"
+                :grades-groups="gradeGroups"
+            />
           </div>
-          <BarGradeGroups
-              style="margin-right: 8px"
-              :grades-groups="gradeGroups"
-          />
-        </div>
+        </HorizontalResizeBar>
       </div>
-      <HorizontalResizeBar class="ml-2" :shift="-52" @input="upHeight = $event"/>
       <v-window v-model="pageNum" style="width: 100%; height: 100%">
         <v-window-item style="width: 100%; height: 100%">
           <Table
@@ -144,7 +146,6 @@ export default {
       editingFullname: false,
       showGeneralTable: false,
       generalTableReady: false,
-      upHeight: 120,
     };
   },
   mounted() {

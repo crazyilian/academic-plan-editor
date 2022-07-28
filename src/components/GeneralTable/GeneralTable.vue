@@ -1,12 +1,13 @@
 <template>
   <div style="display: flex; flex-direction: column; min-height: 0" class="pl-2">
-    <div style="display: flex; justify-content: flex-end" :style="{'height': `${upHeight}px`,'min-height': `${upHeight}px`}">
-      <BarGradeGroups
-          style="margin-right: 24px; min-height: 44px;"
-          :grades-groups="gradeGroups"
-      />
-    </div>
-    <HorizontalResizeBar :shift="-56" @input="upHeight = $event"/>
+    <HorizontalResizeBar>
+      <div style="display: flex; justify-content: flex-end">
+        <BarGradeGroups
+            style="margin-right: 24px; min-height: 44px;"
+            :grades-groups="gradeGroups"
+        />
+      </div>
+    </HorizontalResizeBar>
     <div class="general-table show-scrollbar">
       <v-expansion-panels v-model="panels" accordion focusable multiple class="rounded-0">
         <Section
@@ -82,7 +83,6 @@ export default {
   data() {
     return {
       panels: [...Array(6).keys()],
-      upHeight: 120,
     }
   },
   methods: {

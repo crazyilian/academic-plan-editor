@@ -1,22 +1,27 @@
 <template>
-  <div class="horizontal-resize-bar-container">
-    <div
-        class="horizontal-resize-bar noselect"
-        @mousedown="dragStart($event)"
-    >
-      <span style="margin-top: -1.5px; transform: scaleX(15)">-</span>
-      <span style="margin-top: -0.5px; transform: scaleX(10)">=</span>
+  <div>
+    <slot/>
+    <div class="horizontal-resize-bar-container">
+      <div
+          class="horizontal-resize-bar noselect"
+          @mousedown="dragStart($event)"
+      >
+        <span style="margin-top: -1.5px; transform: scaleX(15)">-</span>
+        <span style="margin-top: -0.5px; transform: scaleX(10)">=</span>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import Vue from "vue";
+
 export default {
   name: "HorizontalResizeBar",
   props: {
-    shift: { type: Number, default: 0 },
     min: { type: Number, default: 40 },
     max: { type: Number, default: 230 },
+    initial: { type: Number, default: 120 }
   },
   data() {
     return {
@@ -26,6 +31,7 @@ export default {
   mounted() {
     window.addEventListener('mouseup', this.dragEnd)
     window.addEventListener('mousemove', this.dragging)
+    this.setHeight(this.initial);
   },
   unmounted() {
     window.removeEventListener('mouseup', this.dragEnd, false)
@@ -38,12 +44,21 @@ export default {
     dragEnd() {
       this.isDragging = false
     },
+    slot() {
+      return this.$scopedSlots.default()[0].elm;
+    },
     dragging(e) {
       if (this.isDragging) {
-        const val = Math.max(Math.min(e.pageY + this.shift, this.max), this.min);
-        this.$emit('input', val);
+        const shift = this.slot().getBoundingClientRect().top;
+        const val = Math.max(Math.min(e.pageY - shift, this.max), this.min);
+        this.setHeight(val);
       }
     },
+    setHeight(val) {
+      const style = this.slot().style;
+      Vue.set(style, 'min-height', val + 'px')
+      Vue.set(style, 'height', val + 'px')
+    }
   }
 }
 </script>

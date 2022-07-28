@@ -107,7 +107,6 @@ export default {
 }
 
 .edit-name-area-container {
-  width: 100%;
   padding: 2px;
   display: flex;
   align-items: center;
