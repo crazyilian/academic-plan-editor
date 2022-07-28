@@ -4,8 +4,8 @@
         class="horizontal-resize-bar noselect"
         @mousedown="dragStart($event)"
     >
-      <span style="margin-top: -1.5px">-</span>
-      <span style="margin-top: -0.5px">=</span>
+      <span style="margin-top: -1.5px; transform: scaleX(15)">-</span>
+      <span style="margin-top: -0.5px; transform: scaleX(10)">=</span>
     </div>
   </div>
 </template>
@@ -16,7 +16,7 @@ export default {
   props: {
     shift: { type: Number, default: 0 },
     min: { type: Number, default: 40 },
-    max: { type: Number, default: 220 },
+    max: { type: Number, default: 230 },
   },
   data() {
     return {
@@ -74,7 +74,6 @@ export default {
 }
 
 .horizontal-resize-bar span {
-  transform: scaleX(8);
   font-size: 0.5em;
 }
 
