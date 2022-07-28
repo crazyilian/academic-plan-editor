@@ -4,7 +4,7 @@
         class="px-2 py-0"
         style="min-width: 0; width: 100%; display: flex; flex-direction: column; height: 100%; flex-grow: 1"
     >
-      <div class="pl-2 ml-2 pr-4" style="width: calc(100% - 8px); display: flex; flex-direction: column; gap: 8px; border-bottom: solid thin gray">
+      <div class="pl-2 ml-2 pr-4" style="width: calc(100% - 8px); display: flex; flex-direction: column; gap: 8px;">
         <div class="fullname-container">
           <EditableText
               class="hover-background"
@@ -27,7 +27,7 @@
             </v-btn>
           </div>
         </div>
-        <div style="display: flex; justify-content: space-between">
+        <div style="display: flex; justify-content: space-between; flex-grow: 1; min-height: 0" :style="{'height': `${upHeight}px`,'min-height': `${upHeight}px`}">
           <div class="pb-3 switch-btn-container">
             <v-btn
                 class="switch-btn"
@@ -57,6 +57,7 @@
           />
         </div>
       </div>
+      <HorizontalResizeBar class="ml-2" :shift="-52" @input="upHeight = $event"/>
       <v-window v-model="pageNum" style="width: 100%; height: 100%">
         <v-window-item style="width: 100%; height: 100%">
           <Table
@@ -75,7 +76,6 @@
         </v-window-item>
       </v-window>
     </div>
-    <!--        <div style="height: 100%; width: 35%" class="pl-1">-->
     <v-navigation-drawer
         v-model="showGeneralTable"
         absolute
@@ -120,10 +120,12 @@ import Vue from "vue";
 import GeneralTable from "@/components/GeneralTable/GeneralTable";
 import FormativeTable from "@/components/FormativeTable/FormativeTable";
 import EditableText from "@/components/EditableText";
+import HorizontalResizeBar from "@/components/HorizontalResizeBar";
 
 export default {
   name: 'EditorContent',
   components: {
+    HorizontalResizeBar,
     EditableText,
     FormativeTable,
     GeneralTable,
@@ -144,6 +146,7 @@ export default {
       editingFullname: false,
       showGeneralTable: false,
       generalTableReady: false,
+      upHeight: 120,
     };
   },
   mounted() {
@@ -165,7 +168,7 @@ export default {
     },
     switchGeneralTable() {
       this.showGeneralTable = !this.showGeneralTable;
-    }
+    },
   }
 };
 </script>

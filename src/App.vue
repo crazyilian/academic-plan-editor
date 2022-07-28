@@ -97,7 +97,7 @@ export default {
   display: none !important;
 }
 
-body::-webkit-scrollbar {
+*:not(.show-scrollbar)::-webkit-scrollbar {
   display: none;
 }
 

@@ -1,13 +1,14 @@
 <template>
   <div style="display: flex; flex-direction: column; min-height: 0" class="pl-2">
-    <div style="display: flex; justify-content: flex-end; border-bottom: solid thin gray;">
+    <div style="display: flex; justify-content: flex-end" :style="{'height': `${upHeight}px`,'min-height': `${upHeight}px`}">
       <GradeTitle
           style="margin-right: 24px; min-height: 44px;"
           :grades-groups="gradeGroups"
           @highlight-grade="(i, j, flag) => $emit('highlight-grade', i, j, flag)"
       />
     </div>
-    <div class="general-table">
+    <HorizontalResizeBar :shift="-56" @input="upHeight = $event"/>
+    <div class="general-table show-scrollbar">
       <v-expansion-panels v-model="panels" accordion focusable multiple class="rounded-0">
         <Section
             :id="0"
@@ -95,10 +96,11 @@ import Section from "@/components/GeneralTable/Section";
 import GradeTitle from "@/components/GradeTitle";
 import Vue from "vue";
 import { fillShape2 } from "@/gradeProcessing";
+import HorizontalResizeBar from "@/components/HorizontalResizeBar";
 
 export default {
   name: "GeneralTable",
-  components: { GradeTitle, Section },
+  components: { HorizontalResizeBar, GradeTitle, Section },
   props: {
     gradeGroups: { type: Array, default: () => [] },
     obligatoryPlan: { type: Array, default: () => [] },
@@ -108,6 +110,7 @@ export default {
   data() {
     return {
       panels: [...Array(6).keys()],
+      upHeight: 120,
     }
   },
   methods: {

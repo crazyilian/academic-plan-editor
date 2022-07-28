@@ -238,8 +238,4 @@ export default {
   overflow: auto;
 }
 
-.tabs-container::-webkit-scrollbar {
-  display: none;
-}
-
 </style>

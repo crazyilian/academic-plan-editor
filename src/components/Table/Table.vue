@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 100%; overflow-y: scroll;" class="pl-2 pt-0 pb-1">
+  <div style="height: 100%; overflow-y: scroll;" class="pl-2 pt-0 pb-1 show-scrollbar">
     <div style="display: flex; flex-direction: column; justify-content: center" class="ma-0">
       <v-expansion-panels v-model="panels" accordion focusable multiple class="rounded-0">
         <Category
