@@ -32,14 +32,6 @@ export default {
     return {
       panels: [...Array(this.categories.length).keys()],
     }
-  },
-  methods: {
-    expandAll() {
-      this.panels = [...Array(this.categories.length).keys()];
-    },
-    collapseAll() {
-      this.panels = [];
-    },
   }
 }
 </script>

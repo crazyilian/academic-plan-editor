@@ -52,11 +52,19 @@
                 <span>Формируемая часть</span>
               </v-btn>
             </div>
-            <BarGradeGroups
-                style="margin-right: 8px"
-                :grades-groups="gradeGroups"
-                :can-add="true"
-            />
+            <div style="display: flex; align-items: center">
+              <ProfileMenu
+                  :grades="template.grades"
+                  :grade-groups="gradeGroups"
+                  :obligatory-plan="obligatoryPlan"
+                  :formative-plan="formativePlan"
+              />
+              <BarGradeGroups
+                  class="ml-1"
+                  style="margin-right: 8px"
+                  :grades-groups="gradeGroups"
+              />
+            </div>
           </div>
         </HorizontalResizeBar>
       </div>
@@ -122,10 +130,12 @@ import GeneralTable from "@/components/GeneralTable/GeneralTable";
 import FormativeTable from "@/components/FormativeTable/FormativeTable";
 import EditableText from "@/components/EditableText";
 import HorizontalResizeBar from "@/components/HorizontalResizeBar";
+import ProfileMenu from "@/components/Grades/ProfileMenu";
 
 export default {
   name: 'EditorContent',
   components: {
+    ProfileMenu,
     HorizontalResizeBar,
     EditableText,
     FormativeTable,
@@ -140,7 +150,6 @@ export default {
     obligatoryPlan: { type: Array, default: () => [] },
     formativePlan: { type: Object, default: () => ({}) },
   },
-
   data() {
     return {
       pageNum: 0,

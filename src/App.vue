@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app style="overflow: hidden">
     <v-main>
       <v-container v-if="checkShowApp()" style="height: 100vh; max-width: 100%" class="pa-2">
         <Editor v-if="project !== undefined" ref="editor" :templates="templates" :project="project"/>

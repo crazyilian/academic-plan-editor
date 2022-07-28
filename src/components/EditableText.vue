@@ -36,7 +36,7 @@ export default {
     }
   },
   watch: {
-    editing() { console.log('watch'); this.onStartEditing(); }
+    editing() { this.onStartEditing(); }
   },
   mounted() {
     autosize(this.$refs.editField);
@@ -51,11 +51,9 @@ export default {
     },
     applyVal(val) {
       this.editingValue = val;
-      console.log(this.editingValue);
       this.$emit('change', val);
     },
     nameChange(editFlag) {
-      console.log(editFlag);
       if (editFlag && this.editingValue !== null) {
         const newVal = this.editingValue.trim();
         if (newVal.length > 0) {

@@ -2,12 +2,12 @@ function isEqual(a, b) {
   return JSON.stringify(a) === JSON.stringify(b);
 }
 
-function unique(array, propertyName) {
-  return array.filter((e, i) => array.findIndex(a => isEqual(a[propertyName], e[propertyName])) === i);
+function unique(array) {
+  return array.filter((e, i) => array.findIndex(a => isEqual(a, e)) === i);
 }
 
 function allNumbers(grades) {
-  const all_numbers = unique(grades, 'name').map(g => g.name);
+  const all_numbers = unique(grades.map(g => g.name));
   all_numbers.sort((a, b) => a - b);
   return all_numbers;
 }
@@ -23,30 +23,59 @@ function getProfileGroup(grades, profile) {
   const default_group = getDefaultGroup(grades);
   const prof_grades = [...grades.filter(g => isEqual(g.profile, profile)), ...default_group];
   const group = default_group.map(grade => prof_grades.filter(g => g.name === grade.name)[0])
-  return group;
+  return structuredClone(group).map(grade => ({ ...grade, highlight: false, weeknum: null }));
 }
 
 
-function getProfileAreas(grades) {
-  let profiles = unique(grades, 'profile').map(g => g.profile);
-
-  const areas = [{ [profiles[0][0]]: profiles[0] }];
+function getProfileMenu(grades) {
+  let profiles = unique(grades.map(g => g.profile));
+  const menu = [{
+    type: 'value',
+    name: profiles[0][0],
+    data: profiles[0],
+  }];
   profiles = profiles.slice(1);
 
-  const usual_profiles = profiles.filter(p => p.length === 1).reduce((o, p) => ({ ...o, [p[0]]: p }), {});
-  if (Object.keys(usual_profiles).length > 0) areas.push(usual_profiles);
+  const usual_profiles = profiles.filter(p => p.length === 1).map((p) => ({
+    type: 'value',
+    name: p[0],
+    data: p,
+  }));
+  if (Object.keys(usual_profiles).length > 0) {
+    menu.push({ type: 'divider' }, ...usual_profiles)
+  }
   profiles = profiles.filter(p => p.length !== 1);
 
   const project_profiles_list = profiles.filter(p => p.length === 2);
-  const project_profiles = unique(project_profiles_list, 0).map(p => p[0]).map(x => {
-    const second = project_profiles_list.filter(p => p[0] === x).map(p => p[1]);
-    if (isEqual(second, [""])) return { [x]: [x, ""] }
-    return { [x]: second.reduce((o, y) => ({ ...o, [y]: [x, y] }), {}) };
-  }).reduce((o, a) => ({ ...o, ...a }), {});
-  if (Object.keys(project_profiles).length > 0) areas.push(project_profiles);
+  const project_profiles = unique(project_profiles_list.map((p) => p[0])).map(p0 => {
+    const second = project_profiles_list.filter(p => p[0] === p0).map(p => p[1]);
+    if (isEqual(second, [""])) {
+      return {
+        type: 'value',
+        name: p0,
+        data: [p0, ""]
+      }
+    }
+    return {
+      type: 'menu',
+      name: p0,
+      data: second.map(p1 => ({
+        type: 'value',
+        name: p1,
+        data: [p0, p1],
+      }))
+    };
+  });
+  if (Object.keys(project_profiles).length > 0) {
+    menu.push({ type: 'divider' }, {
+      type: 'menu',
+      name: 'Класс проекта',
+      data: project_profiles,
+    });
+  }
   profiles = profiles.filter(p => p.length !== 2);
 
-  return areas;
+  return menu;
 }
 
 function addGroupToPlan(plan, ...groups) {
@@ -70,7 +99,7 @@ export {
   allNumbers,
   getDefaultGroup,
   getProfileGroup,
-  getProfileAreas,
+  getProfileMenu,
   addGroupToPlan,
   fillShape2,
 }

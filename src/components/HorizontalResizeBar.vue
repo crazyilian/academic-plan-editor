@@ -14,7 +14,6 @@
 </template>
 
 <script>
-import Vue from "vue";
 
 export default {
   name: "HorizontalResizeBar",
@@ -29,8 +28,8 @@ export default {
     }
   },
   mounted() {
-    window.addEventListener('mouseup', this.dragEnd)
-    window.addEventListener('mousemove', this.dragging)
+    window.addEventListener('mouseup', this.dragEnd, false)
+    window.addEventListener('mousemove', this.dragging, false)
     this.setHeight(this.initial);
   },
   unmounted() {
@@ -39,10 +38,10 @@ export default {
   },
   methods: {
     dragStart() {
-      this.isDragging = true
+      this.isDragging = true;
     },
     dragEnd() {
-      this.isDragging = false
+      this.isDragging = false;
     },
     slot() {
       return this.$scopedSlots.default()[0].elm;
@@ -55,9 +54,7 @@ export default {
       }
     },
     setHeight(val) {
-      const style = this.slot().style;
-      Vue.set(style, 'min-height', val + 'px')
-      Vue.set(style, 'height', val + 'px')
+      this.slot().style.height = val + 'px';
     }
   }
 }
