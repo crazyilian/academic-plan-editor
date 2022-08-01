@@ -1,12 +1,35 @@
 <template>
+  <!--
+
+[
+  {
+     type: 'value',
+     name: 'menu button 1',
+     data: 0
+   },
+   {
+     type: 'menu',
+     name: 'menu button 2',
+     data: ...
+   },
+   {
+     type: 'text',
+     name: 'any text',
+     data: { 'class-1': true }
+   },
+   {
+     type: 'divider'
+   }
+]
+
+  -->
   <v-menu
       :value="value"
-      :offset-x="submenu"
-      :left="submenu"
+      v-bind="attrs"
   >
-    <template #activator="{ attrs }">
+    <template #activator="{ attrs: btn_attrs }">
       <div
-          v-bind="attrs"
+          v-bind="btn_attrs"
           @click="setModel(true)"
           @mouseenter="setButtonModel(true)"
           @mouseleave="setButtonModel(false)"
@@ -37,6 +60,7 @@
             v-else-if="val.type === 'menu'"
             :value="models[i]"
             :submenu="true"
+            :attrs="{'offset-x': true, 'left': true}"
             :data="val.data"
             @input="setSubmenuModel(i, $event)"
             @choose="$emit('choose', $event)"
@@ -54,6 +78,9 @@
             <span>{{ val.name }}</span>
           </v-btn>
         </Menu>
+        <div v-else-if="val.type === 'text'" class="pl-2" :class="val.data">
+          <span>{{ val.name }}</span>
+        </div>
         <div v-else-if="val.type === 'divider'" style="height: 0.5px; width: 100%; background-color: gray"/>
       </div>
     </div>
@@ -69,6 +96,7 @@ export default {
     data: { type: Array, default: () => [] },
     submenu: { type: Boolean, default: false },
     value: { type: Boolean, default: false },
+    attrs: { type: Object, default: () => ({}) }
   },
   data() {
     return {
@@ -136,6 +164,12 @@ export default {
 
 .current-submenu-item-btn {
   background-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+.menu-title-text {
+  font-weight: bold;
+  padding-top: 4px;
+  padding-bottom: 8px;
 }
 
 </style>

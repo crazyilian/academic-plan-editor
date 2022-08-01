@@ -23,7 +23,14 @@ export default {
   },
   data() {
     return {
-      data: getProfileMenu(this.grades),
+      data: [
+        {
+          type: 'text', name: 'Выберите профиль класса',
+          data: { 'menu-title-text': true }
+        },
+        { type: 'divider' },
+        ...getProfileMenu(this.grades)
+      ],
       model: false,
     }
   },

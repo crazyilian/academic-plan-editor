@@ -33,7 +33,7 @@
           :checkbox="plan[i][j].advanced"
           :max="99"
           :show-checkbox="can_advanced"
-          :show-label="true"
+          :show-label="can_advanced"
           @input="counterChange(i, j, $event)"
           @checkbox-change="setAdvanced(i, j, $event)"
       />

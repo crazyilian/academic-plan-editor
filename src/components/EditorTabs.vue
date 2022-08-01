@@ -31,32 +31,30 @@
     </v-btn>
 
     <v-card flat class="pa-0 add-menu-container" :class="{'pt-2': tabsTemplates.length > 0}">
-      <v-menu bottom offset-y>
-        <template #activator="{ on, attrs }">
-          <v-btn
-              text
-              color="#d6d6d6"
-              style="text-transform: none;"
-              dark
-              v-bind="attrs"
-              class="px-3"
-              v-on="on"
-          >
-            <span class="mr-2">{{ ADD_STRING }}</span>
-            <v-icon color="#51BB19">mdi-plus</v-icon>
-          </v-btn>
-        </template>
-
-        <v-list>
-          <v-list-item
-              v-for="(template, i) in templates"
-              :key="i"
-              @click="addTab(i)"
-          >
-            <v-list-item-title>{{ template.config.title }}</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
+      <Menu
+          v-model="menuModel"
+          :attrs="{'bottom': true, 'offset-y': true}"
+          :data="[
+                  {
+                    type: 'text', name:'Выберите уровень образования',
+                    data: { 'menu-title-text': true }
+                  },
+                  {type: 'divider' },
+                  ...templates.map((template, i) => ({ type: 'value', name: template.config.title, data: i }))
+                 ]"
+          @choose="addTab"
+      >
+        <v-btn
+            text
+            color="#d6d6d6"
+            style="text-transform: none;"
+            dark
+            class="px-3"
+        >
+          <span class="mr-2">Создать УП</span>
+          <v-icon color="#51BB19">mdi-plus</v-icon>
+        </v-btn>
+      </Menu>
     </v-card>
   </v-container>
 </template>
@@ -65,12 +63,11 @@
 
 import EditableText from "@/components/EditableText";
 import Vue from "vue";
-
-const ADD_STRING = "Создать УП";
+import Menu from "@/components/Menu";
 
 export default {
   name: "EditorTabs",
-  components: { EditableText },
+  components: { Menu, EditableText },
   props: {
     tabsTemplates: { type: Array, default: () => [] },
     templates: { type: Array, default: () => [] },
@@ -78,9 +75,8 @@ export default {
   },
   data() {
     return {
-      ADD_STRING: ADD_STRING,
-      addSelector: ADD_STRING,
       editingNameId: null,
+      menuModel: false,
     }
   },
   methods: {
