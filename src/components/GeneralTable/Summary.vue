@@ -1,8 +1,8 @@
 <template>
   <div class="general-row">
     <div class="general-row-name">{{ name }}</div>
-    <div style="display: flex; flex-wrap: wrap;">
-      <template v-for="(group, i) in gradeGroups">
+    <div style="display: flex; flex-wrap: wrap; flex-direction: row-reverse">
+      <div v-for="(group, i) in gradeGroups" :key="i" style="display: flex">
         <div v-for="(grade, j) in group" :key="i * 100 + j">
           <Counter
               ref="counters"
@@ -15,7 +15,7 @@
               @input="counterChange(i, j, $event)"
           />
         </div>
-      </template>
+      </div>
     </div>
   </div>
 </template>

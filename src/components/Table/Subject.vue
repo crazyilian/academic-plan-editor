@@ -22,22 +22,24 @@
       {{ name }}
     </div>
     <Message container-style="width: 60%; margin-left: 24px; margin-right: 24px; min-width: 20px" :messages="messages"/>
-    <template v-for="(group, i) in gradeGroups">
-      <Counter
-          v-for="(grade, j) in group"
-          :key="i * 100 + j"
-          ref="counters"
-          :correct="countersCorrect[i][j]"
-          :highlight="grade.highlight"
-          :start-value="plan[i][j].value"
-          :checkbox="plan[i][j].advanced"
-          :max="99"
-          :show-checkbox="can_advanced"
-          :show-label="can_advanced"
-          @input="counterChange(i, j, $event)"
-          @checkbox-change="setAdvanced(i, j, $event)"
-      />
-    </template>
+    <div style="display: flex; flex-direction: row-reverse">
+      <div v-for="(group, i) in gradeGroups" :key="i" style="display: flex">
+        <Counter
+            v-for="(grade, j) in group"
+            :key="i * 100 + j"
+            ref="counters"
+            :correct="countersCorrect[i][j]"
+            :highlight="grade.highlight"
+            :start-value="plan[i][j].value"
+            :checkbox="plan[i][j].advanced"
+            :max="99"
+            :show-checkbox="can_advanced"
+            :show-label="can_advanced"
+            @input="counterChange(i, j, $event)"
+            @checkbox-change="setAdvanced(i, j, $event)"
+        />
+      </div>
+    </div>
   </div>
 </template>
 

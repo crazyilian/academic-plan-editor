@@ -7,18 +7,20 @@
             Формируемая часть
           </div>
           <div style="flex-grow: 1"/>
-          <template v-for="(group, i) in gradeGroups">
-            <Counter
-                v-for="(grade, j) in group"
-                :key="i * 100 + j"
-                ref="counters"
-                :correct="true"
-                :highlight="grade.highlight"
-                :start-value="plan.hours[i][j]"
-                :max="99"
-                @input="counterChange(i, j, $event)"
-            />
-          </template>
+          <div style="display: flex; flex-direction: row-reverse">
+            <div v-for="(group, i) in [...gradeGroups].reverse()" :key="i" style="display: flex">
+              <Counter
+                  v-for="(grade, j) in group"
+                  :key="i * 100 + j"
+                  ref="counters"
+                  :correct="true"
+                  :highlight="grade.highlight"
+                  :start-value="plan.hours[i][j]"
+                  :max="99"
+                  @input="counterChange(i, j, $event)"
+              />
+            </div>
+          </div>
         </div>
         <div class="formative-list">
           <FormativeSubject
