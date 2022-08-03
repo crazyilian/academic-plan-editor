@@ -21,14 +21,17 @@
     <div style="min-width: 0; width: 40%; display: inline-block; word-wrap: break-word" class="subject-name">
       {{ name }}
     </div>
-    <Message container-style="width: 60%; margin-left: 24px; margin-right: 24px; min-width: 20px" :messages="messages"/>
+    <Message
+        container-style="width: 60%; margin-left: 24px; margin-right: 24px; min-width: 20px"
+        :messages="messages.length > 0 ? messages : weakMessages"
+    />
     <div style="display: flex; flex-direction: row-reverse">
       <div v-for="(group, i) in gradeGroups" :key="group[0].id" style="display: flex">
         <Counter
             v-for="(grade, j) in group"
             :key="grade.id"
             ref="counters"
-            :correct="countersCorrect[i][j]"
+            :correct="countersCorrect[i][j] && countersCorrectTop[i][j]"
             :highlight="grade.highlight"
             :start-value="plan[i][j].value"
             :checkbox="plan[i][j].advanced"
@@ -67,8 +70,16 @@ export default {
     return {
       checkbox: this.required,
       messages: [],
-      correct: false,
+      weakMessages: [],
+      incorrectCnt: 0,
       countersCorrect: fillShape2(this.gradeGroups, () => true),
+      countersCorrectTop: fillShape2(this.gradeGroups, () => true),
+      incorrectCntTop: 0,
+    }
+  },
+  computed: {
+    correct() {
+      return this.incorrectCnt === 0 && this.incorrectCntTop === 0;
     }
   },
   mounted() {
@@ -84,23 +95,44 @@ export default {
     },
     setAdvanced(i, j, adv) {
       Vue.set(this.plan[i][j], 'advanced', Boolean(adv));
+      this.validate();
     },
     validate() {
-      this.correct = true;
+      this.incorrectCnt = 0;
       this.countersCorrect.forEach((group) => group.forEach((v, i) => Vue.set(group, i, true)));
       this.messages = [];
+      this.weakMessages = [];
 
-      for (const [i] of [...this.gradeGroups.entries()].reverse()) {
-        const sumHours = this.getSumHoursGroup(i);
+      for (const [gi, group] of this.gradeGroups.entries()) {
+        const sumHours = this.getSumHoursGroup(gi);
         if (this.required && sumHours === 0) {
-          this.messages.push(errorMessages.NO_ZERO_HOURS);
-          this.countersCorrect[i].forEach((v, j) => Vue.set(this.countersCorrect[i], j, false))
-          this.correct = false;
+          this.messages.push(errorMessages.NO_ZERO_IN_REQUIRED(group));
+          this.countersCorrect[gi].forEach((v, j, self) => {
+            if (self[j]) {
+              this.incorrectCnt += 1;
+              Vue.set(self, j, false)
+            }
+          });
         }
       }
 
       this.$emit('validate');
     },
+    addMessages(...messages) {
+      this.$nextTick(() => {
+        this.messages.push(...messages);
+      })
+    },
+    setCorrectness(val, ...gradeIds) {
+      for (const [groupId, gradeId] of gradeIds) {
+        if (this.countersCorrectTop[groupId][gradeId] !== val) {
+          this.$nextTick(() => {
+            Vue.set(this.countersCorrectTop[groupId], gradeId, val);
+            this.incorrectCntTop += val ? -1 : +1;
+          })
+        }
+      }
+    }
   }
 }
 </script>

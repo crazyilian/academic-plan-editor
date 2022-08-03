@@ -4,12 +4,12 @@ function isEqual(a, b) {
   return JSON.stringify(a) === JSON.stringify(b);
 }
 
-function unique(array) {
-  return array.filter((e, i) => array.findIndex(a => isEqual(a, e)) === i);
+function unique(el, i, self) {
+  return self.findIndex(a => isEqual(a, el)) === i;
 }
 
 function allNumbers(grades) {
-  const all_numbers = unique(grades.map(g => g.name));
+  const all_numbers = grades.map(g => g.name).filter(unique);
   all_numbers.sort((a, b) => a - b);
   return all_numbers;
 }
@@ -31,7 +31,7 @@ function getProfileGroup(grades, profile) {
 
 
 function getProfileMenu(grades) {
-  let profiles = unique(grades.map(g => g.profile));
+  let profiles = grades.map(g => g.profile).filter(unique);
   const menu = [{
     type: 'value',
     name: profiles[0][0],
@@ -50,7 +50,7 @@ function getProfileMenu(grades) {
   profiles = profiles.filter(p => p.length !== 1);
 
   const project_profiles_list = profiles.filter(p => p.length === 2);
-  const project_profiles = unique(project_profiles_list.map((p) => p[0])).map(p0 => {
+  const project_profiles = project_profiles_list.map((p) => p[0]).filter(unique).map(p0 => {
     const second = project_profiles_list.filter(p => p[0] === p0).map(p => p[1]);
     if (isEqual(second, [""])) {
       return {
@@ -92,6 +92,10 @@ function fillShape2(gradeGroups, mp) {
   return gradeGroups.map((group, i) => group.map((grade, j) => mp(i, j, group, grade)));
 }
 
+function isEqualGrade(g1, g2) {
+  return g1.name === g2.name && isEqual(g1.profile, g2.profile);
+}
+
 // const fs = require('fs-extra');
 // const template = fs.readJsonSync('../kek2.json');
 //
@@ -105,4 +109,7 @@ export {
   getProfileMenu,
   addGroupToPlan,
   fillShape2,
+  isEqualGrade,
+  unique,
+  isEqual
 }

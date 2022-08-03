@@ -38,7 +38,7 @@ import fs from "fs-extra";
       },
       ...
     ],
-    rules_obligatory: [
+    rulesObligatory: [
       {
         grades: [0],
         subjects: [[0, 2]],
@@ -49,10 +49,10 @@ import fs from "fs-extra";
       },
       ...
     ],
-    rules_formative: [
+    rulesFormative: [
       {
         grades: [3, 4],
-        names: ["Геоинформатика"],
+        subjects: ["Геоинформатика"],
         advanced: false,
         min: 2,
         max: undefined,
@@ -150,8 +150,8 @@ function parseSheet(sh, name) {
     config: { name: name, },
     grades: [],
     categories: [],
-    rules_obligatory: [],
-    rules_formative: [],
+    rulesObligatory: [],
+    rulesFormative: [],
   }
   const table = tabulate(sh);
   // const N = table.length;
@@ -246,11 +246,14 @@ function parseSheet(sh, name) {
   //////////////////////////////////////////////////////////////////////// OBLIGATORY TABLE
   for (let x = OB[0] + 1; x < OB[1]; ++x) {
     for (let y = 3; y < 3 + template.grades.length; ++y) {
-      if (table[x][y].val === "" || mrg(table, x, y)[0] !== x || mrg(table, x, y)[1] !== y) {
+      if (mrg(table, x, y)[0] !== x || mrg(table, x, y)[1] !== y) {
         continue;
       }
-      const val = parseCellVal(table[x][y].val);
-      template.rules_obligatory.push({
+      if (table[x][y].bg === undefined && table[x][y].val === "") {
+        continue;
+      }
+      const val = parseCellVal(table[x][y].val || "1");
+      template.rulesObligatory.push({
         grades: iota(y - 3, mrg(table, x, y)[3] - 3),
         subjects: iota(x - OB[0] - 1, mrg(table, x, y)[2] - OB[0] - 1).map(i => subjCoor[i]),
         advanced: table[x][y].bg === colors.advanced,
@@ -261,11 +264,14 @@ function parseSheet(sh, name) {
   //////////////////////////////////////////////////////////////////////// FORMATIVE TABLE
   for (let x = FO[0] + 1; x < FO[1]; ++x) {
     for (let y = 3; y < 3 + template.grades.length; ++y) {
-      if (table[x][y].val === "" || mrg(table, x, y)[0] !== x || mrg(table, x, y)[1] !== y) {
+      if (mrg(table, x, y)[0] !== x || mrg(table, x, y)[1] !== y) {
         continue;
       }
-      const val = parseCellVal(table[x][y].val);
-      template.rules_formative.push({
+      if (table[x][y].bg === undefined && table[x][y].val === "") {
+        continue;
+      }
+      const val = parseCellVal(table[x][y].val || "1");
+      template.rulesFormative.push({
         grades: iota(y - 3, mrg(table, x, y)[3] - 3),
         subjects: iota(x, mrg(table, x, y)[2]).map(i => table[i][0].val),
         advanced: table[x][y].bg === colors.advanced,

@@ -71,6 +71,8 @@
           <Table
               ref="table"
               :categories="template.categories"
+              :rules="template.rulesObligatory"
+              :grades="template.grades"
               :grade-groups="gradeGroups"
               :plan="obligatoryPlan"
           />
