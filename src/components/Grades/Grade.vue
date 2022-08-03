@@ -1,6 +1,6 @@
 <template>
   <div
-      style="width: 48px; height: 100%; display: flex; flex-direction: column; padding-bottom: 2px; justify-content: space-between"
+      style="width: 48px; height: 100%; display: flex; flex-direction: column; padding: 2px 0; justify-content: space-between"
       @mouseover="highlightGrade(true)"
       @mouseleave="highlightGrade(false)"
   >

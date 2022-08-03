@@ -55,14 +55,12 @@
             <div style="display: flex; align-items: center">
               <ProfileMenu
                   :grades="template.grades"
-                  :grade-groups="gradeGroups"
-                  :obligatory-plan="obligatoryPlan"
-                  :formative-plan="formativePlan"
+                  @add-group="addGroup"
               />
               <BarGradeGroups
-                  class="ml-1"
-                  style="margin-right: 8px"
-                  :grades-groups="gradeGroups"
+                  class="ml-1 mr-2"
+                  :grade-groups="gradeGroups"
+                  @remove-group="removeGroup"
               />
             </div>
           </div>
@@ -175,6 +173,21 @@ export default {
     switchGeneralTable() {
       this.showGeneralTable = !this.showGeneralTable;
     },
+    addGroup(group) {
+      const n = this.gradeGroups.length;
+      Vue.set(this.gradeGroups, n, group);
+      this.obligatoryPlan.forEach((category) => category.forEach((subject) => {
+        Vue.set(subject, n, Array(group.length).fill(null).map(() => ({ value: 0, advanced: false })))
+      }))
+      Vue.set(this.formativePlan.hours, n, Array(group.length).fill(0));
+    },
+    removeGroup(i) {
+      Vue.delete(this.gradeGroups, i);
+      this.obligatoryPlan.forEach((category) => category.forEach((subject) => {
+        Vue.delete(subject, i)
+      }))
+      Vue.delete(this.formativePlan.hours, i);
+    }
   }
 };
 </script>

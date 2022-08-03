@@ -1,3 +1,5 @@
+let gradeId = 0;
+
 function isEqual(a, b) {
   return JSON.stringify(a) === JSON.stringify(b);
 }
@@ -15,7 +17,8 @@ function allNumbers(grades) {
 
 function getDefaultGroup(grades) {
   const all_numbers = allNumbers(grades);
-  const group = all_numbers.map(name => grades.find(el => el.name === name));
+  const group = all_numbers.map(name => grades.find(el => el.name === name))
+      .map(grade => ({ ...grade, id: gradeId += 1 }));
   return group;
 }
 
@@ -23,7 +26,7 @@ function getProfileGroup(grades, profile) {
   const default_group = getDefaultGroup(grades);
   const prof_grades = [...grades.filter(g => isEqual(g.profile, profile)), ...default_group];
   const group = default_group.map(grade => prof_grades.filter(g => g.name === grade.name)[0])
-  return structuredClone(group).map(grade => ({ ...grade, highlight: false, weeknum: null }));
+  return structuredClone(group).map(grade => ({ ...grade, highlight: false, weeknum: null, id: gradeId += 1 }));
 }
 
 

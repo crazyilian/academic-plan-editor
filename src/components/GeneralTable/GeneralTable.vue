@@ -4,7 +4,7 @@
       <div style="display: flex; justify-content: flex-end">
         <BarGradeGroups
             style="margin-right: 24px; min-height: 44px;"
-            :grades-groups="gradeGroups"
+            :grade-groups="gradeGroups"
         />
       </div>
     </HorizontalResizeBar>
@@ -53,7 +53,7 @@
             ref="s5"
             name="На уровень образования"
             error-name="Количество часов в год на уровень образования"
-            :grade-groups="gradeGroups.map((group) => [{highlight: group.reduce((r, grade) => r || grade.highlight, false)}])"
+            :grade-groups="gradeGroups.map((group) => [{highlight: group.reduce((r, grade) => r || grade.highlight, false), id: group[0].id}])"
             :data-raw="[{name: 'Час / год', values: edu(), edit: false},
                       {type: 'min', values: edumin()},
                       {type: 'max', values: edumax()}]"

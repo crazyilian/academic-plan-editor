@@ -8,10 +8,10 @@
           </div>
           <div style="flex-grow: 1"/>
           <div style="display: flex; flex-direction: row-reverse">
-            <div v-for="(group, i) in gradeGroups" :key="i" style="display: flex">
+            <div v-for="(group, i) in gradeGroups" :key="group[0].id" style="display: flex">
               <Counter
                   v-for="(grade, j) in group"
-                  :key="i * 100 + j"
+                  :key="grade.id"
                   ref="counters"
                   :correct="true"
                   :highlight="grade.highlight"

@@ -23,10 +23,10 @@
     </div>
     <Message container-style="width: 60%; margin-left: 24px; margin-right: 24px; min-width: 20px" :messages="messages"/>
     <div style="display: flex; flex-direction: row-reverse">
-      <div v-for="(group, i) in gradeGroups" :key="i" style="display: flex">
+      <div v-for="(group, i) in gradeGroups" :key="group[0].id" style="display: flex">
         <Counter
             v-for="(grade, j) in group"
-            :key="i * 100 + j"
+            :key="grade.id"
             ref="counters"
             :correct="countersCorrect[i][j]"
             :highlight="grade.highlight"

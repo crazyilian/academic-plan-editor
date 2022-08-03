@@ -10,16 +10,12 @@
 
 import { getProfileMenu, getProfileGroup } from "@/gradeProcessing";
 import Menu from "@/components/Menu";
-import Vue from "vue";
 
 export default {
   name: "ProfileMenu",
   components: { Menu },
   props: {
     grades: { type: Array, default: () => [] },
-    gradeGroups: { type: Array, default: () => [] },
-    obligatoryPlan: { type: Array, default: () => [] },
-    formativePlan: { type: Object, default: () => ({}) },
   },
   data() {
     return {
@@ -37,12 +33,7 @@ export default {
   methods: {
     chooseProfile(profile) {
       const group = getProfileGroup(this.grades, profile);
-      const n = this.gradeGroups.length;
-      Vue.set(this.gradeGroups, n, group);
-      this.obligatoryPlan.forEach((category) => category.forEach((subject) => {
-        Vue.set(subject, n, Array(group.length).fill(null).map(() => ({ value: 0, advanced: false })))
-      }))
-      Vue.set(this.formativePlan.hours, n, Array(group.length).fill(0));
+      this.$emit('add-group', group);
     }
   }
 }
