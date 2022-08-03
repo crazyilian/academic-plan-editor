@@ -15,6 +15,8 @@ function profile(s) {
 }
 
 function enumerate(arr, last = 'и') {
+  if (arr.length === 0)
+    return "";
   if (arr.length === 1)
     return arr[0];
   return arr.slice(0, -1).join(', ') + ` ${last} ` + arr.slice(-1)[0];
@@ -66,21 +68,28 @@ export default {
   "SUMMARY_TOO_SMALL": (name, grade) => `${capitalize(name)}${profile(grade)} меньше, чем разрешено`,
   "SUMMARY_TOO_BIG": (name, grade) => `${capitalize(name)}${profile(grade)} больше, чем разрешено`,
   "SUMMARY_NULL": (name, grade) => `Не указано ${lower(name)}${profile(grade)}`,
-  "ALL_ADVANCED": (grades, subjects) => {
+  "RULE_OBLIGATORY_UNIVERSAL": (grades, subjects, keys, min, max) => {
+    const NEED = keys.reduce((o, v) => ({ ...o, [v]: true }), {});
     let res = gradesOfProfileNeedSubjects(grades, subjects);
-    res += ` углубленно`;
+    const msgs = [];
+    if (NEED.ADVANCED) {
+      msgs.push('углублённо');
+    }
+    const hoursMin = `${min % 10 === 1 && min % 100 !== 11 ? 'часа' : 'часов'} в неделю`
+    const hoursMax = `${max % 10 === 1 && max % 100 !== 11 ? 'часа' : 'часов'} в неделю`
+    if (NEED.MIN && NEED.MAX) {
+      msgs.push(`не менее ${min}`, `не более ${max} ${hoursMax}`)
+    } else if (NEED.MIN) {
+      msgs.push(`не менее ${min} ${hoursMin}`)
+    } else if (NEED.MAX) {
+      msgs.push(`не более ${max} ${hoursMax}`)
+    }
+    console.log(keys);
+    console.log(msgs);
+    res += ` ${enumerate(msgs)}`;
     return res;
   },
-  "RULE_TO_SMALL": (grades, subjects, val) => {
-    let res = gradesOfProfileNeedSubjects(grades, subjects);
-    res += ` не менее ${val} ${val % 10 === 1 && val % 100 !== 11 ? 'часа' : 'часов'} в неделю`;
-    return res;
-  },
-  "RULE_TO_BIG": (grades, subjects, val) => {
-    let res = gradesOfProfileNeedSubjects(grades, subjects);
-    res += ` не более ${val} ${val % 10 === 1 && val % 100 !== 11 ? 'часа' : 'часов'} в неделю`;
-    return res;
-  },
+
   "DIFFERENT_SUBJECTS": (grades, mins) => {
     let res = gradesOfProfileNeed(grades);
     res += ` изучать разные предметы не менее ${enumerate(mins)} часов в неделю соответственно`;

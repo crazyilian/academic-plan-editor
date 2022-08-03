@@ -73,12 +73,24 @@ export default {
               }
             }
             this.addGradeIds(rule, gradesCoordinates);
-            if (rule.advanced && !advanced)
-              this.addMessage(rule, errorMessages.ALL_ADVANCED(ruleGrades, ruleSubjects), gradesCoordinates);
-            if (rule.min > value)
-              this.addMessage(rule, errorMessages.RULE_TO_SMALL(ruleGrades, ruleSubjects, rule.min), gradesCoordinates);
-            if (rule.max !== undefined && rule.max < value)
-              this.addMessage(rule, errorMessages.RULE_TO_BIG(ruleGrades, ruleSubjects, rule.max), gradesCoordinates);
+            const badKeys = [
+              ...(rule.advanced && !advanced ? ['ADVANCED'] : []),
+              ...(rule.min > value ? ['MIN'] : []),
+              ...(rule.max !== undefined && rule.max < value ? ['MAX'] : [])
+            ];
+            if (badKeys.length > 1) {
+              this.addMessage(
+                  rule,
+                  errorMessages.RULE_OBLIGATORY_UNIVERSAL(ruleGrades, ruleSubjects, badKeys, rule.min, rule.max),
+                  gradesCoordinates
+              );
+            }
+            // if (rule.advanced && !advanced)
+            //   this.addMessage(rule, errorMessages.ALL_ADVANCED(ruleGrades, ruleSubjects), gradesCoordinates);
+            // if (rule.min > value)
+            //   this.addMessage(rule, errorMessages.RULE_TO_SMALL(ruleGrades, ruleSubjects, rule.min), gradesCoordinates);
+            // if (rule.max !== undefined && rule.max < value)
+            //   this.addMessage(rule, errorMessages.RULE_TO_BIG(ruleGrades, ruleSubjects, rule.max), gradesCoordinates);
           } else {
             const edges = [];
             const subj2num = {};
