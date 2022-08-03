@@ -12,7 +12,7 @@
               style="writing-mode: vertical-rl; transform: rotate(180deg)"
               v-on="on"
           >
-            <span style="font-size: 0.8em; overflow: hidden">{{ grade.profile.slice(-1)[0] }}</span>
+            <span style="font-size: 0.8em; overflow: hidden">{{ grade.profile.filter(s => s).slice(-1)[0] }}</span>
           </div>
         </template>
         <div class="pa-2" style="text-align: center; max-width: 200px; word-wrap: break-word">
