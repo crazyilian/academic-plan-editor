@@ -6,6 +6,7 @@
     <EditableText
         :value="name"
         :editing="editing"
+        style="flex-grow: 1"
         @change="$emit('change', $event)"
         @span-click="editName"
     />
