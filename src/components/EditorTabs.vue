@@ -87,8 +87,8 @@ export default {
     async askCloseTab(i) {
       const buttonId = await window.ipcRenderer.messageBox({
         'type': 'question',
-        'title': 'Закрытие...',
-        'message': 'Вы уверены, что хотите закрыть план?',
+        'title': 'Удаление...',
+        'message': 'Вы уверены, что хотите удалить план?',
         'detail': `Все введённые данные по учебному плану "${this.tabsTemplates[i].config.name}" будут удалены.`,
         'buttons': ['Да', 'Нет'],
         'cancelId': 1,
