@@ -1,7 +1,7 @@
 <template>
   <v-tooltip
       bottom
-      :disabled="messages.length === 0 || (messages.length === 1 && !tooltipVisible)"
+      :disabled="value.length === 0 || (value.length === 1 && !tooltipVisible)"
       :open-delay="500"
   >
     <template #activator="{ on, attrs} ">
@@ -14,22 +14,23 @@
           v-on="on"
           @mouseover="updateTooltip"
       >
-        {{ messages.concat([""])[0] + (messages.length > 1 && !tooltipVisible ? '...' : '') }}
+        {{ value.concat([""])[0] + (value.length > 1 && !tooltipVisible ? '...' : '') }}
       </div>
     </template>
     <div style="max-width: 500px">
-      <div v-if="messages.length > 1" style="padding: 8px 12px 8px 8px">
+      <div v-if="value.length > 1" style="padding: 8px 12px 8px 8px">
         <ol>
           <li
-              v-for="(msg, i) in messages"
-              :key="i" style=""
+              v-for="(msg, i) in value"
+              :key="msg"
+              :class="{'pt-2': i > 0}"
           >
             {{ msg }}
           </li>
         </ol>
       </div>
       <div v-else style="padding: 8px 12px 8px 12px">
-        {{ messages[0] }}
+        {{ value[0] }}
       </div>
     </div>
   </v-tooltip>
@@ -39,12 +40,19 @@
 export default {
   name: "Message",
   props: {
-    'messages': { type: Array, default: () => [] },
-    'containerStyle': { type: String, default: "" }
+    messages: { type: Array, default: () => [] },
+    containerStyle: { type: String, default: "" }
   },
   data() {
     return {
       tooltipVisible: true,
+    }
+  },
+  computed: {
+    value() {
+      const res = structuredClone(this.messages);
+      res.sort();
+      return res;
     }
   },
   watch: {
