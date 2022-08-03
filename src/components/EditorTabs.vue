@@ -11,18 +11,19 @@
         @click="$emit('input', i)"
     >
       <EditableText
+          style="flex-grow: 1"
           class="ml-1"
           :value="template.config.name"
           :editing="editingNameId === i"
           @change="nameChange(i, $event)"
       />
-      <div class="pl-1" @click="editName(i)">
+      <div class="pl-1 d-flex flex-column justify-center" @click="editName(i)">
         <v-hover v-slot="{ hover }">
           <v-icon v-if="hover" color="#deca35">mdi-pencil-box</v-icon>
           <v-icon v-else color="#bebb9b">mdi-pencil-box-outline</v-icon>
         </v-hover>
       </div>
-      <div class="pr-1" @click.stop="askCloseTab(i)">
+      <div class="pr-1 d-flex flex-column justify-center" @click.stop="askCloseTab(i)">
         <v-hover v-slot="{ hover }">
           <v-icon v-if="hover" color="error">mdi-close-circle</v-icon>
           <v-icon v-else color="#b68484">mdi-close-circle-outline</v-icon>
