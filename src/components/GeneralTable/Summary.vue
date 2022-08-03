@@ -40,7 +40,7 @@ export default {
     'mins': { type: Array, default: undefined },
     'maxs': { type: Array, default: undefined },
     'nullAvailable': { type: Boolean, default: false },
-    'oninput': { type: Function, default: undefined }
+    'onedit': { type: Function, default: undefined }
   },
   data() {
     return {
@@ -63,10 +63,10 @@ export default {
   },
   methods: {
     counterChange(i, j, val) {
-      if (this.oninput === undefined) {
+      if (this.onedit === undefined) {
         Vue.set(this.values[i], j, val)
       } else {
-        this.oninput(i, j, val);
+        this.onedit(i, j, val);
       }
       this.$nextTick(this.validate);
     },
@@ -74,7 +74,7 @@ export default {
       this.correct = true;
       this.countersCorrect.forEach((group) => group.forEach((v, i) => Vue.set(group, i, true)));
       this.messages = [];
-      for (const [i, valueGroup] of this.values.entries()) {
+      for (const [i, valueGroup] of [...this.values.entries()].reverse()) {
         for (const [j, value] of valueGroup.entries()) {
           let bad = false;
           if (value === null) {

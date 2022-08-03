@@ -39,7 +39,7 @@
             name="Учебных недель"
             error-name="Количество учебных недель"
             :grade-groups="gradeGroups"
-            :data-raw="[{name: 'Итого', values: weeknum(), edit: true, oninput: weeknumChange}]"
+            :data-raw="[{name: 'Итого', values: weeknum(), edit: true, onedit: weeknumChange}]"
         />
         <Section
             :id="4"

@@ -99,7 +99,7 @@ export default {
       this.countersCorrect.forEach((group) => group.forEach((v, i) => Vue.set(group, i, true)));
       this.messages = [];
 
-      for (const [i] of this.gradeGroups.entries()) {
+      for (const [i] of [...this.gradeGroups.entries()].reverse()) {
         const sumHours = this.getSumHoursGroup(i);
         if (this.required && sumHours === 0) {
           this.messages.push(errorMessages.NO_ZERO_HOURS);
