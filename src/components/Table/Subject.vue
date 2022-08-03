@@ -71,15 +71,6 @@ export default {
       countersCorrect: fillShape2(this.gradeGroups, () => true),
     }
   },
-  watch: {
-    gradeGroups: {
-      handler() {
-        this.countersCorrect = fillShape2(this.gradeGroups, () => true);
-        this.validate();
-      },
-      deep: true
-    },
-  },
   mounted() {
     this.validate();
   },

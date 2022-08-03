@@ -22,7 +22,7 @@
       <Subject
           v-for="(sub, i) in subjects"
           :id="i"
-          :key="i"
+          :key="gradeGroups.length * 100 + i"
           v-bind="sub"
           ref="subjects"
           :grade-groups="gradeGroups"
