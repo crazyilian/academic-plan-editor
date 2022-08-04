@@ -21,7 +21,7 @@
       </v-tooltip>
     </div>
     <div class="grade-name" style="height: 1rem">
-      <span>{{ grade.id }}</span>
+      <span>{{ grade.name }}</span>
     </div>
   </div>
 </template>
