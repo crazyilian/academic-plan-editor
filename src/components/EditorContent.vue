@@ -82,6 +82,7 @@
               ref="formativeTable"
               :grade-groups="gradeGroups"
               :plan="formativePlan"
+              :rules="template.rulesFormative"
           />
         </v-window-item>
       </v-window>
@@ -131,6 +132,7 @@ import FormativeTable from "@/components/FormativeTable/FormativeTable";
 import EditableText from "@/components/EditableText";
 import HorizontalResizeBar from "@/components/HorizontalResizeBar";
 import ProfileMenu from "@/components/Grades/ProfileMenu";
+import { isEqual, getProfileFormativeCategory } from "@/gradeProcessing";
 
 export default {
   name: 'EditorContent',
@@ -176,19 +178,39 @@ export default {
       this.showGeneralTable = !this.showGeneralTable;
     },
     addGroup(group) {
+      const profile = group.slice(-1)[0].profile;
       const n = this.gradeGroups.length;
       Vue.set(this.gradeGroups, n, group);
       this.obligatoryPlan.forEach((category) => category.forEach((subject) => {
         Vue.set(subject, n, Array(group.length).fill(null).map(() => ({ value: 0, advanced: false })))
       }))
       Vue.set(this.formativePlan.hours, n, Array(group.length).fill(0));
+      this.formativePlan.categories.forEach((category) => category.subjects.forEach((subject) => {
+        Vue.set(subject.plan, n, Array(group.length).fill(0));
+      }))
+      if (!this.formativePlan.categories.some((category) => isEqual(category.profile, profile))) {
+        const category = getProfileFormativeCategory(this.template.rulesFormative, this.template.grades, profile, this.gradeGroups);
+        if (category !== undefined) {
+          Vue.set(this.formativePlan.categories, this.formativePlan.categories.length, category);
+        }
+      }
     },
     removeGroup(i) {
+      const profile = this.gradeGroups[i].slice(-1)[0].profile;
       Vue.delete(this.gradeGroups, i);
       this.obligatoryPlan.forEach((category) => category.forEach((subject) => {
         Vue.delete(subject, i)
       }))
       Vue.delete(this.formativePlan.hours, i);
+      this.formativePlan.categories.forEach((category) => category.subjects.forEach((subject) => {
+        Vue.delete(subject.plan, i);
+      }))
+      if (!this.gradeGroups.some((group) => isEqual(group.slice(-1)[0].profile, profile))) {
+        const ind = this.formativePlan.categories.findIndex((category) => isEqual(category.profile, profile));
+        if (ind !== -1) {
+          Vue.delete(this.formativePlan.categories, ind);
+        }
+      }
     }
   }
 };

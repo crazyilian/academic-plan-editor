@@ -1,0 +1,98 @@
+<template>
+  <v-expansion-panel class="formative-last-category-panel">
+    <v-expansion-panel-header class="pr-2 formative-last-category">
+      <div style="width: 38%; display: inline-block; word-wrap: break-word">
+        Формируемая часть
+      </div>
+      <div style="flex-grow: 1"/>
+      <div style="display: flex; flex-direction: row-reverse">
+        <div v-for="(group, i) in gradeGroups" :key="group[0].id" style="display: flex">
+          <Counter
+              v-for="(grade, j) in group"
+              :key="grade.id"
+              ref="counters"
+              :correct="true"
+              :highlight="grade.highlight"
+              :start-value="plan.hours[i][j]"
+              :max="99"
+              @input="counterChange(i, j, $event)"
+          />
+        </div>
+      </div>
+      <template #actions>
+        <div/>
+      </template>
+    </v-expansion-panel-header>
+    <v-expansion-panel-content>
+      <FormativeLastSubject
+          v-for="(subject, i) in plan.subjects"
+          :key="i"
+          :num="i + 1"
+          :name="subject"
+          :editing="i === editingId"
+          @remove-subject="removeSubject(i)"
+          @edit-subject="editSubject(i)"
+          @change="nameChange(i, $event)"
+      />
+      <div style="display: flex; width: 100%; justify-content: center">
+        <v-btn text style="text-transform: none" class="px-3" @click="addSubject">
+          <span class="mr-2">Добавить предмет</span>
+          <v-icon color="teal">mdi-plus</v-icon>
+        </v-btn>
+      </div>
+    </v-expansion-panel-content>
+  </v-expansion-panel>
+</template>
+
+<script>
+
+import Counter from "@/components/Counter";
+import Vue from "vue";
+import FormativeLastSubject from "@/components/FormativeTable/FormativeLastSubject";
+
+export default {
+  name: 'FormativeLastCategory',
+  components: { FormativeLastSubject, Counter },
+  props: {
+    gradeGroups: { type: Array, default: () => [] },
+    plan: { type: Object, default: () => ({}) }
+  },
+  data() {
+    return {
+      editingId: null
+    }
+  },
+  methods: {
+    counterChange(i, j, val) {
+      Vue.set(this.plan.hours[i], j, val)
+    },
+    addSubject() {
+      const i = this.plan.subjects.length;
+      Vue.set(this.plan.subjects, i, `Предмет по выбору ${i + 1}`)
+      this.editingId = i;
+    },
+    removeSubject(i) {
+      Vue.delete(this.plan.subjects, i);
+    },
+    editSubject(i) {
+      this.editingId = i;
+    },
+    nameChange(i, newName) {
+      Vue.set(this.plan.subjects, i, newName)
+      this.editingId = null;
+    },
+  }
+}
+</script>
+<style>
+
+.formative-last-category.v-expansion-panel-header--active:hover::before {
+  opacity: 0.12 !important;
+}
+
+.formative-last-category.v-expansion-panel-header--active::before {
+  opacity: 0.06 !important;
+}
+
+
+</style>

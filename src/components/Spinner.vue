@@ -1,9 +1,9 @@
 <template>
   <div
       style="display: flex; flex-direction: column; height: 15px; width: 15px; justify-content: center;"
-      @mousedown="startLong"
-      @mouseup="stopLong"
-      @mouseleave="stopLong"
+      @mousedown.stop="startLong"
+      @mouseup.stop="stopLong"
+      @mouseleave.stop="stopLong"
   >
     <div class="spin-button" @mouseenter="channel = 'increase'">
       <v-icon>mdi-triangle</v-icon>

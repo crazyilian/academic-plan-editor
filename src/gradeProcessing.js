@@ -26,7 +26,9 @@ function getProfileGroup(grades, profile) {
   const default_group = getDefaultGroup(grades);
   const prof_grades = [...grades.filter(g => isEqual(g.profile, profile)), ...default_group];
   const group = default_group.map(grade => prof_grades.filter(g => g.name === grade.name)[0])
-  return structuredClone(group).map(grade => ({ ...grade, highlight: false, weeknum: null, id: gradeId += 1 }));
+  const res = structuredClone(group).map(grade => ({ ...grade, highlight: false, weeknum: null, id: gradeId += 1 }));
+  console.log('upd', gradeId);
+  return res;
 }
 
 
@@ -93,11 +95,32 @@ function fillShape2(gradeGroups, mp) {
 }
 
 function setGlobalGradeId(val) {
+  console.log('set', gradeId, val);
   gradeId = val;
 }
 
 function getGlobalGradeId() {
+  console.log('get', gradeId);
   return gradeId;
+}
+
+function getProfileFormativeCategory(rules_, grades_, profile, gradeGroups) {
+  const group = getProfileGroup(grades_, profile);
+  const rules = rules_.filter(rule => group.some(grade => rule.grades.includes(grade.index)));
+  const subjects = rules.reduce((s, r) => [...s, ...r.subjects], []).filter(unique);
+  if (subjects.length === 0) {
+    return undefined;
+  }
+  const category = {
+    name: `Особенности профиля "${profile.filter(s => s).join(': ')}"`,
+    profile: structuredClone(profile),
+    subjects: subjects.map(s => ({
+      name: s,
+      newName: s,
+      plan: fillShape2(gradeGroups, () => 0)
+    }))
+  };
+  return category;
 }
 
 export {
@@ -110,5 +133,6 @@ export {
   unique,
   isEqual,
   setGlobalGradeId,
-  getGlobalGradeId
+  getGlobalGradeId,
+  getProfileFormativeCategory
 }

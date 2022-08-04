@@ -1,70 +1,107 @@
 <template>
-  <div class="formation-subject">
-    <div class="mr-1">
-      <span>{{ id + 1 }}.</span>
-    </div>
-    <EditableText
-        :value="name"
-        :editing="editing"
-        style="flex-grow: 1"
-        @change="$emit('change', $event)"
-        @span-click="editName"
-    />
-    <div class="ml-1" style="cursor: pointer" @click="editName" >
-      <v-hover v-slot="{ hover }">
-        <div style="display: flex">
-          <div class="text--secondary pl-2 pr-1 icon-label">
-            <span>Изменить</span>
-          </div>
+  <div
+      style="display: flex; justify-content: space-between; align-items: center; width: 100%"
+      :class="{ 'error-subject': !correct }" class="subject"
+  >
+    <div class="pr-4 py-0 ma-0">
+      <div @click="editName">
+        <v-hover v-slot="{ hover }">
           <v-icon v-if="hover" color="#deca35">mdi-pencil-box</v-icon>
           <v-icon v-else color="#bebb9b">mdi-pencil-box-outline</v-icon>
-        </div>
-      </v-hover>
+        </v-hover>
+      </div>
     </div>
-    <div class="mr-1 ml-2" style="cursor: pointer" @click="askRemove">
-      <v-hover v-slot="{ hover }">
-        <div style="display: flex">
-          <div class="text--secondary pr-1 icon-label">
-            <span>Удалить</span>
-          </div>
-          <v-icon v-if="hover" color="error">mdi-close-circle</v-icon>
-          <v-icon v-else color="#b68484">mdi-close-circle-outline</v-icon>
+    <div style="min-width: 0; width: 35%; display: inline-block; word-wrap: break-word" class="subject-name">
+      {{ name }}
+    </div>
+    <Message
+        container-style="width: 65%; margin-left: 24px; margin-right: 24px; min-width: 20px"
+        :messages="messages"
+    />
+    <div style="display: flex; flex-direction: row-reverse">
+      <div v-for="(group, i) in gradeGroups" :key="group[0].id" style="display: flex">
+        <div
+            v-for="(grade, j) in group"
+            :key="grade.id"
+        >
+          <Counter
+              v-if="isGoodProfile(grade)"
+              ref="counters"
+              :correct="countersCorrectTop[i][j]"
+              :highlight="grade.highlight"
+              :start-value="plan[i][j]"
+              :max="99"
+              @input="counterChange(i, j, $event)"
+          />
+          <div v-else style="width: 48px"/>
         </div>
-      </v-hover>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import EditableText from "@/components/EditableText";
+
+import Counter from "@/components/Counter";
+import Message from "@/components/Table/Message";
+import Vue from "vue";
+import { fillShape2, isEqual } from "@/gradeProcessing";
 
 export default {
-  name: "FormativeSubject",
-  components: { EditableText },
+  name: 'FormativeSubject',
+  components: { Message, Counter },
   props: {
-    id: { type: Number, default: -1 },
-    editing: { type: Boolean, default: false },
+    num: { type: Number, default: -1 },
     name: { type: String, default: "" },
+    newName: { type: String, default: "" },
+    gradeGroups: { type: Array, default: () => [] },
+    plan: { type: Array, default: () => [] },
+    profile: { type: Array, default: () => [] },
+  },
+  data() {
+    return {
+      messages: [],
+      countersCorrectTop: fillShape2(this.gradeGroups, () => true),
+      incorrectCntTop: 0,
+    }
+  },
+  computed: {
+    correct() {
+      return this.incorrectCntTop === 0;
+    }
+  },
+  mounted() {
+    this.validate();
   },
   methods: {
-    async askRemove() {
-      const buttonId = await window.ipcRenderer.messageBox({
-        'type': 'question',
-        'title': 'Удаление...',
-        'message': 'Вы уверены, что хотите удалить предмет?',
-        'detail': `Предмет из формируемой части "${this.name}" будет удалён.`,
-        'buttons': ['Да', 'Нет'],
-        'cancelId': 1,
-        'defaultId': 0,
-        'noLink': true,
-      });
-      const remove = [true, false][buttonId];
-      if (remove) {
-        this.$emit('remove-subject');
-      }
-    },
     editName() {
-      this.$emit('edit-subject');
+      console.log('edit');
+    },
+    isGoodProfile(grade) {
+      return isEqual(grade.profile, this.profile);
+    },
+    counterChange(i, j, value) {
+      Vue.set(this.plan[i], j, value)
+      this.validate();
+    },
+    validate() {
+      this.messages = [];
+      this.$emit('validate');
+    },
+    addMessages(...messages) {
+      this.$nextTick(() => {
+        this.messages.push(...messages);
+      })
+    },
+    setCorrectness(val, ...gradeIds) {
+      for (const [groupId, gradeId] of gradeIds) {
+        if (this.countersCorrectTop[groupId][gradeId] !== val) {
+          this.$nextTick(() => {
+            Vue.set(this.countersCorrectTop[groupId], gradeId, val);
+            this.incorrectCntTop += val ? -1 : +1;
+          })
+        }
+      }
     }
   }
 }
@@ -72,36 +109,37 @@ export default {
 
 <style>
 
-.formation-subject {
-  display: flex;
-  width: 100%;
-  height: auto;
-  min-height: 32px;
-  align-items: center;
-  padding: 8px 4px;
+/* checkbox styles */
+
+.v-input--checkbox .v-messages {
+  display: none;
 }
 
-.formation-subject:hover {
-  transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
-  background-color: rgba(0, 0, 0, 0.08);
+.v-input--checkbox .v-input--selection-controls__ripple, .v-input--checkbox .v-input__slot, .v-input--checkbox .v-input--selection-controls__input {
+  margin: 0 !important;
 }
 
-.formation-subject .edit-name-area.theme--light.v-text-field--solo > .v-input__control > .v-input__slot {
-  background-color: inherit !important;
+.v-input--checkbox .v-input--selection-controls__ripple {
+  left: -5px !important;
+  top: -5px !important;
 }
 
-.formation-subject .edit-name-area {
-  font-weight: 500;
+/* other */
+
+.error-subject .checkbox-subj i {
+  color: red !important;
 }
 
-.formation-subject .mdi {
-  font-size: 24px;
+.error-subject .checkbox-subj.v-input--is-disabled i {
+  color: #d39292 !important;
 }
 
-.icon-label {
-  font-size: 11pt;
-  display: flex;
-  align-items: center;
+.subject:not(.error-subject) .checkbox-subj.v-input--is-disabled i {
+  color: #9bc99b !important;
+}
+
+.error-subject .subject-name {
+  color: red;
 }
 
 </style>

@@ -48,7 +48,7 @@
         <v-btn
             text
             color="#d6d6d6"
-            style="text-transform: none;"
+            style="text-transform: none; width: 100%"
             dark
             class="px-3"
         >

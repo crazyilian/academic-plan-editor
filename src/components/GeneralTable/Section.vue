@@ -45,18 +45,15 @@ export default {
   name: 'Section',
   components: { Summary, Message },
   props: {
-    'id': { type: Number, default: -1 },
-    'name': { type: String, default: "" },
-    'errorName': { type: String, default: "" },
-    'gradeGroups': { type: Array, default: () => [] },
-    'dataRaw': { type: Array, default: () => [] },
-    'oninput': { type: Function, default: undefined }
+    name: { type: String, default: "" },
+    errorName: { type: String, default: "" },
+    gradeGroups: { type: Array, default: () => [] },
+    dataRaw: { type: Array, default: () => [] },
+    oninput: { type: Function, default: undefined }
   },
   data() {
     return {
-      header: this.name,
       messages: [],
-      comment: "",
       correct: false,
     }
   },

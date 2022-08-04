@@ -7,7 +7,7 @@
                 'counter-error': !correct,
                 'counter-disabled': disabled
               }"
-      @click="$refs.input.focus()"
+      @click.stop="$refs.input.focus()"
   >
     <div v-if="showLabel" style="font-size: 10px; width: 0; height: 0; opacity: 0.6">{{ checkbox ? 'У' : 'Б' }}</div>
     <div class="pt-2 pb-1 counter-container-inner">

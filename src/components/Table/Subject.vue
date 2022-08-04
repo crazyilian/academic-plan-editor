@@ -18,11 +18,11 @@
       <div v-else class="pa-2" style="text-align: center">Не обязательный<br>предмет</div>
     </v-tooltip>
 
-    <div style="min-width: 0; width: 40%; display: inline-block; word-wrap: break-word" class="subject-name">
+    <div style="min-width: 0; width: 35%; display: inline-block; word-wrap: break-word" class="subject-name">
       {{ name }}
     </div>
     <Message
-        container-style="width: 60%; margin-left: 24px; margin-right: 24px; min-width: 20px"
+        container-style="width: 65%; margin-left: 24px; margin-right: 24px; min-width: 20px"
         :messages="messages"
     />
     <div style="display: flex; flex-direction: row-reverse">
@@ -57,13 +57,12 @@ export default {
   name: 'Subject',
   components: { Message, Counter },
   props: {
-    'id': { type: Number, default: -1 },
-    'name': { type: String, default: "" },
-    'required': { type: Boolean, default: false },
-    'gradeGroups': { type: Array, default: () => [] },
-    'plan': { type: Array, default: () => [] },
+    name: { type: String, default: "" },
+    required: { type: Boolean, default: false },
+    gradeGroups: { type: Array, default: () => [] },
+    plan: { type: Array, default: () => [] },
     // eslint-disable-next-line vue/prop-name-casing
-    'can_advanced': { type: Boolean, default: true },
+    can_advanced: { type: Boolean, default: true },
   },
   data() {
     return {

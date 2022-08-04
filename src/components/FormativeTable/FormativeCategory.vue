@@ -6,9 +6,9 @@
         class="category"
     >
       <div style="display: flex; justify-content: space-between; align-items: center; width: calc(100% - 24px)">
-        <div style="width: 30%; display: inline-block; word-wrap: break-word" class="subject-name">{{ name }}</div>
+        <div style="width: 38%; display: inline-block; word-wrap: break-word" class="subject-name">{{ name }}</div>
         <Message
-            container-style="width: 70%; margin-left: 12px; margin-right: 32px; min-width: 0"
+            container-style="width: 62%; margin-left: 12px; margin-right: 32px; min-width: 0"
             :messages="messages"
         />
       </div>
@@ -18,14 +18,15 @@
       </template>
     </v-expansion-panel-header>
     <v-expansion-panel-content>
-      <Subject
+      <FormativeSubject
           v-for="(sub, i) in subjects"
           :key="gradeGroups.length * 100 + i"
           v-bind="sub"
           ref="subjects"
           :grade-groups="gradeGroups"
-          :plan="plan[i]"
           :class="{'display-none': sub.is_module}"
+          :profile="profile"
+          :num="i + 1"
           @validate="validate(i)"
       />
     </v-expansion-panel-content>
@@ -34,17 +35,17 @@
 
 <script>
 
-import Subject from "@/components/Table/Subject";
 import Message from "@/components/Table/Message";
+import FormativeSubject from "@/components/FormativeTable/FormativeSubject";
 
 export default {
-  name: 'Category',
-  components: { Message, Subject },
+  name: 'FormativeCategory',
+  components: { FormativeSubject, Message },
   props: {
     name: { type: String, default: "" },
     subjects: { type: Array, default: () => [] },
     gradeGroups: { type: Array, default: () => [] },
-    plan: { type: Array, default: () => [] },
+    profile: { type: Array, default: () => [] }
   },
   data() {
     return {
@@ -59,27 +60,6 @@ export default {
     validate(i) {
       this.selfCorrect = true;
       this.messages = [];
-
-      for (const [gi, group] of this.gradeGroups.entries()) {
-        let includedCount = 0;
-        for (let i = 0; i < this.subjects.length; ++i) {
-          if (this.subjects[i].is_module) {
-            continue;
-          }
-          const sub = this.$refs.subjects[i];
-          if (sub.getSumHoursGroup(gi) > 0)
-            includedCount += 1;
-        }
-        if (includedCount === 0 && this.subjects.length > 1) {
-          this.messages.push({
-            key: 'ONE_SUBJ_PER_CATEG',
-            args: [group],
-            grades: group.map((_, i) => [gi, i].toString()),
-          });
-          this.selfCorrect = false;
-        }
-      }
-
       this.$emit('validate', i);
     },
     addMessages(...messages) {

@@ -46,11 +46,9 @@ export default {
       const rules = this.rules.filter((r) =>
           i === undefined || r.subjects.some((s) => s[0] === i && s[1] === j)
       );
-      console.log(rules);
       for (const rule of rules) {
         const ruleGrades = rule.grades.map(i => this.grades[i]);
         const ruleSubjects = rule.subjects.map(ij => this.categories[ij[0]].subjects[ij[1]]);
-
         const groupIds = this.gradeGroups.reduce((inds, group, i) => {
           if (ruleGrades.every((g) => group.some((grade) => grade.index === g.index))) {
             inds.push(i);
@@ -80,7 +78,7 @@ export default {
               ...(rule.min > value ? ['MIN'] : []),
               ...(rule.max !== undefined && rule.max < value ? ['MAX'] : [])
             ];
-            if (badKeys.length > 1) {
+            if (badKeys.length > 0) {
               this.addMessage(
                   rule,
                   {

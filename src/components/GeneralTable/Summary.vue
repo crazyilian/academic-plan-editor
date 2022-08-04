@@ -3,7 +3,7 @@
     <div class="general-row-name">{{ name }}</div>
     <div style="display: flex; flex-wrap: wrap; flex-direction: row-reverse">
       <div v-for="(group, i) in gradeGroups" :key="group[0].id" style="display: flex">
-        <div v-for="(grade, j) in group" :key="grade.id">
+        <div v-for="(grade, j) in group" :key="grade.id + '|' + values[i][j]">
           <Counter
               ref="counters"
               :start-value="values[i][j]"
@@ -30,16 +30,15 @@ export default {
   name: 'Summary',
   components: { Counter },
   props: {
-    'id': { type: Number, default: -1 },
-    'name': { type: String, default: "" },
-    'errorName': { type: String, default: "" },
-    'gradeGroups': { type: Array, default: () => [] },
-    'values': { type: Array, default: () => [] },
-    'edit': { type: Boolean, default: false },
-    'mins': { type: Array, default: undefined },
-    'maxs': { type: Array, default: undefined },
-    'nullAvailable': { type: Boolean, default: false },
-    'onedit': { type: Function, default: undefined }
+    name: { type: String, default: "" },
+    errorName: { type: String, default: "" },
+    gradeGroups: { type: Array, default: () => [] },
+    values: { type: Array, default: () => [] },
+    edit: { type: Boolean, default: false },
+    mins: { type: Array, default: undefined },
+    maxs: { type: Array, default: undefined },
+    nullAvailable: { type: Boolean, default: false },
+    onedit: { type: Function, default: undefined }
   },
   data() {
     return {

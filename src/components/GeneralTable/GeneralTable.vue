@@ -15,14 +15,14 @@
             ref="s0"
             name="Обязательная часть"
             :grade-groups="gradeGroups"
-            :data-raw="[{name: 'Час / нед', values: obligatory(), edit: false}]"
+            :data-raw="[{name: 'Час / нед', values: obligatory, edit: false}]"
         />
         <Section
             :id="1"
             ref="s1"
             name="Формируемая часть"
             :grade-groups="gradeGroups"
-            :data-raw="[{name: 'Час / нед', values: formative(), edit: false}]"
+            :data-raw="[{name: 'Час / нед', values: formative, edit: false}]"
         />
         <Section
             :id="2"
@@ -30,8 +30,8 @@
             name="Недельная нагрузка"
             error-name="Недельная нагрузка"
             :grade-groups="gradeGroups"
-            :data-raw="[{name: 'Час / нед', values: perweek(), edit: false},
-                      {type: 'max', values: perweekmax()}]"
+            :data-raw="[{name: 'Час / нед', values: perweek, edit: false},
+                      {type: 'max', values: perweekmax}]"
         />
         <Section
             :id="3"
@@ -39,14 +39,14 @@
             name="Учебных недель"
             error-name="Количество учебных недель"
             :grade-groups="gradeGroups"
-            :data-raw="[{name: 'Итого', values: weeknum(), edit: true, onedit: weeknumChange}]"
+            :data-raw="[{name: 'Итого', values: weeknum, edit: true, onedit: weeknumChange}]"
         />
         <Section
             :id="4"
             ref="s4"
             name="По учебному плану"
             :grade-groups="gradeGroups"
-            :data-raw="[{name: 'Час / год', values: peryear(), edit: false}]"
+            :data-raw="[{name: 'Час / год', values: peryear, edit: false}]"
         />
         <Section
             :id="5"
@@ -54,9 +54,9 @@
             name="На уровень образования"
             error-name="Количество часов в год на уровень образования"
             :grade-groups="gradeGroups.map((group) => [{highlight: group.reduce((r, grade) => r || grade.highlight, false), id: group[0].id}])"
-            :data-raw="[{name: 'Час / год', values: edu(), edit: false},
-                      {type: 'min', values: edumin()},
-                      {type: 'max', values: edumax()}]"
+            :data-raw="[{name: 'Час / год', values: edu, edit: false},
+                      {type: 'min', values: edumin},
+                      {type: 'max', values: edumax}]"
         />
       </v-expansion-panels>
     </div>
@@ -85,27 +85,27 @@ export default {
       panels: [...Array(6).keys()],
     }
   },
-  methods: {
+  computed: {
     obligatory() {
       return this.obligatoryPlan.reduce((r, x) => r.concat(x)).reduce((r, v) => r.map((r1, i) => r1.map((r2, j) => r2 + v[i][j].value)), fillShape2(this.gradeGroups, () => 0));
     },
     formative() {
-      return fillShape2(this.gradeGroups, () => 0);
+      return this.formativePlan.categories.reduce((r, x) => r.concat(x.subjects), []).reduce((r, v) => r.map((r1, i) => r1.map((r2, j) => r2 + v.plan[i][j])), this.formativePlan.hours);
     },
     perweek() {
-      const a = this.obligatory();
-      const b = this.formative();
+      const a = this.obligatory;
+      const b = this.formative;
       return a.map((r1, i) => r1.map((r2, j) => r2 + b[i][j]))
     },
     perweekmax() {
       return this.gradeGroups.map((group) => group.map((grade) => grade.max_hours_per_week));
     },
     peryear() {
-      const a = this.perweek();
+      const a = this.perweek;
       return a.map((r1, i) => r1.map((r2, j) => r2 * this.gradeGroups[i][j].weeknum))
     },
     edu() {
-      const a = this.peryear();
+      const a = this.peryear;
       return a.map((group) => [group.reduce((r, x) => r + x)]);
     },
     edumin() {
@@ -116,7 +116,9 @@ export default {
     },
     weeknum() {
       return this.gradeGroups.map((group) => group.map((grade) => grade.weeknum));
-    },
+    }
+  },
+  methods: {
     weeknumChange(i, j, val) {
       Vue.set(this.gradeGroups[i][j], 'weeknum', val);
     },
