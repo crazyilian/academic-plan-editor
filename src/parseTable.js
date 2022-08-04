@@ -138,7 +138,7 @@ function parseCellVal(s_) {
   if (/^\d+$/.test(s)) {
     return { min: parseInt(s) };
   } else if (/^\d+-\d+$/.test(s)) {
-    const [min, max] = s.split('-');
+    const [min, max] = s.split('-').map(x => parseInt(x));
     return { min, max };
   } else {
     return { mins: s.split(',').map(x => parseInt(x)) }

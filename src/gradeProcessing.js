@@ -92,10 +92,6 @@ function fillShape2(gradeGroups, mp) {
   return gradeGroups.map((group, i) => group.map((grade, j) => mp(i, j, group, grade)));
 }
 
-function isEqualGrade(g1, g2) {
-  return g1.name === g2.name && isEqual(g1.profile, g2.profile);
-}
-
 function setGlobalGradeId(val) {
   gradeId = val;
 }
@@ -111,7 +107,6 @@ export {
   getProfileMenu,
   addGroupToPlan,
   fillShape2,
-  isEqualGrade,
   unique,
   isEqual,
   setGlobalGradeId,

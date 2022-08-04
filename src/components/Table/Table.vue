@@ -19,7 +19,7 @@
 <script>
 
 import Category from "@/components/Table/Category";
-import { isEqualGrade, unique, isEqual } from "@/gradeProcessing";
+import { unique, isEqual } from "@/gradeProcessing";
 import bipartiteMatching from "bipartite-matching"
 
 export default {
@@ -43,13 +43,16 @@ export default {
   },
   methods: {
     validate(i, j) {
-      const rules = i === undefined ? this.rules : this.rules.filter((r) => r.subjects.some((s) => s[0] === i && s[1] === j));
+      const rules = this.rules.filter((r) =>
+          i === undefined || r.subjects.some((s) => s[0] === i && s[1] === j)
+      );
+      console.log(rules);
       for (const rule of rules) {
         const ruleGrades = rule.grades.map(i => this.grades[i]);
         const ruleSubjects = rule.subjects.map(ij => this.categories[ij[0]].subjects[ij[1]]);
 
         const groupIds = this.gradeGroups.reduce((inds, group, i) => {
-          if (ruleGrades.every((g) => group.some((grade) => isEqualGrade(grade, g)))) {
+          if (ruleGrades.every((g) => group.some((grade) => grade.index === g.index))) {
             inds.push(i);
           }
           return inds;
@@ -62,12 +65,12 @@ export default {
             let advanced = true;
             let value = 0;
             for (const grade of ruleGrades) {
-              const gradeId = group.findIndex((g) => isEqualGrade(g, grade));
+              const gradeId = group.findIndex((g) => grade.index === g.index);
               gradesCoordinates.push([groupId, gradeId]);
               for (const subj of rule.subjects) {
                 const planSubj = this.plan[subj[0]][subj[1]];
                 const planVal = planSubj[groupId][gradeId];
-                advanced &= planVal.advanced;
+                advanced &&= planVal.advanced;
                 value += planVal.value;
               }
             }
@@ -99,7 +102,7 @@ export default {
             const subj2num = {};
             const gradesCoordinates = [];
             for (const [i, grade] of ruleGrades.entries()) {
-              const gradeId = group.findIndex((g) => isEqualGrade(g, grade));
+              const gradeId = group.findIndex((g) => grade.index === g.index);
               gradesCoordinates.push([groupId, gradeId]);
               for (const subj of rule.subjects) {
                 const planSubj = this.plan[subj[0]][subj[1]];

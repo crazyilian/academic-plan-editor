@@ -61,7 +61,7 @@ export default {
         if (message.key !== 'ONE_SUBJ_PER_CATEG')
           return true;
         return !self.some((m) => m.key !== 'ONE_SUBJ_PER_CATEG' && m.grades.every(v => message.grades.includes(v)));
-      })
+      });
       const res = filtered.map((message) => errorMessages[message.key](...message.args));
       res.sort();
       return res;
