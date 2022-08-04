@@ -3,7 +3,7 @@
     <div class="general-row-name">{{ name }}</div>
     <div style="display: flex; flex-wrap: wrap; flex-direction: row-reverse">
       <div v-for="(group, i) in gradeGroups" :key="group[0].id" style="display: flex">
-        <div v-for="(grade, j) in group" :key="grade.id + '|' + values[i][j]">
+        <div v-for="(grade, j) in group" :key="grade.id">
           <Counter
               ref="counters"
               :start-value="values[i][j]"

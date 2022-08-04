@@ -39,6 +39,7 @@
 <script>
 
 import { errorMessages } from "@/errorMessages";
+import { unique } from "@/gradeProcessing";
 
 export default {
   name: "Message",
@@ -62,7 +63,7 @@ export default {
           return true;
         return !self.some((m) => m.key !== 'ONE_SUBJ_PER_CATEG' && m.grades.every(v => message.grades.includes(v)));
       });
-      const res = filtered.map((message) => errorMessages[message.key](...message.args));
+      const res = filtered.map((message) => errorMessages[message.key](...message.args)).filter(unique);
       res.sort();
       return res;
     }
