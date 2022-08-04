@@ -22,7 +22,6 @@
 
 <script>
 
-import errorMessages from "@/errorMessages";
 import Vue from "vue";
 import Counter from "@/components/Counter";
 import { fillShape2 } from "@/gradeProcessing";
@@ -70,13 +69,13 @@ export default {
           let bad = false;
           if (value === null) {
             bad = true;
-            this.messages.push(errorMessages.SUMMARY_NULL(this.errorName, this.gradeGroups[i][j].name))
+            this.messages.push({ key: 'SUMMARY_NULL', args: [this.errorName, this.gradeGroups[i][j].name] })
           } else if (this.mins !== undefined && value < this.mins[i][j]) {
             bad = true;
-            this.messages.push(errorMessages.SUMMARY_TOO_SMALL(this.errorName, this.gradeGroups[i][j].name))
+            this.messages.push({ key: 'SUMMARY_TOO_SMALL', args: [this.errorName, this.gradeGroups[i][j].name] })
           } else if (this.maxs !== undefined && value > this.maxs[i][j]) {
             bad = true;
-            this.messages.push(errorMessages.SUMMARY_TOO_BIG(this.errorName, this.gradeGroups[i][j].name))
+            this.messages.push({ key: 'SUMMARY_TOO_BIG', args: [this.errorName, this.gradeGroups[i][j].name] })
           }
           if (bad) {
             this.correct = false;

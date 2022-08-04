@@ -23,7 +23,7 @@
     </div>
     <Message
         container-style="width: 60%; margin-left: 24px; margin-right: 24px; min-width: 20px"
-        :messages="messages.length > 0 ? messages : weakMessages"
+        :messages="messages"
     />
     <div style="display: flex; flex-direction: row-reverse">
       <div v-for="(group, i) in gradeGroups" :key="group[0].id" style="display: flex">
@@ -50,7 +50,6 @@
 
 import Counter from "@/components/Counter";
 import Message from "@/components/Table/Message";
-import errorMessages from "@/errorMessages";
 import Vue from "vue";
 import { fillShape2 } from "@/gradeProcessing";
 
@@ -70,7 +69,6 @@ export default {
     return {
       checkbox: this.required,
       messages: [],
-      weakMessages: [],
       incorrectCnt: 0,
       countersCorrect: fillShape2(this.gradeGroups, () => true),
       countersCorrectTop: fillShape2(this.gradeGroups, () => true),
@@ -101,12 +99,11 @@ export default {
       this.incorrectCnt = 0;
       this.countersCorrect.forEach((group) => group.forEach((v, i) => Vue.set(group, i, true)));
       this.messages = [];
-      this.weakMessages = [];
 
       for (const [gi, group] of this.gradeGroups.entries()) {
         const sumHours = this.getSumHoursGroup(gi);
         if (this.required && sumHours === 0) {
-          this.messages.push(errorMessages.NO_ZERO_IN_REQUIRED(group));
+          this.messages.push({ key: 'NO_ZERO_IN_REQUIRED', args: [group] })
           this.countersCorrect[gi].forEach((v, j, self) => {
             if (self[j]) {
               this.incorrectCnt += 1;

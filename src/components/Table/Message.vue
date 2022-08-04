@@ -37,6 +37,9 @@
 </template>
 
 <script>
+
+import errorMessages from "@/errorMessages";
+
 export default {
   name: "Message",
   props: {
@@ -50,7 +53,7 @@ export default {
   },
   computed: {
     value() {
-      const res = structuredClone(this.messages);
+      const res = this.messages.map((message) => errorMessages[message.key](...message.args));
       res.sort();
       return res;
     }

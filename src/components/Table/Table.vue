@@ -20,7 +20,6 @@
 
 import Category from "@/components/Table/Category";
 import { isEqualGrade, unique, isEqual } from "@/gradeProcessing";
-import errorMessages from "@/errorMessages";
 import bipartiteMatching from "bipartite-matching"
 
 export default {
@@ -81,7 +80,7 @@ export default {
             if (badKeys.length > 1) {
               this.addMessage(
                   rule,
-                  errorMessages.RULE_OBLIGATORY_UNIVERSAL(ruleGrades, ruleSubjects, badKeys, rule.min, rule.max),
+                  { key: 'RULE_OBLIGATORY_UNIVERSAL', args: [ruleGrades, ruleSubjects, badKeys, rule.min, rule.max] },
                   gradesCoordinates
               );
             }
@@ -113,7 +112,11 @@ export default {
             this.addGradeIds(rule, gradesCoordinates);
             const matching = bipartiteMatching(ruleGrades.length, Object.keys(subj2num).length, edges);
             if (matching.length !== ruleGrades.length) {
-              this.addMessage(rule, errorMessages.DIFFERENT_SUBJECTS(ruleGrades, rule.mins), gradesCoordinates);
+              this.addMessage(
+                  rule,
+                  { key: 'DIFFERENT_SUBJECTS', args: [ruleGrades, rule.mins] },
+                  gradesCoordinates
+              )
             }
           }
         }

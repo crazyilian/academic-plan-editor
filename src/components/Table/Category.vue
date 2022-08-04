@@ -9,7 +9,7 @@
         <div style="width: 38%; display: inline-block; word-wrap: break-word" class="subject-name">{{ name }}</div>
         <Message
             container-style="width: 62%; margin-left: 12px; margin-right: 32px; min-width: 0"
-            :messages="messages.length > 0 ? messages : weakMessages"
+            :messages="messages"
         />
         <div style="">{{ comment }}</div>
       </div>
@@ -37,7 +37,6 @@
 
 import Subject from "@/components/Table/Subject";
 import Message from "@/components/Table/Message";
-import errorMessages from "@/errorMessages";
 
 export default {
   name: 'Category',
@@ -53,19 +52,17 @@ export default {
     return {
       header: this.name,
       messages: [],
-      weakMessages: [],
       comment: "",
-      incorrectCnt: 0,
+      selfCorrect: true,
     }
   },
   methods: {
     correct() {
-      return this.incorrectCnt === 0 && (this.$refs.subjects || []).every(s => s.correct);
+      return this.selfCorrect && (this.$refs.subjects || []).every(s => s.correct);
     },
     validate(i) {
-      this.incorrectCnt = 0;
+      this.selfCorrect = true;
       this.messages = [];
-      this.weakMessages = [];
 
       for (const [gi, group] of this.gradeGroups.entries()) {
         let includedCount = 0;
@@ -78,8 +75,8 @@ export default {
             includedCount += 1;
         }
         if (includedCount === 0 && this.subjects.length > 1) {
-          this.weakMessages.push(errorMessages.ONE_SUBJ_PER_CATEG(group))
-          this.incorrectCnt += 1;
+          this.messages.push({ key: 'ONE_SUBJ_PER_CATEG', args: [group] });
+          this.selfCorrect = false;
         }
       }
 

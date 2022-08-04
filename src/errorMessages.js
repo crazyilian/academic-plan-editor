@@ -77,15 +77,11 @@ export default {
     }
     const hoursMin = `${min % 10 === 1 && min % 100 !== 11 ? 'часа' : 'часов'} в неделю`
     const hoursMax = `${max % 10 === 1 && max % 100 !== 11 ? 'часа' : 'часов'} в неделю`
-    if (NEED.MIN && NEED.MAX) {
-      msgs.push(`не менее ${min}`, `не более ${max} ${hoursMax}`)
-    } else if (NEED.MIN) {
+    if (NEED.MIN) {
       msgs.push(`не менее ${min} ${hoursMin}`)
     } else if (NEED.MAX) {
       msgs.push(`не более ${max} ${hoursMax}`)
     }
-    console.log(keys);
-    console.log(msgs);
     res += ` ${enumerate(msgs)}`;
     return res;
   },
