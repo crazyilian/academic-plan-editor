@@ -2,7 +2,13 @@
   <v-app style="overflow: hidden">
     <v-main>
       <v-container v-if="checkShowApp()" style="height: 100vh; max-width: 100%" class="pb-2 pt-0 px-2">
-        <Editor v-if="project !== undefined" ref="editor" :templates="templates" :project="project"/>
+        <Editor
+            v-if="project !== undefined"
+            ref="editor"
+            :key="forceRemountKey"
+            :templates="templates"
+            :project="project"
+        />
         <OpenProject v-else/>
       </v-container>
       <div
@@ -27,13 +33,6 @@ import Editor from "@/components/Editor";
 import OpenProject from "@/components/OpenProject";
 import { setGlobalGradeId, getGlobalGradeId } from "@/gradeProcessing";
 
-// eslint-disable-next-line no-unused-vars
-function startInterval(handler, timeout) {
-  const interval = setInterval(handler, timeout);
-  handler();
-  return interval;
-}
-
 export default {
   name: 'App',
 
@@ -47,7 +46,8 @@ export default {
       templates: [],
       autoSaveInterval: undefined,
       project: undefined,
-      cntLoaded: 0
+      cntLoaded: 0,
+      forceRemountKey: 0
     }
   },
   watch: {
@@ -65,8 +65,8 @@ export default {
     });
 
     window.ipcRenderer.getCurrentProject().then(project => {
-      this.openProject(project)
       this.cntLoaded++;
+      this.openProject(project)
     });
     window.ipcRenderer.handle.openProject((event, project) => {
       this.openProject(project);
@@ -82,17 +82,20 @@ export default {
     },
     openProject(project) {
       this.project = project;
-      if (this.$refs.editor !== undefined && this.project !== undefined) {
+      this.forceRemount();
+      if (this.project !== undefined) {
         setGlobalGradeId(this.project.gradeId);
         this.saveProject();
-        if (this.$refs.editor.activeTab >= this.project.tabs.length) {
-          this.$refs.editor.activeTab = this.project.tabs.length - 1;
-        }
       }
     },
     saveProject() {
-      this.project.gradeId = getGlobalGradeId();
+      if (this.project !== undefined) {
+        this.project.gradeId = getGlobalGradeId();
+      }
       window.ipcRenderer.saveProject(this.project);
+    },
+    forceRemount() {
+      this.forceRemountKey += 1;
     }
   }
 };
