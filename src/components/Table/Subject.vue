@@ -103,7 +103,11 @@ export default {
       for (const [gi, group] of this.gradeGroups.entries()) {
         const sumHours = this.getSumHoursGroup(gi);
         if (this.required && sumHours === 0) {
-          this.messages.push({ key: 'NO_ZERO_IN_REQUIRED', args: [group] })
+          this.messages.push({
+            key: 'NO_ZERO_IN_REQUIRED',
+            args: [group],
+            grades: group.map((_, i) => [gi, i].toString()),
+          })
           this.countersCorrect[gi].forEach((v, j, self) => {
             if (self[j]) {
               this.incorrectCnt += 1;

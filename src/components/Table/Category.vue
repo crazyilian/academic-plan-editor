@@ -75,7 +75,11 @@ export default {
             includedCount += 1;
         }
         if (includedCount === 0 && this.subjects.length > 1) {
-          this.messages.push({ key: 'ONE_SUBJ_PER_CATEG', args: [group] });
+          this.messages.push({
+            key: 'ONE_SUBJ_PER_CATEG',
+            args: [group],
+            grades: group.map((_, i) => [gi, i].toString()),
+          });
           this.selfCorrect = false;
         }
       }

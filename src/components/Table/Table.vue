@@ -80,7 +80,11 @@ export default {
             if (badKeys.length > 1) {
               this.addMessage(
                   rule,
-                  { key: 'RULE_OBLIGATORY_UNIVERSAL', args: [ruleGrades, ruleSubjects, badKeys, rule.min, rule.max] },
+                  {
+                    key: 'RULE_OBLIGATORY_UNIVERSAL',
+                    args: [ruleGrades, ruleSubjects, badKeys, rule.min, rule.max],
+                    grades: gradesCoordinates.map(g => g.toString())
+                  },
                   gradesCoordinates
               );
             }
@@ -114,7 +118,11 @@ export default {
             if (matching.length !== ruleGrades.length) {
               this.addMessage(
                   rule,
-                  { key: 'DIFFERENT_SUBJECTS', args: [ruleGrades, rule.mins] },
+                  {
+                    key: 'DIFFERENT_SUBJECTS',
+                    args: [ruleGrades, rule.mins],
+                    grades: gradesCoordinates.map(g => g.toString())
+                  },
                   gradesCoordinates
               )
             }
