@@ -7,9 +7,10 @@
             :key="category.profile.toString()"
             :grade-groups="gradeGroups"
             v-bind="category"
+            :highlight="highlight"
             @validate="validate(i, $event)"
         />
-        <FormativeLastCategory :grade-groups="gradeGroups" :plan="plan"/>
+        <FormativeLastCategory :grade-groups="gradeGroups" :plan="plan" :highlight="highlight"/>
       </v-expansion-panels>
     </div>
   </div>
@@ -26,7 +27,8 @@ export default {
   props: {
     gradeGroups: { type: Array, default: () => [] },
     plan: { type: Object, default: () => ({}) },
-    rules: { type: Array, default: () => [] }
+    rules: { type: Array, default: () => [] },
+    highlight: { type: Array, default: () => [] }
   },
   data() {
     return {

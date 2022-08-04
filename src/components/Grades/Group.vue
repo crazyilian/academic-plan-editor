@@ -5,7 +5,11 @@
     </v-btn>
     <div style="display: flex; flex-grow: 1; min-height: 0">
       <div v-for="(grade, j) in group" :key="j">
-        <Grade :grade="grade"/>
+        <Grade
+            :grade="grade"
+            :highlight="highlight[j]"
+            @set-highlight="setHighlight(j, $event)"
+        />
       </div>
     </div>
   </div>
@@ -13,12 +17,14 @@
 
 <script>
 import Grade from "@/components/Grades/Grade";
+import Vue from "vue";
 
 export default {
   name: "Group",
   components: { Grade },
   props: {
-    group: { type: Array, default: () => [] }
+    group: { type: Array, default: () => [] },
+    highlight: { type: Array, default: () => [] }
   },
   methods: {
     async askCloseGroup() {
@@ -39,6 +45,9 @@ export default {
       if (remove) {
         this.$emit('remove-group');
       }
+    },
+    setHighlight(j, flag) {
+      Vue.set(this.highlight, j, flag);
     }
   }
 }
@@ -53,7 +62,7 @@ export default {
   font-size: 10px !important;
   text-transform: none !important;
   margin-top: -15px !important;
-  margin-left: -1px  !important;
+  margin-left: -1px !important;
   z-index: 100;
 }
 

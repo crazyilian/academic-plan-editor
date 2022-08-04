@@ -27,19 +27,20 @@
 </template>
 
 <script>
-import Vue from "vue";
 
 export default {
   name: "Grade",
   props: {
-    grade: { type: Object, default: () => ({}) }
+    grade: { type: Object, default: () => ({}) },
+    highlight: { type: Boolean, default: false }
   },
   methods: {
     highlightGrade(flag) {
-      Vue.set(this.grade, 'highlight', flag);
+      this.$emit('set-highlight', flag);
     }
   }
 }
+
 </script>
 
 <style>

@@ -7,7 +7,7 @@
           <Counter
               ref="counters"
               :start-value="values[i][j]"
-              :highlight="gradeGroups[i][j].highlight"
+              :highlight="highlight[i][j]"
               :correct="countersCorrect[i][j]"
               :disabled="!edit"
               :null-available="nullAvailable"
@@ -38,7 +38,8 @@ export default {
     mins: { type: Array, default: undefined },
     maxs: { type: Array, default: undefined },
     nullAvailable: { type: Boolean, default: false },
-    onedit: { type: Function, default: undefined }
+    onedit: { type: Function, default: undefined },
+    highlight: { type: Array, default: () => [] }
   },
   data() {
     return {

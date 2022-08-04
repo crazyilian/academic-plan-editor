@@ -12,7 +12,7 @@
               :key="grade.id"
               ref="counters"
               :correct="true"
-              :highlight="grade.highlight"
+              :highlight="highlight[i][j]"
               :start-value="plan.hours[i][j]"
               :max="99"
               @input="counterChange(i, j, $event)"
@@ -55,7 +55,8 @@ export default {
   components: { FormativeLastSubject, Counter },
   props: {
     gradeGroups: { type: Array, default: () => [] },
-    plan: { type: Object, default: () => ({}) }
+    plan: { type: Object, default: () => ({}) },
+    highlight: { type: Array, default: () => [] }
   },
   data() {
     return {

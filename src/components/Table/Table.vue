@@ -8,6 +8,7 @@
             :key="i"
             ref="categories"
             :grade-groups="gradeGroups"
+            :highlight="highlight"
             :plan="plan[i]"
             @validate="validate(i, $event)"
         />
@@ -31,6 +32,7 @@ export default {
     plan: { type: Array, default: () => [] },
     rules: { type: Array, default: () => [] },
     grades: { type: Array, default: () => [] },
+    highlight: { type: Array, default: () => [] },
   },
   data() {
     return {

@@ -26,7 +26,7 @@ function getProfileGroup(grades, profile) {
   const default_group = getDefaultGroup(grades);
   const prof_grades = [...grades.filter(g => isEqual(g.profile, profile)), ...default_group];
   const group = default_group.map(grade => prof_grades.filter(g => g.name === grade.name)[0])
-  const res = structuredClone(group).map(grade => ({ ...grade, highlight: false, weeknum: null, id: gradeId += 1 }));
+  const res = structuredClone(group).map(grade => ({ ...grade, weeknum: null, id: gradeId += 1 }));
   console.log('upd', gradeId);
   return res;
 }

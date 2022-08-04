@@ -24,6 +24,7 @@
           v-bind="sub"
           ref="subjects"
           :grade-groups="gradeGroups"
+          :highlight="highlight"
           :class="{'display-none': sub.is_module}"
           :profile="profile"
           :num="i + 1"
@@ -45,7 +46,8 @@ export default {
     name: { type: String, default: "" },
     subjects: { type: Array, default: () => [] },
     gradeGroups: { type: Array, default: () => [] },
-    profile: { type: Array, default: () => [] }
+    profile: { type: Array, default: () => [] },
+    highlight: { type: Array, default: () => [] }
   },
   data() {
     return {

@@ -6,7 +6,12 @@
         :key="i"
         style="display: flex"
     >
-      <Group :group="group" class="pb-1" @remove-group="removeGroup(i)"/>
+      <Group
+          :group="group"
+          class="pb-1"
+          :highlight="highlight[i]"
+          @remove-group="removeGroup(i)"
+      />
       <VerticalLine/>
     </div>
     <VerticalLine/>
@@ -22,7 +27,8 @@ export default {
   name: "BarGradeGroups",
   components: { Group, VerticalLine },
   props: {
-    gradeGroups: { type: Array, default: () => [] }
+    gradeGroups: { type: Array, default: () => [] },
+    highlight: { type: Array, default: () => [] }
   },
   methods: {
     removeGroup(i) {

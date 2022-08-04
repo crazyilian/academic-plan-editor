@@ -28,7 +28,7 @@
               v-if="isGoodProfile(grade)"
               ref="counters"
               :correct="countersCorrectTop[i][j]"
-              :highlight="grade.highlight"
+              :highlight="highlight[i][j]"
               :start-value="plan[i][j]"
               :max="99"
               @input="counterChange(i, j, $event)"
@@ -57,6 +57,7 @@ export default {
     gradeGroups: { type: Array, default: () => [] },
     plan: { type: Array, default: () => [] },
     profile: { type: Array, default: () => [] },
+    highlight: { type: Array, default: () => [] },
   },
   data() {
     return {

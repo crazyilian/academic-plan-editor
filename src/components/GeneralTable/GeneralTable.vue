@@ -5,6 +5,7 @@
         <BarGradeGroups
             style="margin-right: 24px; min-height: 44px;"
             :grade-groups="gradeGroups"
+            :highlight="highlight"
         />
       </div>
     </HorizontalResizeBar>
@@ -15,6 +16,7 @@
             ref="s0"
             name="Обязательная часть"
             :grade-groups="gradeGroups"
+            :highlight="highlight"
             :data-raw="[{name: 'Час / нед', values: obligatory, edit: false}]"
         />
         <Section
@@ -22,6 +24,7 @@
             ref="s1"
             name="Формируемая часть"
             :grade-groups="gradeGroups"
+            :highlight="highlight"
             :data-raw="[{name: 'Час / нед', values: formative, edit: false}]"
         />
         <Section
@@ -30,6 +33,7 @@
             name="Недельная нагрузка"
             error-name="Недельная нагрузка"
             :grade-groups="gradeGroups"
+            :highlight="highlight"
             :data-raw="[{name: 'Час / нед', values: perweek, edit: false},
                       {type: 'max', values: perweekmax}]"
         />
@@ -39,6 +43,7 @@
             name="Учебных недель"
             error-name="Количество учебных недель"
             :grade-groups="gradeGroups"
+            :highlight="highlight"
             :data-raw="[{name: 'Итого', values: weeknum, edit: true, onedit: weeknumChange}]"
         />
         <Section
@@ -46,6 +51,7 @@
             ref="s4"
             name="По учебному плану"
             :grade-groups="gradeGroups"
+            :highlight="highlight"
             :data-raw="[{name: 'Час / год', values: peryear, edit: false}]"
         />
         <Section
@@ -53,7 +59,8 @@
             ref="s5"
             name="На уровень образования"
             error-name="Количество часов в год на уровень образования"
-            :grade-groups="gradeGroups.map((group) => [{highlight: group.reduce((r, grade) => r || grade.highlight, false), id: group[0].id}])"
+            :grade-groups="gradeGroups.map((group) => [{ id: group[0].id }])"
+            :highlight="highlight.map((group) => [group.some(x => x)])"
             :data-raw="[{name: 'Час / год', values: edu, edit: false},
                       {type: 'min', values: edumin},
                       {type: 'max', values: edumax}]"
@@ -78,7 +85,8 @@ export default {
     gradeGroups: { type: Array, default: () => [] },
     obligatoryPlan: { type: Array, default: () => [] },
     formativePlan: { type: Object, default: () => ({}) },
-    config: { type: Object, default: () => ({}) }
+    config: { type: Object, default: () => ({}) },
+    highlight: { type: Array, default: () => [] }
   },
   data() {
     return {

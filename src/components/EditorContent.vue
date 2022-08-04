@@ -60,6 +60,7 @@
               <BarGradeGroups
                   class="ml-1 mr-2"
                   :grade-groups="gradeGroups"
+                  :highlight="highlight"
                   @remove-group="removeGroup"
               />
             </div>
@@ -74,6 +75,7 @@
               :rules="template.rulesObligatory"
               :grades="template.grades"
               :grade-groups="gradeGroups"
+              :highlight="highlight"
               :plan="obligatoryPlan"
           />
         </v-window-item>
@@ -81,6 +83,7 @@
           <FormativeTable
               ref="formativeTable"
               :grade-groups="gradeGroups"
+              :highlight="highlight"
               :plan="formativePlan"
               :rules="template.rulesFormative"
           />
@@ -115,6 +118,7 @@
           :obligatory-plan="obligatoryPlan"
           :formative-plan="formativePlan"
           :grade-groups="gradeGroups"
+          :highlight="highlight"
           :config="template.config"
           :ready="generalTableReady"
       />
@@ -132,7 +136,7 @@ import FormativeTable from "@/components/FormativeTable/FormativeTable";
 import EditableText from "@/components/EditableText";
 import HorizontalResizeBar from "@/components/HorizontalResizeBar";
 import ProfileMenu from "@/components/Grades/ProfileMenu";
-import { isEqual, getProfileFormativeCategory } from "@/gradeProcessing";
+import { isEqual, getProfileFormativeCategory, fillShape2 } from "@/gradeProcessing";
 
 export default {
   name: 'EditorContent',
@@ -158,6 +162,7 @@ export default {
       editingFullname: false,
       showGeneralTable: false,
       generalTableReady: false,
+      highlight: fillShape2(this.gradeGroups, () => false),
     };
   },
   mounted() {
@@ -194,6 +199,7 @@ export default {
           Vue.set(this.formativePlan.categories, this.formativePlan.categories.length, category);
         }
       }
+      this.highlight = fillShape2(this.gradeGroups, () => false);
     },
     removeGroup(i) {
       const profile = this.gradeGroups[i].slice(-1)[0].profile;
@@ -211,6 +217,7 @@ export default {
           Vue.delete(this.formativePlan.categories, ind);
         }
       }
+      this.highlight = fillShape2(this.gradeGroups, () => false);
     }
   }
 };

@@ -32,7 +32,7 @@
             :key="grade.id"
             ref="counters"
             :correct="countersCorrect[i][j] && countersCorrectTop[i][j]"
-            :highlight="grade.highlight"
+            :highlight="highlight[i][j]"
             :start-value="plan[i][j].value"
             :checkbox="plan[i][j].advanced"
             :max="99"
@@ -63,6 +63,7 @@ export default {
     plan: { type: Array, default: () => [] },
     // eslint-disable-next-line vue/prop-name-casing
     can_advanced: { type: Boolean, default: true },
+    highlight: { type: Array, default: () => [] },
   },
   data() {
     return {
