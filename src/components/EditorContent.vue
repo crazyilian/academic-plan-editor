@@ -194,7 +194,7 @@ export default {
         Vue.set(subject.plan, n, Array(group.length).fill(0));
       }))
       if (!this.formativePlan.categories.some((category) => isEqual(category.profile, profile))) {
-        const category = getProfileFormativeCategory(this.template.rulesFormative, this.template.grades, profile, this.gradeGroups);
+        const category = getProfileFormativeCategory(this.template.rulesFormative, group, this.gradeGroups);
         if (category !== undefined) {
           Vue.set(this.formativePlan.categories, this.formativePlan.categories.length, category);
         }

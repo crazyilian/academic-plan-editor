@@ -68,14 +68,13 @@ export default {
     },
     addTab(i) {
       const template = structuredClone(this.templates[i]);
-
       const default_grades = getProfileGroup(template.grades, []);
       const gradeGroups = [default_grades];
 
       let obligatoryPlan = template.categories.map(c => c.subjects.map(() => []));
       obligatoryPlan = addGroupToPlan(obligatoryPlan, ...gradeGroups)
 
-      const formativeDefaultCategory = getProfileFormativeCategory(template.rulesFormative, template.grades, default_grades[0].profile, gradeGroups);
+      const formativeDefaultCategory = getProfileFormativeCategory(template.rulesFormative, default_grades, gradeGroups);
 
       let formativePlan = {
         hours: fillShape2(gradeGroups, () => 0),

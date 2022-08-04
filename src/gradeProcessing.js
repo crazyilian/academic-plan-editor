@@ -1,3 +1,4 @@
+console.log('grade processing')
 let gradeId = 0;
 
 function isEqual(a, b) {
@@ -104,8 +105,8 @@ function getGlobalGradeId() {
   return gradeId;
 }
 
-function getProfileFormativeCategory(rules_, grades_, profile, gradeGroups) {
-  const group = getProfileGroup(grades_, profile);
+function getProfileFormativeCategory(rules_, group, gradeGroups) {
+  const profile = group.slice(-1)[0].profile;
   const rules = rules_.filter(rule => group.some(grade => rule.grades.includes(grade.index)));
   const subjects = rules.reduce((s, r) => [...s, ...r.subjects], []).filter(unique);
   if (subjects.length === 0) {
