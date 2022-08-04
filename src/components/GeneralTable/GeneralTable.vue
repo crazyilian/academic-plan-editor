@@ -17,7 +17,7 @@
             name="Обязательная часть"
             :grade-groups="gradeGroups"
             :highlight="highlight"
-            :data-raw="[{name: 'Час / нед', values: obligatory, edit: false}]"
+            :data-raw="[{name: 'Часов в неделю', values: obligatory, edit: false}]"
         />
         <Section
             :id="1"
@@ -25,7 +25,7 @@
             name="Формируемая часть"
             :grade-groups="gradeGroups"
             :highlight="highlight"
-            :data-raw="[{name: 'Час / нед', values: formative, edit: false}]"
+            :data-raw="[{name: 'Часов в неделю', values: formative, edit: false}]"
         />
         <Section
             :id="2"
@@ -34,7 +34,7 @@
             error-name="Недельная нагрузка"
             :grade-groups="gradeGroups"
             :highlight="highlight"
-            :data-raw="[{name: 'Час / нед', values: perweek, edit: false},
+            :data-raw="[{name: 'Часов в неделю', values: perweek, edit: false},
                       {type: 'max', values: perweekmax}]"
         />
         <Section
@@ -52,7 +52,7 @@
             name="По учебному плану"
             :grade-groups="gradeGroups"
             :highlight="highlight"
-            :data-raw="[{name: 'Час / год', values: peryear, edit: false}]"
+            :data-raw="[{name: 'Часов в год', values: peryear, edit: false}]"
         />
         <Section
             :id="5"
@@ -61,7 +61,7 @@
             error-name="Количество часов в год на уровень образования"
             :grade-groups="gradeGroups.map((group) => [{ id: group[0].id }])"
             :highlight="highlight.map((group) => [group.some(x => x)])"
-            :data-raw="[{name: 'Час / год', values: edu, edit: false},
+            :data-raw="[{name: 'Часов в год', values: edu, edit: false},
                       {type: 'min', values: edumin},
                       {type: 'max', values: edumax}]"
         />
