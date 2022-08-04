@@ -38,7 +38,7 @@
 
 <script>
 
-import errorMessages from "@/errorMessages";
+import { errorMessages } from "@/errorMessages";
 
 export default {
   name: "Message",

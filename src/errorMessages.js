@@ -54,20 +54,14 @@ function gradesOfProfileNeedSubjects(grades, subjects) {
   return res;
 }
 
-export default {
+
+const errorObligatory = {
   "NO_ZERO_IN_REQUIRED": (grades) => {
-    let res = gradesOfProfileNeed(grades);
-    res += ` изучать обязательный предмет`;
-    return res;
+    return gradesOfProfileNeed(grades) + ' изучать обязательный предмет';
   },
   "ONE_SUBJ_PER_CATEG": (grades) => {
-    let res = gradesOfProfileNeed(grades);
-    res += ` изучать хотя бы 1 предмет из предметной области`;
-    return res;
+    return gradesOfProfileNeed(grades) + ' изучать хотя бы 1 предмет из предметной области';
   },
-  "SUMMARY_TOO_SMALL": (name, grade) => `${capitalize(name)}${profile(grade)} меньше, чем разрешено`,
-  "SUMMARY_TOO_BIG": (name, grade) => `${capitalize(name)}${profile(grade)} больше, чем разрешено`,
-  "SUMMARY_NULL": (name, grade) => `Не указано ${lower(name)}${profile(grade)}`,
   "RULE_OBLIGATORY_UNIVERSAL": (grades, subjects, keys, min, max) => {
     const NEED = keys.reduce((o, v) => ({ ...o, [v]: true }), {});
     let res = gradesOfProfileNeedSubjects(grades, subjects);
@@ -85,10 +79,29 @@ export default {
     res += ` ${enumerate(msgs)}`;
     return res;
   },
-
   "DIFFERENT_SUBJECTS": (grades, mins) => {
-    let res = gradesOfProfileNeed(grades);
-    res += ` изучать разные предметы не менее ${enumerate(mins)} часов в неделю соответственно`;
-    return res;
+    return gradesOfProfileNeed(grades)
+        + ` изучать разные предметы не менее ${enumerate(mins)} часов в неделю соответственно`;
   }
+};
+
+
+const errorFormative = {};
+
+
+const errorGeneral = {
+  "SUMMARY_TOO_SMALL": (name, grade) => `${capitalize(name)}${profile(grade)} меньше, чем разрешено`,
+  "SUMMARY_TOO_BIG": (name, grade) => `${capitalize(name)}${profile(grade)} больше, чем разрешено`,
+  "SUMMARY_NULL": (name, grade) => `Не указано ${lower(name)}${profile(grade)}`,
+};
+
+
+const errorMessages = { ...errorObligatory, ...errorFormative, ...errorGeneral };
+
+
+export {
+  errorObligatory,
+  errorFormative,
+  errorGeneral,
+  errorMessages
 }
