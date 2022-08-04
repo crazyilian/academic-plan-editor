@@ -96,11 +96,13 @@ function isEqualGrade(g1, g2) {
   return g1.name === g2.name && isEqual(g1.profile, g2.profile);
 }
 
-// const fs = require('fs-extra');
-// const template = fs.readJsonSync('../kek2.json');
-//
-// const res = getProfileAreas(template.grades);
-// console.log(res)
+function setGlobalGradeId(val) {
+  gradeId = val;
+}
+
+function getGlobalGradeId() {
+  return gradeId;
+}
 
 export {
   allNumbers,
@@ -111,5 +113,7 @@ export {
   fillShape2,
   isEqualGrade,
   unique,
-  isEqual
+  isEqual,
+  setGlobalGradeId,
+  getGlobalGradeId
 }

@@ -25,6 +25,7 @@
 <script>
 import Editor from "@/components/Editor";
 import OpenProject from "@/components/OpenProject";
+import { setGlobalGradeId, getGlobalGradeId } from "@/gradeProcessing";
 
 // eslint-disable-next-line no-unused-vars
 function startInterval(handler, timeout) {
@@ -52,7 +53,7 @@ export default {
   watch: {
     project: {
       handler() {
-        window.ipcRenderer.saveProject(this.project);
+        this.saveProject();
       },
       deep: true
     }
@@ -72,7 +73,7 @@ export default {
     });
 
     window.ipcRenderer.handle.saveProject(() => {
-      window.ipcRenderer.saveProject(this.project);
+      this.saveProject();
     })
   },
   methods: {
@@ -81,13 +82,18 @@ export default {
     },
     openProject(project) {
       this.project = project;
-      window.ipcRenderer.saveProject(this.project);
       if (this.$refs.editor !== undefined && this.project !== undefined) {
+        setGlobalGradeId(this.project.gradeId);
+        this.saveProject();
         if (this.$refs.editor.activeTab >= this.project.tabs.length) {
           this.$refs.editor.activeTab = this.project.tabs.length - 1;
         }
       }
     },
+    saveProject() {
+      this.project.gradeId = getGlobalGradeId();
+      window.ipcRenderer.saveProject(this.project);
+    }
   }
 };
 </script>

@@ -89,7 +89,7 @@ function createMenu(win) {
 }
 
 function emptyProject() {
-  return { tabs: [] };
+  return { tabs: [], gradeId: 0 };
 }
 
 function applyProject(projectPath, project) {
