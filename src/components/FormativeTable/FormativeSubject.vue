@@ -11,12 +11,25 @@
         </v-hover>
       </div>
     </div>
-    <EditableText
-        :value="newName"
-        :editing="editing"
-        style="min-width: 0; width: 35%;"
-        @change="changeName"
-    />
+    <v-tooltip bottom :open-delay="500" :attach="$refs.tooltipContainer">
+      <template #activator="{ on, attrs}">
+        <div
+            v-bind="attrs"
+            style="min-width: 0; width: 35%;"
+            v-on="on"
+        >
+          <EditableText
+              :value="newName"
+              :editing="editing"
+              @change="changeName"
+          />
+          <div ref="tooltipContainer" class="tooltip-container"/>
+        </div>
+      </template>
+      <div class="pa-2" style="text-align: center; max-width: 200px; word-wrap: break-word;">
+        {{ name }}
+      </div>
+    </v-tooltip>
     <Message
         container-style="width: 65%; margin-left: 24px; margin-right: 24px; min-width: 20px"
         :messages="messages"
@@ -118,5 +131,14 @@ export default {
 </script>
 
 <style>
+
+.tooltip-container .v-tooltip__content {
+  left: 4px !important;
+  top: 0 !important;
+}
+
+.tooltip-container {
+  position: relative;
+}
 
 </style>
