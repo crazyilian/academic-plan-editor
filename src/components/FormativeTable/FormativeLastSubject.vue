@@ -74,7 +74,7 @@ export default {
     },
     changeName(name) {
       this.editing = false;
-      this.$emit('change', name);
+      this.$emit('change-name', name);
     }
   }
 }

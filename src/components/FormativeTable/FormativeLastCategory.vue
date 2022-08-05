@@ -30,7 +30,7 @@
           :num="i + 1"
           :name="subject"
           @remove-subject="removeSubject(i)"
-          @change="nameChange(i, $event)"
+          @change-name="nameChange(i, $event)"
       />
       <div style="display: flex; width: 100%; justify-content: center">
         <v-btn text style="text-transform: none" class="px-3" @click="addSubject">
