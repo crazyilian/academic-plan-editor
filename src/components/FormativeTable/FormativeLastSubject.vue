@@ -19,7 +19,7 @@
             <span>Изменить</span>
           </div>
           <v-icon v-if="hover" color="#deca35">mdi-pencil-box</v-icon>
-          <v-icon v-else color="#bebb9b">mdi-pencil-box-outline</v-icon>
+          <v-icon v-else color="#c1b459">mdi-pencil-box-outline</v-icon>
         </div>
       </v-hover>
     </div>

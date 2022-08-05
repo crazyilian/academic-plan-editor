@@ -20,7 +20,7 @@
       <div class="pl-1 d-flex flex-column justify-center" @click="editName(i)">
         <v-hover v-slot="{ hover }">
           <v-icon v-if="hover" color="#deca35">mdi-pencil-box</v-icon>
-          <v-icon v-else color="#bebb9b">mdi-pencil-box-outline</v-icon>
+          <v-icon v-else color="#c1b459">mdi-pencil-box-outline</v-icon>
         </v-hover>
       </div>
       <div class="pr-1 d-flex flex-column justify-center" @click.stop="askCloseTab(i)">
