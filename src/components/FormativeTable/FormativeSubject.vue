@@ -1,7 +1,7 @@
 <template>
   <div
       style="display: flex; justify-content: space-between; align-items: center; width: 100%"
-      :class="{ 'error-subject': !correct }" class="subject"
+      :class="{ 'error-subject': !correct }" class="subject pl-2"
   >
     <div class="pr-4 py-0 ma-0">
       <div @click="editName">
@@ -118,38 +118,5 @@ export default {
 </script>
 
 <style>
-
-/* checkbox styles */
-
-.v-input--checkbox .v-messages {
-  display: none;
-}
-
-.v-input--checkbox .v-input--selection-controls__ripple, .v-input--checkbox .v-input__slot, .v-input--checkbox .v-input--selection-controls__input {
-  margin: 0 !important;
-}
-
-.v-input--checkbox .v-input--selection-controls__ripple {
-  left: -5px !important;
-  top: -5px !important;
-}
-
-/* other */
-
-.error-subject .checkbox-subj i {
-  color: red !important;
-}
-
-.error-subject .checkbox-subj.v-input--is-disabled i {
-  color: #d39292 !important;
-}
-
-.subject:not(.error-subject) .checkbox-subj.v-input--is-disabled i {
-  color: #9bc99b !important;
-}
-
-.error-subject .subject-name {
-  color: red;
-}
 
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div
       style="display: flex; justify-content: space-between; align-items: center; width: 100%"
-      :class="{ 'error-subject': !correct }" class="subject"
+      :class="{ 'error-subject': !correct }" class="subject pl-2"
   >
     <v-tooltip bottom :open-delay="500">
       <template #activator="{ on, attrs} ">

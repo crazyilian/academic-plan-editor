@@ -80,43 +80,4 @@ export default {
 
 <style>
 
-/* correct category styles */
-
-.v-expansion-panels.v-expansion-panels--focusable .category:not(.error-category).v-expansion-panel-header--active:hover::before {
-  opacity: 0.08 !important;
-}
-
-.v-expansion-panels.v-expansion-panels--focusable .category:not(.error-category).v-expansion-panel-header--active::before {
-  opacity: 0.0 !important;
-}
-
-.category:not(.error-category) {
-  background-color: #efe;
-}
-
-
-/* .error-category styles */
-
-.v-expansion-panels.v-expansion-panels--focusable .error-category.v-expansion-panel-header--active:hover::before {
-  opacity: 0.08 !important;
-}
-
-.v-expansion-panels.v-expansion-panels--focusable .error-category.v-expansion-panel-header--active::before {
-  opacity: 0.0 !important;
-}
-
-.error-category {
-  background-color: #fee;
-}
-
-/* other */
-
-.v-expansion-panel-content__wrap {
-  padding: 8px 8px 12px 16px !important;
-}
-
-.v-expansion-panel--active > .v-expansion-panel-header {
-  min-height: 48px !important;
-}
-
 </style>

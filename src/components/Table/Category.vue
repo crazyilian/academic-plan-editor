@@ -127,7 +127,7 @@ export default {
 /* other */
 
 .v-expansion-panel-content__wrap {
-  padding: 8px 8px 12px 16px !important;
+  padding: 8px 8px 12px 8px !important;
 }
 
 .v-expansion-panel--active > .v-expansion-panel-header {

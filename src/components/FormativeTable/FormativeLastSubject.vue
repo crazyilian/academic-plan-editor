@@ -1,5 +1,5 @@
 <template>
-  <div class="formation-subject subject">
+  <div class="formation-subject subject pl-2">
     <div>
       <div style="padding-right: 10px; width: 34px; min-width: 0; display: flex; justify-content: flex-end">
         <span>{{ num }}.</span>
