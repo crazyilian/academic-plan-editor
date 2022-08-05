@@ -29,6 +29,7 @@
           :profile="profile"
           :num="i + 1"
           @validate="validate(i)"
+          @change-name="changeName(i, $event)"
       />
     </v-expansion-panel-content>
   </v-expansion-panel>
@@ -38,6 +39,7 @@
 
 import Message from "@/components/Table/Message";
 import FormativeSubject from "@/components/FormativeTable/FormativeSubject";
+import Vue from "vue";
 
 export default {
   name: 'FormativeCategory',
@@ -68,6 +70,9 @@ export default {
       this.$nextTick(() => {
         this.messages.push(...messages);
       })
+    },
+    changeName(i, name) {
+      Vue.set(this.subjects[i], 'newName', name);
     }
   }
 }

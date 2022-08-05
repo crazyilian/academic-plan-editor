@@ -1,5 +1,5 @@
 <template>
-  <div class="formation-subject">
+  <div class="formation-subject subject">
     <div>
       <div style="padding-right: 10px; width: 34px; min-width: 0; display: flex; justify-content: flex-end">
         <span>{{ num }}.</span>
@@ -91,9 +91,9 @@ export default {
   padding: 8px 4px 8px 0;
 }
 
-.formation-subject:hover {
+.subject:hover {
   transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
-  background-color: rgba(0, 0, 0, 0.08);
+  background-color: rgba(0, 0, 0, 0.04);
 }
 
 .formation-subject .edit-name-area.theme--light.v-text-field--solo > .v-input__control > .v-input__slot {

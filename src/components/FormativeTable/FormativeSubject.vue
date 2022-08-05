@@ -11,9 +11,12 @@
         </v-hover>
       </div>
     </div>
-    <div style="min-width: 0; width: 35%; display: inline-block; word-wrap: break-word" class="subject-name">
-      {{ name }}
-    </div>
+    <EditableText
+        :value="newName"
+        :editing="editing"
+        style="min-width: 0; width: 35%;"
+        @change="changeName"
+    />
     <Message
         container-style="width: 65%; margin-left: 24px; margin-right: 24px; min-width: 20px"
         :messages="messages"
@@ -46,10 +49,11 @@ import Counter from "@/components/Counter";
 import Message from "@/components/Table/Message";
 import Vue from "vue";
 import { fillShape2, isEqual } from "@/gradeProcessing";
+import EditableText from "@/components/EditableText";
 
 export default {
   name: 'FormativeSubject',
-  components: { Message, Counter },
+  components: { EditableText, Message, Counter },
   props: {
     num: { type: Number, default: -1 },
     name: { type: String, default: "" },
@@ -64,6 +68,7 @@ export default {
       messages: [],
       countersCorrectTop: fillShape2(this.gradeGroups, () => true),
       incorrectCntTop: 0,
+      editing: false,
     }
   },
   computed: {
@@ -76,7 +81,11 @@ export default {
   },
   methods: {
     editName() {
-      console.log('edit');
+      this.editing = true;
+    },
+    changeName(name) {
+      this.editing = false;
+      this.$emit('change-name', name);
     },
     isGoodProfile(grade) {
       return isEqual(grade.profile, this.profile);
