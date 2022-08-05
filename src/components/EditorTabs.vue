@@ -19,14 +19,14 @@
       />
       <div class="pl-1 d-flex flex-column justify-center" @click="editName(i)">
         <v-hover v-slot="{ hover }">
-          <v-icon v-if="hover" color="#deca35">mdi-pencil-box</v-icon>
-          <v-icon v-else color="#c1b459">mdi-pencil-box-outline</v-icon>
+          <v-icon v-if="hover" color="edit">mdi-pencil-box</v-icon>
+          <v-icon v-else color="editSecondary">mdi-pencil-box-outline</v-icon>
         </v-hover>
       </div>
       <div class="pr-1 d-flex flex-column justify-center" @click.stop="askCloseTab(i)">
         <v-hover v-slot="{ hover }">
           <v-icon v-if="hover" color="error">mdi-close-circle</v-icon>
-          <v-icon v-else color="#b68484">mdi-close-circle-outline</v-icon>
+          <v-icon v-else color="errorSecondary">mdi-close-circle-outline</v-icon>
         </v-hover>
       </div>
     </v-btn>
@@ -53,7 +53,7 @@
             class="px-3"
         >
           <span class="mr-2">Создать УП</span>
-          <v-icon color="#51BB19">mdi-plus</v-icon>
+          <v-icon color="create">mdi-plus</v-icon>
         </v-btn>
       </Menu>
     </v-card>
@@ -168,7 +168,7 @@ export default {
 
 .tabs-container {
   /*background-color: #58536b;*/
-  background-color: #525252;
+  background-color: var(--v-accent-base);
   display: flex;
   flex-direction: column;
   /*width: 250px;*/

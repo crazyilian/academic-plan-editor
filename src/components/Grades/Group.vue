@@ -1,6 +1,6 @@
 <template>
   <div style="display: flex; flex-direction: column" class="group">
-    <v-btn class="group-remove-button rounded-0" elevation="0" color="#ffbfbf" @click.stop="askCloseGroup">
+    <v-btn class="group-remove-button rounded-0" elevation="0" color="errorLight" @click.stop="askCloseGroup">
       <span>Удалить</span>
     </v-btn>
     <div style="display: flex; flex-grow: 1; min-height: 0">

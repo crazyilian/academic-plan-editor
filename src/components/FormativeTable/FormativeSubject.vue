@@ -6,8 +6,8 @@
     <div class="pr-4 py-0 ma-0">
       <div @click="editName">
         <v-hover v-slot="{ hover }">
-          <v-icon v-if="hover" color="#deca35">mdi-pencil-box</v-icon>
-          <v-icon v-else color="#c1b459">mdi-pencil-box-outline</v-icon>
+          <v-icon v-if="hover" color="edit">mdi-pencil-box</v-icon>
+          <v-icon v-else color="editSecondary">mdi-pencil-box-outline</v-icon>
         </v-hover>
       </div>
     </div>

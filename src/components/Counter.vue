@@ -159,7 +159,7 @@ export default {
 }
 
 .counter-error {
-  border-color: #ff9f9f;
+  border-color: var(--v-errorLight-base);
 }
 
 .counter-error:not(.counter-disabled):hover {
@@ -179,7 +179,7 @@ export default {
 }
 
 .counter-error input::-webkit-input-placeholder {
-  color: #ff9f9f;
+  color: var(--v-errorLight-base);
 }
 
 .counter-container-inner {

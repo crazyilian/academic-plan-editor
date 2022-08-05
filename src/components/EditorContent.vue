@@ -33,7 +33,7 @@
             <div class="pb-3 switch-btn-container">
               <v-btn
                   class="switch-btn"
-                  color="#525252"
+                  color="accent"
                   dark
                   depressed
                   :outlined="pageNum === 0"
@@ -43,7 +43,7 @@
               </v-btn>
               <v-btn
                   class="switch-btn"
-                  color="#525252"
+                  color="accent"
                   dark
                   depressed
                   :outlined="pageNum === 1"

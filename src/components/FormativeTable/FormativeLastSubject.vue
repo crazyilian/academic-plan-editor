@@ -18,8 +18,8 @@
           <div class="text--secondary pl-2 pr-1 icon-label">
             <span>Изменить</span>
           </div>
-          <v-icon v-if="hover" color="#deca35">mdi-pencil-box</v-icon>
-          <v-icon v-else color="#c1b459">mdi-pencil-box-outline</v-icon>
+          <v-icon v-if="hover" color="edit">mdi-pencil-box</v-icon>
+          <v-icon v-else color="editSecondary">mdi-pencil-box-outline</v-icon>
         </div>
       </v-hover>
     </div>
@@ -30,7 +30,7 @@
             <span>Удалить</span>
           </div>
           <v-icon v-if="hover" color="error">mdi-close-circle</v-icon>
-          <v-icon v-else color="#b68484">mdi-close-circle-outline</v-icon>
+          <v-icon v-else color="errorSecondary">mdi-close-circle-outline</v-icon>
         </div>
       </v-hover>
     </div>
