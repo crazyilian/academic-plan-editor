@@ -29,9 +29,7 @@
           :key="i"
           :num="i + 1"
           :name="subject"
-          :editing="i === editingId"
           @remove-subject="removeSubject(i)"
-          @edit-subject="editSubject(i)"
           @change="nameChange(i, $event)"
       />
       <div style="display: flex; width: 100%; justify-content: center">
@@ -58,11 +56,6 @@ export default {
     plan: { type: Object, default: () => ({}) },
     highlight: { type: Array, default: () => [] }
   },
-  data() {
-    return {
-      editingId: null
-    }
-  },
   methods: {
     counterChange(i, j, val) {
       Vue.set(this.plan.hours[i], j, val)
@@ -70,17 +63,12 @@ export default {
     addSubject() {
       const i = this.plan.subjects.length;
       Vue.set(this.plan.subjects, i, `Предмет по выбору ${i + 1}`)
-      this.editingId = i;
     },
     removeSubject(i) {
       Vue.delete(this.plan.subjects, i);
     },
-    editSubject(i) {
-      this.editingId = i;
-    },
     nameChange(i, newName) {
       Vue.set(this.plan.subjects, i, newName)
-      this.editingId = null;
     },
   }
 }

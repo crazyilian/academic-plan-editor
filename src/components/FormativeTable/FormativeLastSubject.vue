@@ -9,7 +9,7 @@
         :value="name"
         :editing="editing"
         style="flex-grow: 1"
-        @change="$emit('change', $event)"
+        @change="changeName"
         @span-click="editName"
     />
     <div class="ml-1" style="cursor: pointer" @click="editName" >
@@ -45,8 +45,12 @@ export default {
   components: { EditableText },
   props: {
     num: { type: Number, default: -1 },
-    editing: { type: Boolean, default: false },
     name: { type: String, default: "" },
+  },
+  data() {
+    return {
+      editing: false,
+    }
   },
   methods: {
     async askRemove() {
@@ -66,7 +70,11 @@ export default {
       }
     },
     editName() {
-      this.$emit('edit-subject');
+      this.editing = true;
+    },
+    changeName(name) {
+      this.editing = false;
+      this.$emit('change', name);
     }
   }
 }
