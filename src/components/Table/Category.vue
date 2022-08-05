@@ -20,7 +20,7 @@
     <v-expansion-panel-content>
       <Subject
           v-for="(sub, i) in subjects"
-          :key="gradeGroups.length * 100 + i"
+          :key="gradeGroups.length + '|' + i"
           v-bind="sub"
           ref="subjects"
           :grade-groups="gradeGroups"

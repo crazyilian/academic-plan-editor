@@ -3,7 +3,7 @@
     <div style="height: 100%; width: 17%">
       <EditorTabs
           v-model="activeTab"
-          :tabs-templates="project.tabs.map(e => e.template)"
+          :tabs="project.tabs"
           :templates="templates"
           @close-tab="closeTab"
           @add-tab="addTab"
@@ -12,7 +12,7 @@
     <div style="width: 83%; min-width: 0">
       <div
           v-for="(d, i) in project.tabs"
-          :key="JSON.stringify(d.config) + `;${i}`"
+          :key="d.id"
           style="height: 100%"
           :class="{ 'display-none': i !== activeTab }"
       >
@@ -28,7 +28,7 @@
 import EditorContent from "@/components/EditorContent";
 import EditorTabs from "@/components/EditorTabs";
 import Vue from "vue";
-import { addGroupToPlan, getProfileGroup, fillShape2, getProfileFormativeCategory } from "@/gradeProcessing";
+import { addGroupToPlan, getProfileGroup, fillShape2, getProfileFormativeCategory, useGlobalGradeId } from "@/gradeProcessing";
 
 export default {
   name: 'Editor',
@@ -83,6 +83,7 @@ export default {
       }
 
       Vue.set(this.project.tabs, this.project.tabs.length, {
+        id: useGlobalGradeId(),
         template: structuredClone(this.templates[i]),
         gradeGroups: gradeGroups,
         obligatoryPlan: obligatoryPlan,

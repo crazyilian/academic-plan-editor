@@ -23,7 +23,7 @@
       <Summary
           v-for="(el, i) in getData()"
           :id="i"
-          :key="gradeGroups.length * 100 + i"
+          :key="gradeGroups.length + '|' + i"
           ref="summaries"
           :grade-groups="gradeGroups"
           v-bind="el"

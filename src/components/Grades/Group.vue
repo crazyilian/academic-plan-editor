@@ -4,7 +4,7 @@
       <span>Удалить</span>
     </v-btn>
     <div style="display: flex; flex-grow: 1; min-height: 0">
-      <div v-for="(grade, j) in group" :key="j">
+      <div v-for="(grade, j) in group" :key="grade.id">
         <Grade
             :grade="grade"
             :highlight="highlight[j]"

@@ -26,7 +26,7 @@
     <v-expansion-panel-content>
       <FormativeLastSubject
           v-for="(subject, i) in plan.subjects"
-          :key="i"
+          :key="subject"
           :num="i + 1"
           :name="subject"
           @remove-subject="removeSubject(i)"
@@ -56,13 +56,25 @@ export default {
     plan: { type: Object, default: () => ({}) },
     highlight: { type: Array, default: () => [] }
   },
+  data() {
+    return {
+      num: 0
+    }
+  },
   methods: {
     counterChange(i, j, val) {
       Vue.set(this.plan.hours[i], j, val)
     },
+    getNextName() {
+      let name = "";
+      do {
+        this.num += 1;
+        name = `Предмет по выбору ${this.num}`;
+      } while (this.plan.subjects.includes(name));
+      return name;
+    },
     addSubject() {
-      const i = this.plan.subjects.length;
-      Vue.set(this.plan.subjects, i, `Предмет по выбору ${i + 1}`)
+      Vue.set(this.plan.subjects, this.plan.subjects.length, this.getNextName());
     },
     removeSubject(i) {
       Vue.delete(this.plan.subjects, i);

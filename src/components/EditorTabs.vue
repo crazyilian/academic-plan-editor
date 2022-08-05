@@ -1,8 +1,8 @@
 <template>
   <v-container class="rounded-lg pb-2 tabs-container">
     <v-btn
-        v-for="(template, i) in tabsTemplates"
-        :key="JSON.stringify(template.config) + `;${i}`"
+        v-for="(tab, i) in tabs"
+        :key="tab.id"
         plain
         :class="{ 'active': i === value, 'mt-2': i !== 0}"
         :color="i === value ? 'black' : 'white'"
@@ -13,7 +13,7 @@
       <EditableText
           style="flex-grow: 1"
           class="ml-1"
-          :value="template.config.name"
+          :value="tab.template.config.name"
           :editing="editingNameId === i"
           @change="nameChange(i, $event)"
       />
@@ -31,7 +31,7 @@
       </div>
     </v-btn>
 
-    <v-card flat class="pa-0 add-menu-container" :class="{'pt-2': tabsTemplates.length > 0}">
+    <v-card flat class="pa-0 add-menu-container" :class="{'pt-2': tabs.length > 0}">
       <Menu
           v-model="menuModel"
           :attrs="{'bottom': true, 'offset-y': true}"
@@ -70,7 +70,7 @@ export default {
   name: "EditorTabs",
   components: { Menu, EditableText },
   props: {
-    tabsTemplates: { type: Array, default: () => [] },
+    tabs: { type: Array, default: () => [] },
     templates: { type: Array, default: () => [] },
     value: { type: Number, default: 0 },
   },
@@ -89,7 +89,7 @@ export default {
         'type': 'question',
         'title': 'Удаление...',
         'message': 'Вы уверены, что хотите удалить план?',
-        'detail': `Все введённые данные по учебному плану "${this.tabsTemplates[i].config.name}" будут удалены.`,
+        'detail': `Все введённые данные по учебному плану "${this.tabs[i].template.config.name}" будут удалены.`,
         'buttons': ['Да', 'Нет'],
         'cancelId': 1,
         'defaultId': 1,
@@ -104,7 +104,7 @@ export default {
       this.editingNameId = i;
     },
     nameChange(i, newName) {
-      Vue.set(this.tabsTemplates[i].config, 'name', newName);
+      Vue.set(this.tabs[i].template.config, 'name', newName);
       this.editingNameId = null;
     }
   }

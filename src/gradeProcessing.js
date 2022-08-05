@@ -18,7 +18,7 @@ function allNumbers(grades) {
 function getDefaultGroup(grades) {
   const all_numbers = allNumbers(grades);
   const group = all_numbers.map(name => grades.find(el => el.name === name))
-      .map(grade => ({ ...grade, id: gradeId += 1 }));
+      .map(grade => ({ ...grade, id: useGlobalGradeId() }));
   return group;
 }
 
@@ -26,7 +26,7 @@ function getProfileGroup(grades, profile) {
   const default_group = getDefaultGroup(grades);
   const prof_grades = [...grades.filter(g => isEqual(g.profile, profile)), ...default_group];
   const group = default_group.map(grade => prof_grades.filter(g => g.name === grade.name)[0])
-  return structuredClone(group).map(grade => ({ ...grade, weeknum: null, id: gradeId += 1 }));
+  return structuredClone(group).map(grade => ({ ...grade, weeknum: null, id: useGlobalGradeId() }));
 }
 
 
@@ -100,6 +100,10 @@ function getGlobalGradeId() {
   return gradeId;
 }
 
+function useGlobalGradeId() {
+  return gradeId += 1;
+}
+
 function getProfileFormativeCategory(rules_, group, gradeGroups) {
   const profile = group.slice(-1)[0].profile;
   const rules = rules_.filter(rule => group.some(grade => rule.grades.includes(grade.index)));
@@ -130,5 +134,6 @@ export {
   isEqual,
   setGlobalGradeId,
   getGlobalGradeId,
+  useGlobalGradeId,
   getProfileFormativeCategory
 }

@@ -3,7 +3,7 @@
     <v-btn style="width: 0; min-width: 0; padding: 0"/> <!-- crazy fix of bluring rotated text while pressing button -->
     <div
         v-for="(group, i) in gradeGroups"
-        :key="i"
+        :key="group[0].id"
         style="display: flex"
     >
       <Group

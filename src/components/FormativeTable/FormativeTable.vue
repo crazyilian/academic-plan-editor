@@ -4,7 +4,7 @@
       <v-expansion-panels :value="panels" accordion focusable multiple class="rounded-0" @change="modelChange">
         <FormativeCategory
             v-for="(category, i) in plan.categories"
-            :key="category.profile.toString()"
+            :key="JSON.stringify(category.profile)"
             :grade-groups="gradeGroups"
             v-bind="category"
             :highlight="highlight"
