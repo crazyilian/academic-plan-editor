@@ -20,7 +20,6 @@
 <script>
 
 import Category from "@/components/Table/Category";
-import { unique, isEqual } from "@/gradeProcessing";
 import bipartiteMatching from "bipartite-matching"
 
 export default {
@@ -37,16 +36,12 @@ export default {
   data() {
     return {
       panels: [...Array(this.categories.length).keys()],
-      messagesSubject: {},
-      messagesCategory: {},
-      incorrectSubjects: {},
-      correctSubjects: {},
     }
   },
   methods: {
     validate(i, j) {
       const rules = this.rules.filter((r) =>
-          i === undefined || r.subjects.some((s) => s[0] === i && s[1] === j)
+          r.subjects.some((s) => s[0] === i && s[1] === j)
       );
       for (const rule of rules) {
         const ruleGrades = rule.grades.map(i => this.grades[i]);
@@ -74,29 +69,25 @@ export default {
                 value += planVal.value;
               }
             }
-            this.addGradeIds(rule, gradesCoordinates);
+
             const badKeys = [
               ...(rule.advanced && !advanced ? ['ADVANCED'] : []),
               ...(rule.min > value ? ['MIN'] : []),
               ...(rule.max !== undefined && rule.max < value ? ['MAX'] : [])
             ];
             if (badKeys.length > 0) {
-              this.addMessage(
-                  rule,
+              this.sendMessage(
+                  rule, groupId,
                   {
-                    key: 'RULE_OBLIGATORY_UNIVERSAL',
+                    key: 'RULE_UNIVERSAL',
                     args: [ruleGrades, ruleSubjects, badKeys, rule.min, rule.max],
                     grades: gradesCoordinates.map(g => g.toString())
                   },
-                  gradesCoordinates
+                  gradesCoordinates, false
               );
+            } else {
+              this.sendMessage(rule, groupId, undefined, gradesCoordinates, true);
             }
-            // if (rule.advanced && !advanced)
-            //   this.addMessage(rule, errorMessages.ALL_ADVANCED(ruleGrades, ruleSubjects), gradesCoordinates);
-            // if (rule.min > value)
-            //   this.addMessage(rule, errorMessages.RULE_TO_SMALL(ruleGrades, ruleSubjects, rule.min), gradesCoordinates);
-            // if (rule.max !== undefined && rule.max < value)
-            //   this.addMessage(rule, errorMessages.RULE_TO_BIG(ruleGrades, ruleSubjects, rule.max), gradesCoordinates);
           } else {
             const edges = [];
             const subj2num = {};
@@ -116,63 +107,34 @@ export default {
                 }
               }
             }
-            this.addGradeIds(rule, gradesCoordinates);
             const matching = bipartiteMatching(ruleGrades.length, Object.keys(subj2num).length, edges);
             if (matching.length !== ruleGrades.length) {
-              this.addMessage(
-                  rule,
+              this.sendMessage(
+                  rule, groupId,
                   {
                     key: 'DIFFERENT_SUBJECTS',
                     args: [ruleGrades, rule.mins],
                     grades: gradesCoordinates.map(g => g.toString())
                   },
-                  gradesCoordinates
+                  gradesCoordinates, false
               )
+            } else {
+              this.sendMessage(rule, groupId, undefined, gradesCoordinates, true);
             }
           }
         }
       }
-      this.sendMessages();
     },
-    addGradeIds(rule, gradeIds) {
-      for (const sub of rule.subjects) {
-        this.correctSubjects[sub] ||= [];
-        this.correctSubjects[sub].push(...gradeIds);
+    sendMessage(rule, groupId, message, gradeIds, correct) {
+      for (const [i, j] of rule.subjects) {
+        this.$refs.categories[i].$refs.subjects[j].setCorrectness(correct, rule.id, gradeIds);
       }
-    },
-    addMessage(rule, message, gradeIds) {
       if (rule.subjects.length === 1) {
-        this.messagesSubject[rule.subjects[0]] ||= [];
-        this.messagesSubject[rule.subjects[0]].push(message);
+        this.$refs.categories[rule.subjects[0][0]].$refs.subjects[rule.subjects[0][1]].addMessage(rule.id, groupId, message);
       } else {
-        this.messagesCategory[rule.subjects[0][0]] ||= [];
-        this.messagesCategory[rule.subjects[0][0]].push(message);
+        this.$refs.categories[rule.subjects[0][0]].addMessage(rule.id, groupId, message);
       }
-      for (const sub of rule.subjects) {
-        this.incorrectSubjects[sub] ||= [];
-        this.incorrectSubjects[sub].push(...gradeIds);
-      }
-    },
-    sendMessages() {
-      for (const [subj, msgs] of Object.entries(this.messagesSubject)) {
-        const [cat, sub] = subj.split(',').map(x => parseInt(x));
-        this.$refs.categories[cat].$refs.subjects[sub].addMessages(...msgs);
-      }
-      for (const [cat, msgs] of Object.entries(this.messagesCategory)) {
-        this.$refs.categories[cat].addMessages(...msgs);
-      }
-      for (const subj of Object.keys(this.correctSubjects)) {
-        const [cat, sub] = subj.split(',').map(x => parseInt(x));
-        const incorrect = (this.incorrectSubjects[subj] || []).filter(unique);
-        const correct = this.correctSubjects[subj].filter(unique).filter(a => !incorrect.some(b => isEqual(a, b)));
-        this.$refs.categories[cat].$refs.subjects[sub].setCorrectness(true, ...correct);
-        this.$refs.categories[cat].$refs.subjects[sub].setCorrectness(false, ...incorrect);
-      }
-      this.messagesSubject = {};
-      this.messagesCategory = {};
-      this.correctSubjects = {};
-      this.incorrectSubjects = {};
-    },
+    }
   }
 }
 </script>

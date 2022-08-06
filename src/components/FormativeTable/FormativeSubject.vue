@@ -32,7 +32,7 @@
     </v-tooltip>
     <Message
         container-style="width: 65%; margin-left: 24px; margin-right: 24px; min-width: 20px"
-        :messages="messages"
+        :messages="Object.values(messages)"
     />
     <div style="display: flex; flex-direction: row-reverse">
       <div v-for="(group, i) in gradeGroups" :key="group[0].id" style="display: flex">
@@ -43,7 +43,7 @@
           <Counter
               v-if="isGoodProfile(grade)"
               ref="counters"
-              :correct="countersCorrectTop[i][j]"
+              :correct="Object.keys(incorrectRulesTop[i][j]).length === 0"
               :highlight="highlight[i][j]"
               :start-value="plan[i][j]"
               :max="99"
@@ -78,21 +78,20 @@ export default {
   },
   data() {
     return {
-      messages: [],
-      countersCorrectTop: fillShape2(this.gradeGroups, () => true),
-      incorrectCntTop: 0,
+      messages: {},
+      incorrectRulesTop: fillShape2(this.gradeGroups, () => ({})),
       editing: false,
-    }
-  },
-  computed: {
-    correct() {
-      return this.incorrectCntTop === 0;
+      correct: true,
     }
   },
   mounted() {
     this.validate();
   },
   methods: {
+    recalcCorrect() {
+      this.correct = this.incorrectRulesTop.every(a => a.every(el => Object.keys(el).length === 0));
+      this.$emit('set-correct', this.correct);
+    },
     editName() {
       this.editing = true;
     },
@@ -108,23 +107,24 @@ export default {
       this.validate();
     },
     validate() {
-      this.messages = [];
+      this.messages = {};
       this.$emit('validate');
     },
-    addMessages(...messages) {
-      this.$nextTick(() => {
-        this.messages.push(...messages);
-      })
+    addMessage(ruleId, groupId, message) {
+      const key = JSON.stringify([ruleId, groupId]);
+      if (message === undefined)
+        delete this.messages[key];
+      else
+        this.messages[key] = message;
     },
-    setCorrectness(val, ...gradeIds) {
+    setCorrectness(val, ruleId, gradeIds) {
       for (const [groupId, gradeId] of gradeIds) {
-        if (this.countersCorrectTop[groupId][gradeId] !== val) {
-          this.$nextTick(() => {
-            Vue.set(this.countersCorrectTop[groupId], gradeId, val);
-            this.incorrectCntTop += val ? -1 : +1;
-          })
-        }
+        if (val)
+          Vue.delete(this.incorrectRulesTop[groupId][gradeId], ruleId);
+        else
+          Vue.set(this.incorrectRulesTop[groupId][gradeId], ruleId, true);
       }
+      this.recalcCorrect();
     }
   }
 }

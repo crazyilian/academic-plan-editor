@@ -2,18 +2,18 @@
   <v-expansion-panel class="category-panel">
     <v-expansion-panel-header
         disable-icon-rotate
-        :class="{ 'error-category': !correct() }"
+        :class="{ 'error-category': !correct }"
         class="category"
     >
       <div style="display: flex; justify-content: space-between; align-items: center; width: calc(100% - 24px)">
         <div style="width: 30%; display: inline-block; word-wrap: break-word" class="subject-name">{{ name }}</div>
         <Message
             container-style="width: 70%; margin-left: 12px; margin-right: 32px; min-width: 0"
-            :messages="messages"
+            :messages="Object.values(messages)"
         />
       </div>
       <template #actions>
-        <v-icon v-if="correct()" color="teal">mdi-check</v-icon>
+        <v-icon v-if="correct" color="teal">mdi-check</v-icon>
         <v-icon v-else color="error">mdi-alert-circle</v-icon>
       </template>
     </v-expansion-panel-header>
@@ -37,6 +37,7 @@
 
 import Subject from "@/components/Table/Subject";
 import Message from "@/components/Table/Message";
+import Vue from "vue";
 
 export default {
   name: 'Category',
@@ -50,17 +51,23 @@ export default {
   },
   data() {
     return {
-      messages: [],
+      messages: {},
       selfCorrect: true,
+      subjectCorrect: this.subjects.map(() => true),
     }
   },
-  methods: {
+  computed: {
     correct() {
-      return this.selfCorrect && (this.$refs.subjects || []).every(s => s.correct);
+      return this.selfCorrect && this.subjectCorrect.every(s => s);
+    },
+  },
+  methods: {
+    setCorrect(i, val) {
+      Vue.set(this.subjectCorrect, i, val);
     },
     validate(i) {
       this.selfCorrect = true;
-      this.messages = [];
+      this.messages = {};
 
       for (const [gi, group] of this.gradeGroups.entries()) {
         let includedCount = 0;
@@ -73,7 +80,7 @@ export default {
             includedCount += 1;
         }
         if (includedCount === 0 && this.subjects.length > 1) {
-          this.messages.push({
+          this.addMessage(-1, gi, {
             key: 'ONE_SUBJ_PER_CATEG',
             args: [group],
             grades: group.map((_, i) => [gi, i].toString()),
@@ -84,10 +91,12 @@ export default {
 
       this.$emit('validate', i);
     },
-    addMessages(...messages) {
-      this.$nextTick(() => {
-        this.messages.push(...messages);
-      })
+    addMessage(ruleId, groupId, message) {
+      const key = JSON.stringify([ruleId, groupId]);
+      if (message === undefined)
+        delete this.messages[key];
+      else
+        this.messages[key] = message;
     }
   }
 }

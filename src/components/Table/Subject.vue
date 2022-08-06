@@ -23,7 +23,7 @@
     </div>
     <Message
         container-style="width: 65%; margin-left: 24px; margin-right: 24px; min-width: 20px"
-        :messages="messages"
+        :messages="Object.values(messages)"
     />
     <div style="display: flex; flex-direction: row-reverse">
       <div v-for="(group, i) in gradeGroups" :key="group[0].id" style="display: flex">
@@ -31,7 +31,7 @@
             v-for="(grade, j) in group"
             :key="grade.id"
             ref="counters"
-            :correct="countersCorrect[i][j] && countersCorrectTop[i][j]"
+            :correct="countersCorrect[i][j] && Object.keys(incorrectRulesTop[i][j]).length === 0"
             :highlight="highlight[i][j]"
             :start-value="plan[i][j].value"
             :checkbox="plan[i][j].advanced"
@@ -68,22 +68,21 @@ export default {
   data() {
     return {
       checkbox: this.required,
-      messages: [],
-      incorrectCnt: 0,
+      messages: {},
+      selfCorrect: true,
       countersCorrect: fillShape2(this.gradeGroups, () => true),
-      countersCorrectTop: fillShape2(this.gradeGroups, () => true),
-      incorrectCntTop: 0,
-    }
-  },
-  computed: {
-    correct() {
-      return this.incorrectCnt === 0 && this.incorrectCntTop === 0;
+      incorrectRulesTop: fillShape2(this.gradeGroups, () => ({})),
+      correct: true,
     }
   },
   mounted() {
     this.validate();
   },
   methods: {
+    recalcCorrect() {
+      this.correct = this.selfCorrect && this.incorrectRulesTop.every(a => a.every(el => Object.keys(el).length === 0));
+      this.$emit('set-correct', this.correct);
+    },
     getSumHoursGroup(i) {
       return this.plan[i].reduce((r, e) => r + e.value, 0);
     },
@@ -96,45 +95,46 @@ export default {
       this.validate();
     },
     validate() {
-      this.incorrectCnt = 0;
+      this.selfCorrect = true;
       this.countersCorrect.forEach((group) => group.forEach((v, i) => Vue.set(group, i, true)));
-      this.messages = [];
+      this.messages = {};
 
       for (const [gi, group] of this.gradeGroups.entries()) {
         const sumHours = this.getSumHoursGroup(gi);
         if (this.required && sumHours === 0) {
-          this.messages.push({
+          this.addMessage(-1, gi, {
             key: 'NO_ZERO_IN_REQUIRED',
             args: [group],
             grades: group.map((_, i) => [gi, i].toString()),
           })
           this.countersCorrect[gi].forEach((v, j, self) => {
             if (self[j]) {
-              this.incorrectCnt += 1;
+              this.selfCorrect = false;
               Vue.set(self, j, false)
             }
           });
         }
       }
-
+      this.recalcCorrect();
       this.$emit('validate');
     },
-    addMessages(...messages) {
-      this.$nextTick(() => {
-        this.messages.push(...messages);
-      })
+    addMessage(ruleId, groupId, message) {
+      const key = JSON.stringify([ruleId, groupId]);
+      if (message === undefined)
+        delete this.messages[key];
+      else
+        this.messages[key] = message;
     },
-    setCorrectness(val, ...gradeIds) {
+    setCorrectness(val, ruleId, gradeIds) {
       for (const [groupId, gradeId] of gradeIds) {
-        if (this.countersCorrectTop[groupId][gradeId] !== val) {
-          this.$nextTick(() => {
-            Vue.set(this.countersCorrectTop[groupId], gradeId, val);
-            this.incorrectCntTop += val ? -1 : +1;
-          })
-        }
+        if (val)
+          Vue.delete(this.incorrectRulesTop[groupId][gradeId], ruleId);
+        else
+          Vue.set(this.incorrectRulesTop[groupId][gradeId], ruleId, true);
       }
+      this.recalcCorrect();
     }
-  }
+  },
 }
 </script>
 

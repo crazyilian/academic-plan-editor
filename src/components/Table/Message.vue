@@ -57,7 +57,7 @@ export default {
       const filtered = this.messages.filter((message, i, self) => {
         if (message.key !== 'NO_ZERO_IN_REQUIRED')
           return true;
-        return !self.some((m) => m.key === 'RULE_OBLIGATORY_UNIVERSAL' && m.grades.every(v => message.grades.includes(v)));
+        return !self.some((m) => m.key === 'RULE_UNIVERSAL' && m.grades.every(v => message.grades.includes(v)));
       }).filter((message, i, self) => {
         if (message.key !== 'ONE_SUBJ_PER_CATEG')
           return true;

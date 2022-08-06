@@ -123,6 +123,11 @@ function getProfileFormativeCategory(rules_, group, gradeGroups) {
   return category;
 }
 
+function getFormativeSubjectName(subject) {
+  const name = subject.name === subject.newName ? subject.name : `${subject.newName} (${subject.name})`;
+  return { name: name };
+}
+
 export {
   allNumbers,
   getDefaultGroup,
@@ -135,5 +140,6 @@ export {
   setGlobalGradeId,
   getGlobalGradeId,
   useGlobalGradeId,
-  getProfileFormativeCategory
+  getProfileFormativeCategory,
+  getFormativeSubjectName
 }

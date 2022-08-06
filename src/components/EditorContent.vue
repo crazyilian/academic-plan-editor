@@ -86,6 +86,7 @@
               :highlight="highlight"
               :plan="formativePlan"
               :rules="template.rulesFormative"
+              :grades="template.grades"
           />
         </v-window-item>
       </v-window>

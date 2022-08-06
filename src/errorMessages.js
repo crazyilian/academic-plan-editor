@@ -45,9 +45,22 @@ function gradesOfProfileNeed(grades) {
   return gradesOfProfile(grades) + (grades.length > 1 ? " должны" : " должен");
 }
 
+function gradesNeed(grades) {
+  return gradesFormat(grades) + (grades.length > 1 ? " должны" : " должен");
+}
+
 function gradesOfProfileNeedSubjects(grades, subjects) {
   const names = subjects.map(s => `"${s.name}"`);
   let res = gradesOfProfileNeed(grades)
+  res += ' изучать';
+  res += names.length > 1 ? " предметы" : " предмет";
+  res += ` ${enumerate(names, 'или')}`;
+  return res;
+}
+
+function gradesNeedSubjects(grades, subjects) {
+  const names = subjects.map(s => `"${s.name}"`);
+  let res = gradesNeed(grades)
   res += ' изучать';
   res += names.length > 1 ? " предметы" : " предмет";
   res += ` ${enumerate(names, 'или')}`;
@@ -62,9 +75,9 @@ const errorObligatory = {
   "ONE_SUBJ_PER_CATEG": (grades) => {
     return gradesOfProfileNeed(grades) + ' изучать хотя бы 1 предмет из предметной области';
   },
-  "RULE_OBLIGATORY_UNIVERSAL": (grades, subjects, keys, min, max) => {
+  "RULE_UNIVERSAL": (grades, subjects, keys, min, max, addProfile = true) => {
     const NEED = keys.reduce((o, v) => ({ ...o, [v]: true }), {});
-    let res = gradesOfProfileNeedSubjects(grades, subjects);
+    let res = addProfile ? gradesOfProfileNeedSubjects(grades, subjects) : gradesNeedSubjects(grades, subjects);
     const msgs = [];
     if (NEED.ADVANCED) {
       msgs.push('углублённо');
@@ -79,9 +92,9 @@ const errorObligatory = {
     res += ` ${enumerate(msgs)}`;
     return res;
   },
-  "DIFFERENT_SUBJECTS": (grades, mins) => {
-    return gradesOfProfileNeed(grades)
-        + ` изучать разные предметы не менее ${enumerate(mins)} часов в неделю соответственно`;
+  "DIFFERENT_SUBJECTS": (grades, mins, addProfile = true) => {
+    const res = addProfile ? gradesOfProfileNeed(grades) : gradesNeed(grades);
+    return res + ` изучать разные предметы не менее ${enumerate(mins)} часов в неделю соответственно`;
   }
 };
 

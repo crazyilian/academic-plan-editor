@@ -40,6 +40,7 @@ import fs from "fs-extra";
     ],
     rulesObligatory: [
       {
+        id: 0,
         grades: [0],
         subjects: [[0, 2]],
         advanced: true,
@@ -51,9 +52,9 @@ import fs from "fs-extra";
     ],
     rulesFormative: [
       {
+        id: 0,
         grades: [3, 4],
         subjects: ["Геоинформатика"],
-        advanced: false,
         min: 2,
         max: undefined,
         mins: undefined
@@ -254,6 +255,7 @@ function parseSheet(sh, name) {
       }
       const val = parseCellVal(table[x][y].val || "1");
       template.rulesObligatory.push({
+        id: template.rulesObligatory.length,
         grades: iota(y - 3, mrg(table, x, y)[3] - 3),
         subjects: iota(x - OB[0] - 1, mrg(table, x, y)[2] - OB[0] - 1).map(i => subjCoor[i]),
         advanced: table[x][y].bg === colors.advanced,
@@ -272,9 +274,9 @@ function parseSheet(sh, name) {
       }
       const val = parseCellVal(table[x][y].val || "1");
       template.rulesFormative.push({
+        id: template.rulesFormative.length,
         grades: iota(y - 3, mrg(table, x, y)[3] - 3),
         subjects: iota(x, mrg(table, x, y)[2]).map(i => table[i][0].val),
-        advanced: table[x][y].bg === colors.advanced,
         ...val
       });
     }
@@ -290,6 +292,3 @@ export function parseTable(filename) {
   }
   return templates;
 }
-
-
-// console.log(JSON.stringify(parseTable('extraResources/plan-templates/table.xlsx')))

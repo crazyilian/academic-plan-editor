@@ -5,8 +5,9 @@
         <FormativeCategory
             v-for="(category, i) in plan.categories"
             :key="JSON.stringify(category.profile)"
-            :grade-groups="gradeGroups"
             v-bind="category"
+            ref="categories"
+            :grade-groups="gradeGroups"
             :highlight="highlight"
             @validate="validate(i, $event)"
         />
@@ -20,6 +21,8 @@
 
 import FormativeLastCategory from "@/components/FormativeTable/FormativeLastCategory";
 import FormativeCategory from "@/components/FormativeTable/FormativeCategory";
+import bipartiteMatching from "bipartite-matching";
+import { getFormativeSubjectName } from "@/gradeProcessing";
 
 export default {
   name: 'FormativeTable',
@@ -28,12 +31,14 @@ export default {
     gradeGroups: { type: Array, default: () => [] },
     plan: { type: Object, default: () => ({}) },
     rules: { type: Array, default: () => [] },
-    highlight: { type: Array, default: () => [] }
+    highlight: { type: Array, default: () => [] },
+    grades: { type: Array, default: () => [] },
   },
   data() {
     return {
       panels: [...Array(this.plan.categories.length + 1).keys()],
       changeShapeFlag: false,
+      categoryId: undefined,
     }
   },
   watch: {
@@ -56,8 +61,103 @@ export default {
       this.changeShapeFlag = false;
     },
     validate(i, j) {
-      console.log('validate', i, j);
+      this.categoryId = i;
+      const curCat = this.plan.categories[this.categoryId];
+      const rules = this.rules.filter((r) =>
+          r.subjects.some((s) => s === curCat.subjects[j].name)
+          && JSON.stringify(this.grades[r.grades[0]].profile) === JSON.stringify(curCat.profile)
+      );
+      for (const rule of rules) {
+        const ruleGrades = rule.grades.map(i => this.grades[i]);
+        const ruleSubjects = rule.subjects.map(nm => getFormativeSubjectName(curCat.subjects.find((s) => s.name === nm)));
+        const groupIds = this.gradeGroups.reduce((inds, group, i) => {
+          if (ruleGrades.every((g) => group.some((grade) => grade.index === g.index))) {
+            inds.push(i);
+          }
+          return inds;
+        }, []);
+        for (const groupId of groupIds) {
+          const group = this.gradeGroups[groupId];
+          const gradesCoordinates = [];
+
+          if (rule.mins === undefined) {
+            let value = 0;
+            for (const grade of ruleGrades) {
+              const gradeId = group.findIndex((g) => grade.index === g.index);
+              gradesCoordinates.push([groupId, gradeId]);
+              for (const subj of rule.subjects) {
+                const planSubj = curCat.subjects.find((s) => s.name === subj).plan;
+                const planVal = planSubj[groupId][gradeId];
+                value += planVal;
+              }
+            }
+            const badKeys = [
+              ...(rule.min > value ? ['MIN'] : []),
+              ...(rule.max !== undefined && rule.max < value ? ['MAX'] : [])
+            ];
+            if (badKeys.length > 0) {
+              this.sendMessage(
+                  rule, groupId,
+                  {
+                    key: 'RULE_UNIVERSAL',
+                    args: [ruleGrades, ruleSubjects, badKeys, rule.min, rule.max, false],
+                    grades: gradesCoordinates.map(g => g.toString())
+                  },
+                  gradesCoordinates, false
+              );
+            } else {
+              this.sendMessage(rule, groupId, undefined, gradesCoordinates, true);
+            }
+          } else {
+            const edges = [];
+            const subj2num = {};
+            const gradesCoordinates = [];
+            for (const [i, grade] of ruleGrades.entries()) {
+              const gradeId = group.findIndex((g) => grade.index === g.index);
+              gradesCoordinates.push([groupId, gradeId]);
+              for (const subj of rule.subjects) {
+                const planSubj = curCat.subjects.find((s) => s.name === subj).plan;
+                const planVal = planSubj[groupId][gradeId];
+                if (planVal >= rule.mins[i]) {
+                  if (!(subj in subj2num))
+                    subj2num[subj] = Object.keys(subj2num).length;
+                  edges.push([i, subj2num[subj]]);
+                }
+              }
+            }
+            const matching = bipartiteMatching(ruleGrades.length, Object.keys(subj2num).length, edges);
+            if (matching.length !== ruleGrades.length) {
+              this.sendMessage(
+                  rule, groupId,
+                  {
+                    key: 'DIFFERENT_SUBJECTS',
+                    args: [ruleGrades, rule.mins, false],
+                    grades: gradesCoordinates.map(g => g.toString())
+                  },
+                  gradesCoordinates, false
+              )
+            } else {
+              this.sendMessage(rule, groupId, undefined, gradesCoordinates, true);
+            }
+          }
+        }
+      }
     },
+    getSubjectIdByName(name) {
+      return this.plan.categories[this.categoryId].subjects.findIndex((s) => s.name === name);
+    },
+    sendMessage(rule, groupId, message, gradeIds, correct) {
+      for (const name of rule.subjects) {
+        const j = this.getSubjectIdByName(name);
+        this.$refs.categories[this.categoryId].$refs.subjects[j].setCorrectness(correct, rule.id, gradeIds);
+      }
+      if (rule.subjects.length === 1) {
+        const j = this.getSubjectIdByName(rule.subjects[0]);
+        this.$refs.categories[this.categoryId].$refs.subjects[j].addMessage(rule.id, groupId, message);
+      } else {
+        this.$refs.categories[this.categoryId].addMessage(rule.id, groupId, message);
+      }
+    }
   }
 }
 </script>
