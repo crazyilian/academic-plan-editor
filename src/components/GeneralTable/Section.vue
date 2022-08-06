@@ -21,7 +21,7 @@
     </v-expansion-panel-header>
     <v-expansion-panel-content class="section-content">
       <Summary
-          v-for="(el, i) in getData()"
+          v-for="(el, i) in data"
           :id="i"
           :key="gradeGroups.length + '|' + i"
           ref="summaries"
@@ -55,16 +55,22 @@ export default {
   },
   data() {
     return {
-      messages: [],
+      messages: {},
       correct: false,
+      data: this.getData(),
+    }
+  },
+  watch: {
+    dataRaw() {
+      this.data = this.getData();
     }
   },
   methods: {
     validate() {
       this.correct = true;
-      this.messages = [];
+      this.messages = {};
       for (const summary of this.$refs.summaries) {
-        this.messages.push(...summary.messages);
+        summary.messages.forEach(message => this.addMessage(...message))
         this.correct &&= summary.correct;
       }
     },
@@ -90,7 +96,14 @@ export default {
         data[i].maxs = maxVal;
       }
       return data;
-    }
+    },
+    addMessage(ruleId, groupId, message) {
+      const key = JSON.stringify([ruleId, groupId]);
+      if (message === undefined)
+        delete this.messages[key];
+      else
+        this.messages[key] = message;
+    },
   }
 }
 </script>

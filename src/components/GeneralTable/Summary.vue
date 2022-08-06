@@ -69,13 +69,13 @@ export default {
           let bad = false;
           if (value === null) {
             bad = true;
-            this.messages.push({ key: 'SUMMARY_NULL', args: [this.errorName, this.gradeGroups[i][j].name] })
+            this.messages.push([-1, i, { key: 'SUMMARY_NULL', args: [this.errorName, this.gradeGroups[i][j].name] }])
           } else if (this.mins !== undefined && value < this.mins[i][j]) {
             bad = true;
-            this.messages.push({ key: 'SUMMARY_TOO_SMALL', args: [this.errorName, this.gradeGroups[i][j].name] })
+            this.messages.push([-2, i, { key: 'SUMMARY_TOO_SMALL', args: [this.errorName, this.gradeGroups[i][j].name] }])
           } else if (this.maxs !== undefined && value > this.maxs[i][j]) {
             bad = true;
-            this.messages.push({ key: 'SUMMARY_TOO_BIG', args: [this.errorName, this.gradeGroups[i][j].name] })
+            this.messages.push([-3, i, { key: 'SUMMARY_TOO_BIG', args: [this.errorName, this.gradeGroups[i][j].name] }])
           }
           if (bad) {
             this.correct = false;

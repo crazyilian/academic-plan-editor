@@ -44,17 +44,31 @@ import { unique } from "@/gradeProcessing";
 export default {
   name: "Message",
   props: {
-    messages: { type: Array, default: () => [] },
+    messages: { type: Object, default: () => {} },
     containerStyle: { type: String, default: "" }
   },
   data() {
     return {
       tooltipVisible: true,
+      value: [],
     }
   },
-  computed: {
-    value() {
-      const filtered = this.messages.filter((message, i, self) => {
+  watch: {
+    messages() {
+      this.updateTooltip();
+      this.updateValue();
+    }
+  },
+  mounted() {
+    this.updateTooltip();
+  },
+  methods: {
+    updateTooltip() {
+      const el = this.$refs.messageContainer;
+      this.tooltipVisible = el.offsetWidth < el.scrollWidth;
+    },
+    updateValue() {
+      const filtered = Object.values(this.messages).filter((message, i, self) => {
         if (message.key !== 'NO_ZERO_IN_REQUIRED')
           return true;
         return !self.some((m) => m.key === 'RULE_UNIVERSAL' && m.grades.every(v => message.grades.includes(v)));
@@ -65,20 +79,8 @@ export default {
       });
       const res = filtered.map((message) => errorMessages[message.key](...message.args)).filter(unique);
       res.sort();
-      return res;
+      this.value = res;
     }
-  },
-  watch: {
-    messages() { this.updateTooltip(); }
-  },
-  mounted() {
-    this.updateTooltip();
-  },
-  methods: {
-    updateTooltip() {
-      const el = this.$refs.messageContainer;
-      this.tooltipVisible = el.offsetWidth < el.scrollWidth;
-    },
   }
 }
 </script>

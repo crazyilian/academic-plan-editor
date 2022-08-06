@@ -9,7 +9,7 @@
         <div style="width: 38%; display: inline-block; word-wrap: break-word" class="subject-name">{{ name }}</div>
         <Message
             container-style="width: 62%; margin-left: 12px; margin-right: 32px; min-width: 0"
-            :messages="Object.values(messages)"
+            :messages="messages"
         />
       </div>
       <template #actions>

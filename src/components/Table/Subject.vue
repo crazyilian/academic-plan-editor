@@ -23,7 +23,7 @@
     </div>
     <Message
         container-style="width: 65%; margin-left: 24px; margin-right: 24px; min-width: 20px"
-        :messages="Object.values(messages)"
+        :messages="messages"
     />
     <div style="display: flex; flex-direction: row-reverse">
       <div v-for="(group, i) in gradeGroups" :key="group[0].id" style="display: flex">

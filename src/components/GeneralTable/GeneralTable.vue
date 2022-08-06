@@ -17,7 +17,7 @@
             name="Обязательная часть"
             :grade-groups="gradeGroups"
             :highlight="highlight"
-            :data-raw="[{name: 'Часов в неделю', values: obligatory, edit: false}]"
+            :data-raw="section0"
         />
         <Section
             :id="1"
@@ -25,7 +25,7 @@
             name="Формируемая часть"
             :grade-groups="gradeGroups"
             :highlight="highlight"
-            :data-raw="[{name: 'Часов в неделю', values: formative, edit: false}]"
+            :data-raw="section1"
         />
         <Section
             :id="2"
@@ -34,8 +34,7 @@
             error-name="Недельная нагрузка"
             :grade-groups="gradeGroups"
             :highlight="highlight"
-            :data-raw="[{name: 'Часов в неделю', values: perweek, edit: false},
-                      {type: 'max', values: perweekmax}]"
+            :data-raw="section2"
         />
         <Section
             :id="3"
@@ -44,7 +43,7 @@
             error-name="Количество учебных недель"
             :grade-groups="gradeGroups"
             :highlight="highlight"
-            :data-raw="[{name: 'Итого', values: weeknum, edit: true, onedit: weeknumChange}]"
+            :data-raw="section3"
         />
         <Section
             :id="4"
@@ -52,7 +51,7 @@
             name="По учебному плану"
             :grade-groups="gradeGroups"
             :highlight="highlight"
-            :data-raw="[{name: 'Часов в год', values: peryear, edit: false}]"
+            :data-raw="section4"
         />
         <Section
             :id="5"
@@ -61,9 +60,7 @@
             error-name="Количество часов в год на уровень образования"
             :grade-groups="gradeGroups.map((group) => [{ id: group[0].id }])"
             :highlight="highlight.map((group) => [group.some(x => x)])"
-            :data-raw="[{name: 'Часов в год', values: edu, edit: false},
-                      {type: 'min', values: edumin},
-                      {type: 'max', values: edumax}]"
+            :data-raw="section5"
         />
       </v-expansion-panels>
     </div>
@@ -94,6 +91,7 @@ export default {
     }
   },
   computed: {
+
     obligatory() {
       return this.obligatoryPlan.reduce((r, x) => r.concat(x)).reduce((r, v) => r.map((r1, i) => r1.map((r2, j) => r2 + v[i][j].value)), fillShape2(this.gradeGroups, () => 0));
     },
@@ -124,7 +122,35 @@ export default {
     },
     weeknum() {
       return this.gradeGroups.map((group) => group.map((grade) => grade.weeknum));
+    },
+
+
+    section0() {
+      return [{ name: 'Часов в неделю', values: this.obligatory, edit: false }];
+    },
+    section1() {
+      return [{ name: 'Часов в неделю', values: this.formative, edit: false }];
+    },
+    section2() {
+      return [
+        { name: 'Часов в неделю', values: this.perweek, edit: false },
+        { type: 'max', values: this.perweekmax }
+      ];
+    },
+    section3() {
+      return [{ name: 'Итого', values: this.weeknum, edit: true, onedit: this.weeknumChange }]
+    },
+    section4() {
+      return [{ name: 'Часов в год', values: this.peryear, edit: false }];
+    },
+    section5() {
+      return [
+        { name: 'Часов в год', values: this.edu, edit: false },
+        { type: 'min', values: this.edumin },
+        { type: 'max', values: this.edumax }
+      ];
     }
+
   },
   methods: {
     weeknumChange(i, j, val) {
