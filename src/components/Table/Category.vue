@@ -28,6 +28,7 @@
           :plan="plan[i]"
           :class="{'display-none': sub.is_module}"
           @validate="validate(i)"
+          @set-correct="setCorrect(i, $event)"
       />
     </v-expansion-panel-content>
   </v-expansion-panel>
