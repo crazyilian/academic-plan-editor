@@ -60,6 +60,11 @@ export default {
       return this.selfCorrect && this.subjectCorrect.every(s => s);
     },
   },
+  watch: {
+    gradeGroups() {
+      this.messages = {};
+    }
+  },
   methods: {
     setCorrect(i, val) {
       Vue.set(this.subjectCorrect, i, val);

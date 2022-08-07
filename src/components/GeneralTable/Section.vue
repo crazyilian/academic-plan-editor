@@ -63,6 +63,9 @@ export default {
   watch: {
     dataRaw() {
       this.data = this.getData();
+    },
+    gradeGroups() {
+      this.messages = {};
     }
   },
   methods: {
