@@ -193,8 +193,12 @@ export default {
       const profile = group.slice(-1)[0].profile;
       const n = this.gradeGroups.length;
       Vue.set(this.gradeGroups, n, group);
-      this.obligatoryPlan.forEach((category) => category.forEach((subject) => {
-        Vue.set(subject, n, Array(group.length).fill(null).map(() => ({ value: 0, advanced: false })))
+      this.obligatoryPlan.forEach((category, i) => category.forEach((subject, j) => {
+        const planSubj = this.template.categories[i].subjects[j];
+        Vue.set(subject, n, Array(group.length).fill(null).map(() => ({
+          value: planSubj.required ? 1 : 0,
+          advanced: false
+        })))
       }))
       Vue.set(this.formativePlan.hours, n, Array(group.length).fill(0));
       this.formativePlan.categories.forEach((category) => category.subjects.forEach((subject) => {
