@@ -30,7 +30,7 @@
     <template #activator="{ attrs: btn_attrs }">
       <div
           v-bind="btn_attrs"
-          @click="setModel(true)"
+          @click="setModel(!model)"
           @mouseenter="setButtonModel(true)"
           @mouseleave="setButtonModel(false)"
       >
