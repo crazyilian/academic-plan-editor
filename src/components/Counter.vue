@@ -163,15 +163,15 @@ export default {
   color: #b6b6b6;
 }
 
-.counter-container:not(.counter-disabled):hover {
-  border-color: black
+.counter-container:not(.counter-disabled):hover, .counter-focused {
+  border-color: black;
 }
 
 .counter-error {
   border-color: var(--v-errorLight-base);
 }
 
-.counter-error:not(.counter-disabled):hover {
+.counter-error:not(.counter-disabled):hover, .counter-error.counter-focused {
   border-color: red;
 }
 
