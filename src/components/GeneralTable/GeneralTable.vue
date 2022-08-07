@@ -18,6 +18,7 @@
             :grade-groups="gradeGroups"
             :highlight="highlight"
             :data-raw="section0"
+            @set-correct="setCorrect(...$event)"
         />
         <Section
             :id="1"
@@ -26,6 +27,7 @@
             :grade-groups="gradeGroups"
             :highlight="highlight"
             :data-raw="section1"
+            @set-correct="setCorrect(...$event)"
         />
         <Section
             :id="2"
@@ -35,6 +37,7 @@
             :grade-groups="gradeGroups"
             :highlight="highlight"
             :data-raw="section2"
+            @set-correct="setCorrect(...$event)"
         />
         <Section
             :id="3"
@@ -44,6 +47,7 @@
             :grade-groups="gradeGroups"
             :highlight="highlight"
             :data-raw="section3"
+            @set-correct="setCorrect(...$event)"
         />
         <Section
             :id="4"
@@ -52,6 +56,7 @@
             :grade-groups="gradeGroups"
             :highlight="highlight"
             :data-raw="section4"
+            @set-correct="setCorrect(...$event)"
         />
         <Section
             :id="5"
@@ -61,6 +66,7 @@
             :grade-groups="gradeGroups.map((group) => [{ id: group[0].id, profile: group.slice(-1)[0].profile }])"
             :highlight="highlight.map((group) => [group.some(x => x)])"
             :data-raw="section5"
+            @set-correct="setCorrect(...$event)"
         />
       </v-expansion-panels>
     </div>
@@ -88,6 +94,8 @@ export default {
   data() {
     return {
       panels: [...Array(6).keys()],
+      correctSections: Array(6).fill(true),
+      correct: true,
     }
   },
   computed: {
@@ -156,14 +164,11 @@ export default {
     weeknumChange(i, j, val) {
       Vue.set(this.gradeGroups[i][j], 'weeknum', val);
     },
-    correct() {
-      const sections = ['s0', 's1', 's2', 's3', 's4', 's5'];
-      let correct = true;
-      for (const s of sections) {
-        correct &&= this.$refs[s].correct;
-      }
-      return correct;
-    }
+    setCorrect(i, val) {
+      this.correctSections[i] = val;
+      this.correct = this.correctSections.every(c => c);
+      this.$emit('set-correct', this.correct);
+    },
   }
 }
 </script>

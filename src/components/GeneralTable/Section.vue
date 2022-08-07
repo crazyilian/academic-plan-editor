@@ -47,6 +47,7 @@ export default {
   name: 'Section',
   components: { Summary, Message },
   props: {
+    id: { type: Number, default: -1 },
     name: { type: String, default: "" },
     errorName: { type: String, default: "" },
     gradeGroups: { type: Array, default: () => [] },
@@ -73,6 +74,7 @@ export default {
         summary.messages.forEach(message => this.addMessage(...message))
         this.correct &&= summary.correct;
       }
+      this.$emit('set-correct', [this.id, this.correct]);
     },
     getData() {
       const data = [];

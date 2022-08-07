@@ -18,12 +18,12 @@
             <v-btn
                 class="rounded-r-0 px-2"
                 style="min-width: 0"
-                :color="generalTableCorrect() ? 'teal' : 'error'"
+                :color="generalTableCorrect ? 'teal' : 'error'"
                 dark
                 @click="switchGeneralTable"
             >
               <div style="text-transform: none" class="pr-2">Сводка</div>
-              <v-icon v-if="generalTableCorrect()">mdi-check</v-icon>
+              <v-icon v-if="generalTableCorrect">mdi-check</v-icon>
               <v-icon v-else>mdi-alert-circle</v-icon>
             </v-btn>
           </div>
@@ -106,7 +106,7 @@
         <v-btn
             class="rounded-r-0 px-2 ml-4"
             style="min-width: 0"
-            :color="generalTableCorrect() ? 'teal' : 'error'"
+            :color="generalTableCorrect ? 'teal' : 'error'"
             dark
             @click="switchGeneralTable"
         >
@@ -122,6 +122,7 @@
           :highlight="highlight"
           :config="template.config"
           :ready="generalTableReady"
+          @set-correct="generalTableCorrect = $event"
       />
     </v-navigation-drawer>
   </div>
@@ -164,6 +165,7 @@ export default {
       showGeneralTable: false,
       generalTableReady: false,
       highlight: fillShape2(this.gradeGroups, () => false),
+      generalTableCorrect: true,
     };
   },
   mounted() {
@@ -176,9 +178,6 @@ export default {
     changeFullname(newName) {
       Vue.set(this.template.config, 'title', newName);
       this.editingFullname = false;
-    },
-    generalTableCorrect() {
-      return this.$refs.generalTable !== undefined && this.$refs.generalTable.correct();
     },
     switchGeneralTable() {
       this.showGeneralTable = !this.showGeneralTable;
