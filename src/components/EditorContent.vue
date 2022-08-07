@@ -122,6 +122,7 @@
           :ready="generalTableReady"
           @set-correct="generalTableCorrect = $event"
           @highlight="setHighlight(...$event)"
+          @remove-group="removeGroup"
       />
     </v-navigation-drawer>
   </div>

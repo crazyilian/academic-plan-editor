@@ -5,6 +5,7 @@
         <BarGradeGroups
             style="margin-right: 24px; min-height: 44px;"
             :grade-groups="gradeGroups"
+            @remove-group="$emit('remove-group', $event)"
             @highlight="$emit('highlight', $event)"
         />
       </div>

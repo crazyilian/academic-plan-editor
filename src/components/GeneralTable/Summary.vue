@@ -108,6 +108,7 @@ export default {
   justify-content: flex-end;
   align-items: center;
   flex-wrap: wrap;
+  min-height: 32px;
 }
 
 .general-row-name {

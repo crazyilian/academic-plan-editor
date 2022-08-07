@@ -91,6 +91,10 @@ export default {
   padding: 8px 4px 8px 0;
 }
 
+.subject {
+  min-height: 32px;
+}
+
 .subject:hover {
   transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
   background-color: rgba(0, 0, 0, 0.04);
