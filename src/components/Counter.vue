@@ -84,6 +84,10 @@ export default {
   watch: {
     stringValue() {
       this.adjustWidth();
+    },
+    startValue() {
+      this.stringValue = this.startValue === null ? "" : this.startValue.toString();
+      this.value = this.startValue;
     }
   },
   mounted() {
