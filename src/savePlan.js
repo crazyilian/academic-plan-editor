@@ -158,8 +158,11 @@ function create_xlsx(alldata, callback) {
     for (const category of data.formativePlan.categories.values()) {
       for (const subject of category.subjects.values()) {
         const plan = flatten2(subject.plan);
-        formativeSubjects[subject.newName] ||= Array(plan.length).fill(0);
-        formativeSubjects[subject.newName].forEach((_, i, self) => self[i] += plan[i]);
+        if (subject.newName in formativeSubjects)
+          formativeSubjects[subject.newName].forEach((_, i, self) => self[i] += plan[i]);
+        else {
+          formativeSubjects[subject.newName] = structuredClone(plan);
+        }
       }
     }
     for (const [subject, values] of Object.entries(formativeSubjects)) {
