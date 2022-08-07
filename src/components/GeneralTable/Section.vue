@@ -2,7 +2,8 @@
   <v-expansion-panel>
     <v-expansion-panel-header
         disable-icon-rotate
-        class="category"
+        class="category py-2 px-6"
+        style="min-height: 56px; align-items: stretch"
         :class="{ 'error-category': !correct }"
     >
       <div style="display: flex; justify-content: space-between; align-items: center; width: calc(100% - 24px)">
@@ -19,7 +20,7 @@
         <v-icon v-else color="error">mdi-alert-circle</v-icon>
       </template>
     </v-expansion-panel-header>
-    <v-expansion-panel-content class="section-content">
+    <v-expansion-panel-content class="section-content pl-2">
       <Summary
           v-for="(el, i) in data"
           :id="i"

@@ -10,11 +10,11 @@
           ref="messageContainer"
           :style="containerStyle"
           class="text--secondary message-container"
-          style="width: 100%"
+          style="width: 100%; height: 100%; min-height: 32px; display: flex; align-items: center"
           v-on="on"
           @mouseover="updateTooltip"
       >
-        {{ visibleText }}
+        <span style="width: 100%">{{ visibleText }}</span>
       </div>
     </template>
     <div style="max-width: 500px">
@@ -75,6 +75,7 @@ export default {
     updateTooltip() {
       const el = this.$refs.messageContainer;
       this.tooltipVisible = el.offsetWidth < el.scrollWidth;
+      this.tooltipVisible = true;
     },
     updateValue() {
       const filtered = Object.values(this.messages).filter((message, i, self) => {
@@ -96,7 +97,7 @@ export default {
 
 <style>
 
-.message-container {
+.message-container span {
   display: inline-block;
   overflow: hidden;
   white-space: nowrap;

@@ -1,5 +1,5 @@
 <template>
-  <div style="display: flex; flex-direction: column; min-height: 0" class="pl-2">
+  <div style="display: flex; flex-direction: column; min-height: 0">
     <HorizontalResizeBar>
       <div style="display: flex; justify-content: flex-end; align-items: center">
         <ProfileMenu

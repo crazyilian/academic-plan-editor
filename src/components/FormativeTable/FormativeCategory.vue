@@ -3,7 +3,8 @@
     <v-expansion-panel-header
         disable-icon-rotate
         :class="{ 'error-category': !correct }"
-        class="category"
+        class="category py-2 px-6"
+        style="min-height: 56px; align-items: stretch"
     >
       <div style="display: flex; justify-content: space-between; align-items: center; width: calc(100% - 24px)">
         <div style="width: 38%; display: inline-block; word-wrap: break-word" class="subject-name">{{ name }}</div>

@@ -1,6 +1,9 @@
 <template>
   <v-expansion-panel class="formative-last-category-panel">
-    <v-expansion-panel-header class="pr-2 formative-last-category">
+    <v-expansion-panel-header
+        class="pr-2 formative-last-category py-2 pl-6"
+        style="min-height: 56px"
+    >
       <div style="width: 38%; display: inline-block; word-wrap: break-word">
         Формируемая часть
       </div>

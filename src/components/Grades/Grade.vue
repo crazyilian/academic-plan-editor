@@ -49,7 +49,7 @@ export default {
   font-size: 11pt;
   word-wrap: break-word;
   white-space: pre-line;
-  text-align: center;
+  text-align: end;
   width: 100%;
   display: flex;
   justify-content: center;
