@@ -97,7 +97,6 @@ export default {
     validate() {
       this.selfCorrect = true;
       this.countersCorrect.forEach((group) => group.forEach((v, i) => Vue.set(group, i, true)));
-      this.messages = {};
 
       for (const [gi, group] of this.gradeGroups.entries()) {
         const sumHours = this.getSumHoursGroup(gi);
@@ -113,6 +112,8 @@ export default {
               Vue.set(self, j, false)
             }
           });
+        } else {
+          this.addMessage(-1, gi, undefined);
         }
       }
       this.recalcCorrect();
@@ -121,9 +122,9 @@ export default {
     addMessage(ruleId, groupId, message) {
       const key = JSON.stringify([ruleId, groupId]);
       if (message === undefined)
-        delete this.messages[key];
+        Vue.delete(this.messages, key);
       else
-        this.messages[key] = message;
+        Vue.set(this.messages, key, message);
     },
     setCorrectness(val, ruleId, gradeIds) {
       for (const [groupId, gradeId] of gradeIds) {

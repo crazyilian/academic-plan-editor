@@ -58,7 +58,7 @@
             ref="s5"
             name="На уровень образования"
             error-name="Количество часов в год на уровень образования"
-            :grade-groups="gradeGroups.map((group) => [{ id: group[0].id }])"
+            :grade-groups="gradeGroups.map((group) => [{ id: group[0].id, profile: group.slice(-1)[0].profile }])"
             :highlight="highlight.map((group) => [group.some(x => x)])"
             :data-raw="section5"
         />

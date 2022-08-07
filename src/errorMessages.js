@@ -6,14 +6,6 @@ function capitalize(s) {
   return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
 }
 
-function profile(s) {
-  if (s === undefined) {
-    return "";
-  } else {
-    return ` у профиля "${s}"`
-  }
-}
-
 function enumerate(arr, last = 'и') {
   if (arr.length === 0)
     return "";
@@ -23,7 +15,7 @@ function enumerate(arr, last = 'и') {
 }
 
 function enumerateNum(arr) {
-  if (!arr.every((e, i) => arr.indexOf(e) === i))
+  if (!arr.every((e, i) => arr.indexOf(e) === i) || arr.length === 1)
     return enumerate(arr);
   const min = Math.min(...arr);
   const max = Math.max(...arr);
@@ -33,40 +25,42 @@ function enumerateNum(arr) {
 }
 
 function gradesFormat(grades) {
-  return grades.length > 1 ? `Классы ${enumerateNum(grades.map(g => g.name))}` : `Класс ${grades[0].name}`;
+  const names = grades.map(g => g.name);
+  return (grades.length > 1 ? 'Классы' : 'Класс') + (names[0] === undefined ? '' : ' ') + enumerateNum(names);
 }
 
-function gradesOfProfile(grades) {
+function gradesOfProfile(grades, isprofile = true) {
+  if (!isprofile)
+    return gradesFormat(grades);
   const profile = grades.slice(-1)[0].profile.filter(s => s).join(': ');
   return gradesFormat(grades) + ` профиля "${profile}"`;
 }
 
-function gradesOfProfileNeed(grades) {
-  return gradesOfProfile(grades) + (grades.length > 1 ? " должны" : " должен");
+function gradesOfProfileNeed(grades, isprofile = true) {
+  return gradesOfProfile(grades, isprofile) + (grades.length > 1 ? " должны" : " должен");
 }
 
-function gradesNeed(grades) {
-  return gradesFormat(grades) + (grades.length > 1 ? " должны" : " должен");
-}
-
-function gradesOfProfileNeedSubjects(grades, subjects) {
+function gradesOfProfileNeedSubjects(grades, subjects, isprofile = true) {
   const names = subjects.map(s => `"${s.name}"`);
-  let res = gradesOfProfileNeed(grades)
+  let res = gradesOfProfileNeed(grades, isprofile)
   res += ' изучать';
   res += names.length > 1 ? " предметы" : " предмет";
   res += ` ${enumerate(names, 'или')}`;
   return res;
 }
 
-function gradesNeedSubjects(grades, subjects) {
-  const names = subjects.map(s => `"${s.name}"`);
-  let res = gradesNeed(grades)
-  res += ' изучать';
-  res += names.length > 1 ? " предметы" : " предмет";
-  res += ` ${enumerate(names, 'или')}`;
-  return res;
+function ofGradesFormat(grades) {
+  const names = grades.map(g => g.name);
+  const empty = names.some(n => n === undefined)
+  return (grades.length > 1 || empty ? ' у классов' : ' у класса') + (empty ? '' : ` ${enumerateNum(names)}`);
 }
 
+function ofGradesOfProfile(grades, isprofile = true) {
+  if (!isprofile)
+    return ofGradesFormat(grades);
+  const profile = grades.slice(-1)[0].profile.filter(s => s).join(': ');
+  return ofGradesFormat(grades) + ` профиля "${profile}"`;
+}
 
 const errorObligatory = {
   "NO_ZERO_IN_REQUIRED": (grades) => {
@@ -75,9 +69,9 @@ const errorObligatory = {
   "ONE_SUBJ_PER_CATEG": (grades) => {
     return gradesOfProfileNeed(grades) + ' изучать хотя бы 1 предмет из предметной области';
   },
-  "RULE_UNIVERSAL": (grades, subjects, keys, min, max, addProfile = true) => {
+  "RULE_UNIVERSAL": (grades, subjects, keys, min, max, isprofile = true) => {
     const NEED = keys.reduce((o, v) => ({ ...o, [v]: true }), {});
-    let res = addProfile ? gradesOfProfileNeedSubjects(grades, subjects) : gradesNeedSubjects(grades, subjects);
+    let res = gradesOfProfileNeedSubjects(grades, subjects, isprofile);
     const msgs = [];
     if (NEED.ADVANCED) {
       msgs.push('углублённо');
@@ -92,8 +86,8 @@ const errorObligatory = {
     res += ` ${enumerate(msgs)}`;
     return res;
   },
-  "DIFFERENT_SUBJECTS": (grades, mins, addProfile = true) => {
-    const res = addProfile ? gradesOfProfileNeed(grades) : gradesNeed(grades);
+  "DIFFERENT_SUBJECTS": (grades, mins, isprofile = true) => {
+    const res = gradesOfProfileNeed(grades, isprofile);
     return res + ` изучать разные предметы не менее ${enumerate(mins)} часов в неделю соответственно`;
   }
 };
@@ -103,9 +97,9 @@ const errorFormative = {};
 
 
 const errorGeneral = {
-  "SUMMARY_TOO_SMALL": (name, grade) => `${capitalize(name)}${profile(grade)} меньше, чем разрешено`,
-  "SUMMARY_TOO_BIG": (name, grade) => `${capitalize(name)}${profile(grade)} больше, чем разрешено`,
-  "SUMMARY_NULL": (name, grade) => `Не указано ${lower(name)}${profile(grade)}`,
+  "SUMMARY_TOO_SMALL": (name, grades) => `${capitalize(name)}${ofGradesOfProfile(grades)} меньше, чем разрешено`,
+  "SUMMARY_TOO_BIG": (name, grades) => `${capitalize(name)}${ofGradesOfProfile(grades)} больше, чем разрешено`,
+  "SUMMARY_NULL": (name, grades) => `Не указано ${lower(name)}${ofGradesOfProfile(grades)}`,
 };
 
 

@@ -54,13 +54,17 @@ export default {
     }
   },
   watch: {
-    messages() {
-      this.updateTooltip();
-      this.updateValue();
+    messages: {
+      handler() {
+        this.updateTooltip();
+        this.updateValue();
+      },
+      deep: true
     }
   },
   mounted() {
     this.updateTooltip();
+    this.updateValue();
   },
   methods: {
     updateTooltip() {

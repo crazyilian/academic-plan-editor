@@ -68,7 +68,6 @@ export default {
     },
     validate(i) {
       this.selfCorrect = true;
-      this.messages = {};
 
       for (const [gi, group] of this.gradeGroups.entries()) {
         let includedCount = 0;
@@ -87,6 +86,8 @@ export default {
             grades: group.map((_, i) => [gi, i].toString()),
           });
           this.selfCorrect = false;
+        } else {
+          this.addMessage(-1, gi, undefined);
         }
       }
 
@@ -95,9 +96,9 @@ export default {
     addMessage(ruleId, groupId, message) {
       const key = JSON.stringify([ruleId, groupId]);
       if (message === undefined)
-        delete this.messages[key];
+        Vue.delete(this.messages, key);
       else
-        this.messages[key] = message;
+        Vue.set(this.messages, key, message);
     }
   }
 }

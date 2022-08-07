@@ -30,6 +30,7 @@ export default {
   name: 'Summary',
   components: { Counter },
   props: {
+    id: { type: Number, default: -1 },
     name: { type: String, default: "" },
     errorName: { type: String, default: "" },
     gradeGroups: { type: Array, default: () => [] },
@@ -65,21 +66,34 @@ export default {
       this.countersCorrect.forEach((group) => group.forEach((v, i) => Vue.set(group, i, true)));
       this.messages = [];
       for (const [i, valueGroup] of [...this.values.entries()].reverse()) {
+        const curMessages = [
+          { id: -100 - this.id, key: 'SUMMARY_NULL', gradeIds: [] },
+          { id: -200 - this.id, key: 'SUMMARY_TOO_SMALL', gradeIds: [] },
+          { id: -300 - this.id, key: 'SUMMARY_TOO_BIG', gradeIds: [] },
+        ];
         for (const [j, value] of valueGroup.entries()) {
           let bad = false;
           if (value === null) {
             bad = true;
-            this.messages.push([-1, i, { key: 'SUMMARY_NULL', args: [this.errorName, this.gradeGroups[i][j].name] }])
+            curMessages[0].gradeIds.push(j);
           } else if (this.mins !== undefined && value < this.mins[i][j]) {
             bad = true;
-            this.messages.push([-2, i, { key: 'SUMMARY_TOO_SMALL', args: [this.errorName, this.gradeGroups[i][j].name] }])
+            curMessages[1].gradeIds.push(j);
           } else if (this.maxs !== undefined && value > this.maxs[i][j]) {
             bad = true;
-            this.messages.push([-3, i, { key: 'SUMMARY_TOO_BIG', args: [this.errorName, this.gradeGroups[i][j].name] }])
+            curMessages[2].gradeIds.push(j);
           }
           if (bad) {
             this.correct = false;
             Vue.set(this.countersCorrect[i], j, false);
+          }
+        }
+        for (const error of curMessages) {
+          if (error.gradeIds.length > 0) {
+            const grades = error.gradeIds.map(j => this.gradeGroups[i][j]);
+            this.messages.push([error.id, i, { key: error.key, args: [this.errorName, grades] }]);
+          } else {
+            this.messages.push([error.id, i, undefined]);
           }
         }
       }

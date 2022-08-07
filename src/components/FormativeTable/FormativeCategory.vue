@@ -67,15 +67,14 @@ export default {
       Vue.set(this.subjectCorrect, i, val);
     },
     validate(i) {
-      this.messages = {};
       this.$emit('validate', i);
     },
     addMessage(ruleId, groupId, message) {
       const key = JSON.stringify([ruleId, groupId]);
       if (message === undefined)
-        delete this.messages[key];
+        Vue.delete(this.messages, key);
       else
-        this.messages[key] = message;
+        Vue.set(this.messages, key, message);
     },
     changeName(i, name) {
       Vue.set(this.subjects[i], 'newName', name);

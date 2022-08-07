@@ -41,6 +41,7 @@
 
 import Message from "@/components/Table/Message";
 import Summary from "@/components/GeneralTable/Summary";
+import Vue from "vue";
 
 export default {
   name: 'Section',
@@ -68,7 +69,6 @@ export default {
   methods: {
     validate() {
       this.correct = true;
-      this.messages = {};
       for (const summary of this.$refs.summaries) {
         summary.messages.forEach(message => this.addMessage(...message))
         this.correct &&= summary.correct;
@@ -100,9 +100,9 @@ export default {
     addMessage(ruleId, groupId, message) {
       const key = JSON.stringify([ruleId, groupId]);
       if (message === undefined)
-        delete this.messages[key];
+        Vue.delete(this.messages, key);
       else
-        this.messages[key] = message;
+        Vue.set(this.messages, key, message);
     },
   }
 }

@@ -107,15 +107,14 @@ export default {
       this.validate();
     },
     validate() {
-      this.messages = {};
       this.$emit('validate');
     },
     addMessage(ruleId, groupId, message) {
       const key = JSON.stringify([ruleId, groupId]);
       if (message === undefined)
-        delete this.messages[key];
+        Vue.delete(this.messages, key);
       else
-        this.messages[key] = message;
+        Vue.set(this.messages, key, message);
     },
     setCorrectness(val, ruleId, gradeIds) {
       for (const [groupId, gradeId] of gradeIds) {
