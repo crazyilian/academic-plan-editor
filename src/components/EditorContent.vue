@@ -68,7 +68,7 @@
         </HorizontalResizeBar>
       </div>
       <v-window v-model="pageNum" style="width: 100%; height: 100%">
-        <v-window-item style="width: 100%; height: 100%">
+        <v-window-item style="width: 100%; height: 100%" eager>
           <Table
               ref="table"
               :categories="template.categories"
@@ -79,7 +79,7 @@
               :plan="obligatoryPlan"
           />
         </v-window-item>
-        <v-window-item style="width: 100%; height: 100%">
+        <v-window-item style="width: 100%; height: 100%" eager>
           <FormativeTable
               ref="formativeTable"
               :grade-groups="gradeGroups"
