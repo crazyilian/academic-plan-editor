@@ -229,7 +229,11 @@ export default {
   opacity: 1 !important;
 }
 
-.counter-container .checkbox.checkbox-true i {
+.counter-container .checkbox i {
+  color: black !important;
+}
+
+.counter-container .checkbox .v-input--selection-controls__ripple {
   color: black !important;
 }
 
@@ -237,26 +241,15 @@ export default {
   color: rgba(0, 0, 0, 0.38) !important;
 }
 
-.counter-container .checkbox .v-input--selection-controls__ripple {
-  color: black !important;
-}
-
-/*
-.counter-error .checkbox .v-input--selection-controls__ripple {
-  color: red;
-}
-
 .counter-error .checkbox i {
   color: red !important;
 }
 
+.counter-error .checkbox .v-input--selection-controls__ripple {
+  color: red !important;
+}
 .counter-error .checkbox .v-input--is-disabled i {
   color: #d39292 !important;
 }
-
-.counter-container:not(.counter-error) .checkbox .v-input--is-disabled i {
-  color: #9d9d9d !important;
-}
-*/
 
 </style>
