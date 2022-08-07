@@ -242,7 +242,7 @@ export default {
         this.$refs.formativeTable.$refs.lastCategory.$refs.counters[ij].highlight = flag;
       }
       if (this.$refs.generalTable !== undefined) {
-        ['s0', 's1', 's2', 's3', 's4'].forEach((s) => this.$refs.generalTable.$refs[s].$refs.summaries.forEach((sum) => sum.$refs.counters[ij].highlight = flag))
+        ['s0', 's1', 's2', 's3', 's4', 's6'].forEach((s) => this.$refs.generalTable.$refs[s].$refs.summaries.forEach((sum) => sum.$refs.counters[ij].highlight = flag))
         this.$refs.generalTable.$refs.s5.$refs.summaries.forEach((sum) => sum.$refs.counters[this.groupStart[i]].highlight = flag);
       }
     }

@@ -128,6 +128,14 @@ function getFormativeSubjectName(subject) {
   return { name: name };
 }
 
+function planType(grade) {
+  if (grade.name <= 4)
+    return '1-4';
+  if (grade.name <= 9)
+    return '5-9';
+  return '10-11';
+}
+
 export {
   allNumbers,
   getDefaultGroup,
@@ -141,5 +149,6 @@ export {
   getGlobalGradeId,
   useGlobalGradeId,
   getProfileFormativeCategory,
-  getFormativeSubjectName
+  getFormativeSubjectName,
+  planType
 }

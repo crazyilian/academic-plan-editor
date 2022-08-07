@@ -17,6 +17,16 @@
     <div class="general-table show-scrollbar">
       <v-expansion-panels v-model="panels" accordion focusable multiple class="rounded-0">
         <Section
+            :id="6"
+            ref="s6"
+            :style="{display: curPlanType === '10-11' ? 'block' : 'none'}"
+            name="Количество углублённых предметов"
+            error-name="Количество углублённых предметов"
+            :grade-groups="gradeGroups"
+            :data-raw="section6"
+            @set-correct="setCorrect(...$event)"
+        />
+        <Section
             :id="0"
             ref="s0"
             name="Обязательная часть"
@@ -78,7 +88,7 @@
 import Section from "@/components/GeneralTable/Section";
 import BarGradeGroups from "@/components/Grades/BarGradeGroups";
 import Vue from "vue";
-import { fillShape2 } from "@/gradeProcessing";
+import { fillShape2, planType, isEqual } from "@/gradeProcessing";
 import HorizontalResizeBar from "@/components/HorizontalResizeBar";
 import ProfileMenu from "@/components/Grades/ProfileMenu";
 
@@ -94,9 +104,10 @@ export default {
   },
   data() {
     return {
-      panels: [...Array(6).keys()],
-      correctSections: Array(6).fill(true),
+      panels: [...Array(7).keys()],
+      correctSections: Array(7).fill(true),
       correct: true,
+      curPlanType: this.gradeGroups.length > 0 ? planType(this.gradeGroups[0][0]) : undefined
     }
   },
   computed: {
@@ -135,6 +146,14 @@ export default {
     weeknum() {
       return this.gradeGroups.map((group) => group.map((grade) => grade.weeknum));
     },
+    advancedCount() {
+      return this.obligatoryPlan.reduce((r, x) => r.concat(x)).reduce((r, v) => r.map((r1, i) => r1.map((r2, j) => r2 + v[i][j].advanced)), fillShape2(this.gradeGroups, () => 0));
+    },
+    advancedCountMin() {
+      return fillShape2(this.gradeGroups, (i, j, group, grade) =>
+          this.curPlanType === '10-11' && !isEqual(grade.profile, this.grades[0].profile) ? 3 : 0
+      )
+    },
 
 
     section0() {
@@ -161,6 +180,12 @@ export default {
         { type: 'min', values: this.edumin },
         { type: 'max', values: this.edumax }
       ];
+    },
+    section6() {
+      return [
+        { name: 'Итого', values: this.advancedCount, edit: false },
+        { type: 'min', values: this.advancedCountMin }
+      ]
     }
 
   },
