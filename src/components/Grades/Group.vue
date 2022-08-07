@@ -5,6 +5,7 @@
         <v-btn class="group-remove-button rounded-0" elevation="0" color="errorLight" @click.stop="askCloseGroup">
           <span>Удалить</span>
         </v-btn>
+        <v-btn style="width: 0; min-width: 0; padding: 0; height: 0; min-height: 0"/> <!-- crazy fix of bluring rotated text while pressing button -->
       </div>
     </div>
     <div style="display: flex; flex-grow: 1; min-height: 0">
