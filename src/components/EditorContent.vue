@@ -140,7 +140,7 @@ import FormativeTable from "@/components/FormativeTable/FormativeTable";
 import EditableText from "@/components/EditableText";
 import HorizontalResizeBar from "@/components/HorizontalResizeBar";
 import ProfileMenu from "@/components/Grades/ProfileMenu";
-import { isEqual, getProfileFormativeCategory, fillShape2 } from "@/gradeProcessing";
+import { isEqual, getProfileFormativeCategory, fillShape2, getGroupProfile } from "@/gradeProcessing";
 
 export default {
   name: 'EditorContent',
@@ -190,7 +190,7 @@ export default {
       this.showGeneralTable = !this.showGeneralTable;
     },
     addGroup(group) {
-      const profile = group.slice(-1)[0].profile;
+      const profile = getGroupProfile(group);
       const n = this.gradeGroups.length;
       Vue.set(this.gradeGroups, n, group);
       this.obligatoryPlan.forEach((category, i) => category.forEach((subject, j) => {

@@ -21,7 +21,7 @@
 import FormativeLastCategory from "@/components/FormativeTable/FormativeLastCategory";
 import FormativeCategory from "@/components/FormativeTable/FormativeCategory";
 import bipartiteMatching from "bipartite-matching";
-import { getFormativeSubjectName } from "@/gradeProcessing";
+import { getFormativeSubjectName, isEqual } from "@/gradeProcessing";
 
 export default {
   name: 'FormativeTable',
@@ -63,7 +63,7 @@ export default {
       const curCat = this.plan.categories[this.categoryId];
       const rules = this.rules.filter((r) =>
           r.subjects.some((s) => s === curCat.subjects[j].name)
-          && JSON.stringify(this.grades[r.grades[0]].profile) === JSON.stringify(curCat.profile)
+          && isEqual(this.grades[r.grades[0]].profile, curCat.profile)
       );
       for (const rule of rules) {
         const ruleGrades = rule.grades.map(i => this.grades[i]);

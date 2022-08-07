@@ -12,11 +12,11 @@
               style="writing-mode: vertical-rl; transform: rotate(180deg)"
               v-on="on"
           >
-            <span style="font-size: 0.8em; overflow: hidden">{{ grade.profile.filter(s => s).slice(-1)[0] }}</span>
+            <span style="font-size: 0.8em; overflow: hidden">{{ parsed.last }}</span>
           </div>
         </template>
         <div class="pa-2" style="text-align: center; max-width: 200px; word-wrap: break-word">
-          {{ grade.profile.filter((v) => v.length > 0).join(': ') }}
+          {{ parsed.pretty }}
         </div>
       </v-tooltip>
     </div>
@@ -28,10 +28,17 @@
 
 <script>
 
+import { parseProfile } from "@/gradeProcessing";
+
 export default {
   name: "Grade",
   props: {
     grade: { type: Object, default: () => ({}) },
+  },
+  data() {
+    return {
+      parsed: parseProfile(this.grade.profile),
+    }
   },
   methods: {
     setHighlight(flag) {

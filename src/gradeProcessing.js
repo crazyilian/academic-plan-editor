@@ -136,6 +136,18 @@ function planType(grade) {
   return '10-11';
 }
 
+function getGroupProfile(group) {
+  return group.slice(-1)[0].profile;
+}
+
+function parseProfile(profile) {
+  return {
+    first: profile[0],
+    last: profile[1].filter(s => s).slice(-1)[0],
+    pretty: profile.filter(s => s).join(': ')
+  }
+}
+
 export {
   allNumbers,
   getDefaultGroup,
@@ -150,5 +162,7 @@ export {
   useGlobalGradeId,
   getProfileFormativeCategory,
   getFormativeSubjectName,
-  planType
+  planType,
+  getGroupProfile,
+  parseProfile
 }

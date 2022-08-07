@@ -1,3 +1,5 @@
+import { getGroupProfile, parseProfile } from "@/gradeProcessing";
+
 function lower(s) {
   return s.toLowerCase();
 }
@@ -58,7 +60,7 @@ function ofGradesFormat(grades) {
 function ofGradesOfProfile(grades, isprofile = true) {
   if (!isprofile)
     return ofGradesFormat(grades);
-  const profile = grades.slice(-1)[0].profile.filter(s => s).join(': ');
+  const profile = parseProfile(getGroupProfile(grades)).pretty;
   return ofGradesFormat(grades) + ` профиля "${profile}"`;
 }
 

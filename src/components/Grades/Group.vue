@@ -24,6 +24,7 @@
 <script>
 import Grade from "@/components/Grades/Grade";
 import VerticalLine from "@/components/VerticalLine";
+import { getGroupProfile, parseProfile } from "@/gradeProcessing";
 
 export default {
   name: "Group",
@@ -36,7 +37,7 @@ export default {
     async askCloseGroup() {
       const min = this.group[0].name;
       const max = this.group.slice(-1)[0].name;
-      const profile = this.group.slice(-1)[0].profile.join(': ');
+      const profile = parseProfile(getGroupProfile(this.group)).pretty;
       const buttonId = await window.ipcRenderer.messageBox({
         'type': 'question',
         'title': 'Удаление...',
