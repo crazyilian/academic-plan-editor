@@ -4,7 +4,7 @@
         class="pl-2 py-0"
         style="min-width: 0; width: 100%; display: flex; flex-direction: column; height: 100%; flex-grow: 1"
     >
-      <div class="pl-2" style="width: 100%; display: flex; flex-direction: column; gap: 18px;">
+      <div class="pl-2" style="width: 100%; display: flex; flex-direction: column; gap: 4px;">
         <div class="fullname-container ml-2">
           <EditableText
               style="flex-grow: 1"
@@ -98,7 +98,7 @@
         style="width: 70%"
         class="general-table-drawer"
     >
-      <div style="width: 100%; display: flex; justify-content: space-between; margin-bottom: 18px" class="mt-2">
+      <div style="width: 100%; display: flex; justify-content: space-between; margin-bottom: 4px" class="mt-2">
         <div class="fullname-container ml-6" style="display: flex; align-items: center; min-width: 0">
           <span style="overflow: hidden; white-space: nowrap">Общие сведения об Учебном плане</span>
         </div>
