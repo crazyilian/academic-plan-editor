@@ -31,7 +31,7 @@ export default {
   },
   data() {
     return {
-      editingValue: this.value,
+      editingValue: "",
       buttonPress: false,
     }
   },
@@ -41,6 +41,7 @@ export default {
   },
   mounted() {
     autosize(this.$refs.editField);
+    this.setVisibleVal(this.value);
     this.onStartEditing();
   },
   methods: {
