@@ -1,8 +1,8 @@
 <template>
   <div
       style="width: 48px; height: 100%; display: flex; flex-direction: column; padding: 2px 0; justify-content: space-between"
-      @mouseover="highlightGrade(true)"
-      @mouseleave="highlightGrade(false)"
+      @mouseover="setHighlight(true)"
+      @mouseleave="setHighlight(false)"
   >
     <div class="pb-0" style="min-height: 0">
       <v-tooltip bottom :open-delay="500">
@@ -32,11 +32,10 @@ export default {
   name: "Grade",
   props: {
     grade: { type: Object, default: () => ({}) },
-    highlight: { type: Boolean, default: false }
   },
   methods: {
-    highlightGrade(flag) {
-      this.$emit('set-highlight', flag);
+    setHighlight(flag) {
+      this.$emit('highlight', flag);
     }
   }
 }

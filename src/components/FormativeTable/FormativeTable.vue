@@ -8,10 +8,9 @@
             v-bind="category"
             ref="categories"
             :grade-groups="gradeGroups"
-            :highlight="highlight"
             @validate="validate(i, $event)"
         />
-        <FormativeLastCategory :grade-groups="gradeGroups" :plan="plan" :highlight="highlight"/>
+        <FormativeLastCategory ref="lastCategory" :grade-groups="gradeGroups" :plan="plan"/>
       </v-expansion-panels>
     </div>
   </div>
@@ -31,7 +30,6 @@ export default {
     gradeGroups: { type: Array, default: () => [] },
     plan: { type: Object, default: () => ({}) },
     rules: { type: Array, default: () => [] },
-    highlight: { type: Array, default: () => [] },
     grades: { type: Array, default: () => [] },
   },
   data() {

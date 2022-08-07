@@ -60,8 +60,8 @@
               <BarGradeGroups
                   class="ml-1 mr-2"
                   :grade-groups="gradeGroups"
-                  :highlight="highlight"
                   @remove-group="removeGroup"
+                  @highlight="setHighlight(...$event)"
               />
             </div>
           </div>
@@ -83,7 +83,6 @@
           <FormativeTable
               ref="formativeTable"
               :grade-groups="gradeGroups"
-              :highlight="highlight"
               :plan="formativePlan"
               :rules="template.rulesFormative"
               :grades="template.grades"
@@ -119,10 +118,10 @@
           :obligatory-plan="obligatoryPlan"
           :formative-plan="formativePlan"
           :grade-groups="gradeGroups"
-          :highlight="highlight"
           :config="template.config"
           :ready="generalTableReady"
           @set-correct="generalTableCorrect = $event"
+          @highlight="setHighlight(...$event)"
       />
     </v-navigation-drawer>
   </div>
@@ -218,6 +217,19 @@ export default {
         }
       }
       this.highlight = fillShape2(this.gradeGroups, () => false);
+    },
+    setHighlight(ij, i, j, flag) {
+      if (this.$refs.table !== undefined) {
+        this.$refs.table.$refs.categories.forEach((cat) => cat.$refs.subjects.forEach((subj) => subj.$refs.counters[ij].highlight = flag));
+      }
+      if (this.$refs.formativeTable !== undefined) {
+        this.$refs.formativeTable.$refs.categories.forEach((cat) => cat.$refs.subjects.forEach((subj) => subj.$refs.counters[ij].highlight = flag));
+        this.$refs.formativeTable.$refs.lastCategory.$refs.counters[ij].highlight = flag;
+      }
+      if (this.$refs.generalTable !== undefined) {
+        ['s0', 's1', 's2', 's3', 's4'].forEach((s) => this.$refs.generalTable.$refs[s].$refs.summaries.forEach((sum) => sum.$refs.counters[ij].highlight = flag))
+        this.$refs.generalTable.$refs.s5.$refs.summaries.forEach((sum) => sum.$refs.counters[i].highlight = flag)
+      }
     }
   }
 };

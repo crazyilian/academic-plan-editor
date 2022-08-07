@@ -30,7 +30,6 @@
           :error-name="errorName"
           null-available
           :oninput="oninput"
-          :highlight="highlight"
           @validate="validate"
       />
     </v-expansion-panel-content>
@@ -53,7 +52,6 @@ export default {
     gradeGroups: { type: Array, default: () => [] },
     dataRaw: { type: Array, default: () => [] },
     oninput: { type: Function, default: undefined },
-    highlight: { type: Array, default: () => [] }
   },
   data() {
     return {

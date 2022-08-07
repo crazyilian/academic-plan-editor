@@ -7,7 +7,6 @@
           <Counter
               ref="counters"
               :start-value="values[i][j]"
-              :highlight="highlight[i][j]"
               :correct="countersCorrect[i][j]"
               :disabled="!edit"
               :null-available="nullAvailable"
@@ -40,7 +39,6 @@ export default {
     maxs: { type: Array, default: undefined },
     nullAvailable: { type: Boolean, default: false },
     onedit: { type: Function, default: undefined },
-    highlight: { type: Array, default: () => [] }
   },
   data() {
     return {

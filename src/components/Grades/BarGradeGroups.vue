@@ -9,7 +9,7 @@
       <Group
           :group="group"
           class="pb-1"
-          :highlight="highlight[i]"
+          @highlight="setHighlight(i, ...$event)"
           @remove-group="removeGroup(i)"
       />
       <VerticalLine/>
@@ -27,12 +27,19 @@ export default {
   name: "BarGradeGroups",
   components: { Group, VerticalLine },
   props: {
-    gradeGroups: { type: Array, default: () => [] },
-    highlight: { type: Array, default: () => [] }
+    gradeGroups: { type: Array, default: () => [] }
+  },
+  computed: {
+    groupStart() {
+      return this.gradeGroups.reduce((r, group) => [...r, r[r.length - 1] + group.length], [0]);
+    }
   },
   methods: {
     removeGroup(i) {
       this.$emit('remove-group', i);
+    },
+    setHighlight(i, j, flag) {
+      this.$emit('highlight', [this.groupStart[i] + j, i, j, flag]);
     }
   }
 }

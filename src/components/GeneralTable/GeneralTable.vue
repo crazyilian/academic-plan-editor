@@ -5,7 +5,7 @@
         <BarGradeGroups
             style="margin-right: 24px; min-height: 44px;"
             :grade-groups="gradeGroups"
-            :highlight="highlight"
+            @highlight="$emit('highlight', $event)"
         />
       </div>
     </HorizontalResizeBar>
@@ -16,7 +16,6 @@
             ref="s0"
             name="Обязательная часть"
             :grade-groups="gradeGroups"
-            :highlight="highlight"
             :data-raw="section0"
             @set-correct="setCorrect(...$event)"
         />
@@ -25,7 +24,6 @@
             ref="s1"
             name="Формируемая часть"
             :grade-groups="gradeGroups"
-            :highlight="highlight"
             :data-raw="section1"
             @set-correct="setCorrect(...$event)"
         />
@@ -35,7 +33,6 @@
             name="Недельная нагрузка"
             error-name="Недельная нагрузка"
             :grade-groups="gradeGroups"
-            :highlight="highlight"
             :data-raw="section2"
             @set-correct="setCorrect(...$event)"
         />
@@ -45,7 +42,6 @@
             name="Учебных недель"
             error-name="Количество учебных недель"
             :grade-groups="gradeGroups"
-            :highlight="highlight"
             :data-raw="section3"
             @set-correct="setCorrect(...$event)"
         />
@@ -54,7 +50,6 @@
             ref="s4"
             name="По учебному плану"
             :grade-groups="gradeGroups"
-            :highlight="highlight"
             :data-raw="section4"
             @set-correct="setCorrect(...$event)"
         />
@@ -64,7 +59,6 @@
             name="На уровень образования"
             error-name="Количество часов в год на уровень образования"
             :grade-groups="gradeGroups.map((group) => [{ id: group[0].id, profile: group.slice(-1)[0].profile }])"
-            :highlight="highlight.map((group) => [group.some(x => x)])"
             :data-raw="section5"
             @set-correct="setCorrect(...$event)"
         />
@@ -89,7 +83,6 @@ export default {
     obligatoryPlan: { type: Array, default: () => [] },
     formativePlan: { type: Object, default: () => ({}) },
     config: { type: Object, default: () => ({}) },
-    highlight: { type: Array, default: () => [] }
   },
   data() {
     return {

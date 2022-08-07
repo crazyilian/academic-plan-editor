@@ -44,12 +44,11 @@
               v-if="isGoodProfile(grade)"
               ref="counters"
               :correct="Object.keys(incorrectRulesTop[i][j]).length === 0"
-              :highlight="highlight[i][j]"
               :start-value="plan[i][j]"
               :max="99"
               @input="counterChange(i, j, $event)"
           />
-          <div v-else style="width: 48px"/>
+          <div v-else ref="counters" style="width: 48px"/>
         </div>
       </div>
     </div>
@@ -74,7 +73,6 @@ export default {
     gradeGroups: { type: Array, default: () => [] },
     plan: { type: Array, default: () => [] },
     profile: { type: Array, default: () => [] },
-    highlight: { type: Array, default: () => [] },
   },
   data() {
     return {

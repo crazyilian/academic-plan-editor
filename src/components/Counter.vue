@@ -62,7 +62,6 @@ export default {
   components: { Spinner },
   props: {
     correct: { type: Boolean, default: true },
-    highlight: { type: Boolean, default: false },
     startValue: { type: Number, default: 0 },
     min: { type: Number, default: 0 },
     max: { type: Number, default: 9999 },
@@ -78,7 +77,8 @@ export default {
       stringValue: this.startValue === null ? "" : this.startValue.toString(),
       value: this.startValue,
       isfocused: false,
-      checkboxModel: this.checkbox
+      checkboxModel: this.checkbox,
+      highlight: false,
     }
   },
   computed: {

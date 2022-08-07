@@ -24,7 +24,6 @@
           v-bind="sub"
           ref="subjects"
           :grade-groups="gradeGroups"
-          :highlight="highlight"
           :plan="plan[i]"
           :class="{'display-none': sub.is_module}"
           @validate="validate(i)"
@@ -48,7 +47,6 @@ export default {
     subjects: { type: Array, default: () => [] },
     gradeGroups: { type: Array, default: () => [] },
     plan: { type: Array, default: () => [] },
-    highlight: { type: Array, default: () => [] },
   },
   data() {
     return {

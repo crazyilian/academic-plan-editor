@@ -7,8 +7,7 @@
       <div v-for="(grade, j) in group" :key="grade.id">
         <Grade
             :grade="grade"
-            :highlight="highlight[j]"
-            @set-highlight="setHighlight(j, $event)"
+            @highlight="setHighlight(j, $event)"
         />
       </div>
     </div>
@@ -17,14 +16,12 @@
 
 <script>
 import Grade from "@/components/Grades/Grade";
-import Vue from "vue";
 
 export default {
   name: "Group",
   components: { Grade },
   props: {
     group: { type: Array, default: () => [] },
-    highlight: { type: Array, default: () => [] }
   },
   methods: {
     async askCloseGroup() {
@@ -47,7 +44,7 @@ export default {
       }
     },
     setHighlight(j, flag) {
-      Vue.set(this.highlight, j, flag);
+      this.$emit('highlight', [j, flag]);
     }
   }
 }
