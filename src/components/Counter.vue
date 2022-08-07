@@ -32,7 +32,7 @@
           ref="input"
           style="outline: none; text-align: center; margin-right: 1px"
           :value="stringValue"
-          :placeholder="nullAvailable ? '-' : min.toString()"
+          :placeholder="placeholderText"
           :disabled="disabled"
           @focusin="isfocused = true"
           @focusout="isfocused = false"
@@ -79,6 +79,11 @@ export default {
       value: this.startValue,
       isfocused: false,
       checkboxModel: this.checkbox
+    }
+  },
+  computed: {
+    placeholderText() {
+      return this.nullAvailable ? '-' : this.min.toString();
     }
   },
   watch: {

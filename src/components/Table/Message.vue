@@ -14,7 +14,7 @@
           v-on="on"
           @mouseover="updateTooltip"
       >
-        {{ value.concat([""])[0] + (value.length > 1 && !tooltipVisible ? '...' : '') }}
+        {{ visibleText }}
       </div>
     </template>
     <div style="max-width: 500px">
@@ -51,6 +51,11 @@ export default {
     return {
       tooltipVisible: true,
       value: [],
+    }
+  },
+  computed: {
+    visibleText() {
+      return this.value.concat([""])[0] + (this.value.length > 1 && !this.tooltipVisible ? '...' : '')
     }
   },
   watch: {
