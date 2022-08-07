@@ -119,10 +119,12 @@
           :formative-plan="formativePlan"
           :grade-groups="gradeGroups"
           :config="template.config"
+          :grades="template.grades"
           :ready="generalTableReady"
           @set-correct="generalTableCorrect = $event"
           @highlight="setHighlight(...$event)"
           @remove-group="removeGroup"
+          @add-group="addGroup"
       />
     </v-navigation-drawer>
   </div>

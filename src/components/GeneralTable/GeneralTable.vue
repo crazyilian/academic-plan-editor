@@ -1,7 +1,11 @@
 <template>
   <div style="display: flex; flex-direction: column; min-height: 0" class="pl-2">
     <HorizontalResizeBar>
-      <div style="display: flex; justify-content: flex-end">
+      <div style="display: flex; justify-content: flex-end; align-items: center">
+        <ProfileMenu
+            :grades="grades"
+            @add-group="$emit('add-group', $event)"
+        />
         <BarGradeGroups
             style="margin-right: 24px; min-height: 44px;"
             :grade-groups="gradeGroups"
@@ -75,15 +79,17 @@ import BarGradeGroups from "@/components/Grades/BarGradeGroups";
 import Vue from "vue";
 import { fillShape2 } from "@/gradeProcessing";
 import HorizontalResizeBar from "@/components/HorizontalResizeBar";
+import ProfileMenu from "@/components/Grades/ProfileMenu";
 
 export default {
   name: "GeneralTable",
-  components: { HorizontalResizeBar, BarGradeGroups, Section },
+  components: { ProfileMenu, HorizontalResizeBar, BarGradeGroups, Section },
   props: {
     gradeGroups: { type: Array, default: () => [] },
     obligatoryPlan: { type: Array, default: () => [] },
     formativePlan: { type: Object, default: () => ({}) },
     config: { type: Object, default: () => ({}) },
+    grades: { type: Array, default: () => [] },
   },
   data() {
     return {
