@@ -5,7 +5,7 @@
         Формируемая часть
       </div>
       <div style="flex-grow: 1"/>
-      <div style="display: flex; flex-direction: row-reverse">
+      <div style="display: flex; flex-direction: row-reverse; min-height: 32px;">
         <div v-for="(group, i) in gradeGroups" :key="group[0].id" style="display: flex">
           <Counter
               v-for="(grade, j) in group"

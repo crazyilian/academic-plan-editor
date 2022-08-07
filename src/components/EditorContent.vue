@@ -224,7 +224,9 @@ export default {
         this.$refs.table.$refs.categories.forEach((cat) => cat.$refs.subjects.forEach((subj) => subj.$refs.counters[ij].highlight = flag));
       }
       if (this.$refs.formativeTable !== undefined) {
-        this.$refs.formativeTable.$refs.categories.forEach((cat) => cat.$refs.subjects.forEach((subj) => subj.$refs.counters[ij].highlight = flag));
+        if (this.$refs.formativeTable.$refs.categories !== undefined) {
+          this.$refs.formativeTable.$refs.categories.forEach((cat) => cat.$refs.subjects.forEach((subj) => subj.$refs.counters[ij].highlight = flag));
+        }
         this.$refs.formativeTable.$refs.lastCategory.$refs.counters[ij].highlight = flag;
       }
       if (this.$refs.generalTable !== undefined) {
