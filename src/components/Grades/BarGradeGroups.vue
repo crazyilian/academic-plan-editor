@@ -7,25 +7,23 @@
         style="display: flex"
     >
       <Group
+          :last="i === gradeGroups.length - 1"
           :group="group"
           class="pb-1"
           @highlight="setHighlight(i, ...$event)"
           @remove-group="removeGroup(i)"
       />
-      <VerticalLine/>
     </div>
-    <VerticalLine/>
   </div>
 </template>
 
 <script>
 
-import VerticalLine from "@/components/VerticalLine";
 import Group from "@/components/Grades/Group";
 
 export default {
   name: "BarGradeGroups",
-  components: { Group, VerticalLine },
+  components: { Group },
   props: {
     gradeGroups: { type: Array, default: () => [] }
   },

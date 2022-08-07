@@ -1,26 +1,34 @@
 <template>
   <div style="display: flex; flex-direction: column" class="group">
-    <v-btn class="group-remove-button rounded-0" elevation="0" color="errorLight" @click.stop="askCloseGroup">
-      <span>Удалить</span>
-    </v-btn>
+    <div class="group-remove-button-container">
+      <div class="group-remove-button-wrapper">
+        <v-btn class="group-remove-button rounded-0" elevation="0" color="errorLight" @click.stop="askCloseGroup">
+          <span>Удалить</span>
+        </v-btn>
+      </div>
+    </div>
     <div style="display: flex; flex-grow: 1; min-height: 0">
+      <VerticalLine v-if="last"/>
       <div v-for="(grade, j) in group" :key="grade.id">
         <Grade
             :grade="grade"
             @highlight="setHighlight(j, $event)"
         />
       </div>
+      <VerticalLine/>
     </div>
   </div>
 </template>
 
 <script>
 import Grade from "@/components/Grades/Grade";
+import VerticalLine from "@/components/VerticalLine";
 
 export default {
   name: "Group",
-  components: { Grade },
+  components: { VerticalLine, Grade },
   props: {
+    last: { type: Boolean, default: false },
     group: { type: Array, default: () => [] },
   },
   methods: {
@@ -52,15 +60,21 @@ export default {
 
 <style>
 
+.group-remove-button-wrapper {
+  height: 15px;
+}
+
+.group-remove-button-container {
+  font-size: 10px;
+}
+
 .group-remove-button {
   display: none !important;
-  height: 15px !important;
+  height: 100% !important;
   width: calc(100% + 1px) !important;
-  font-size: 10px !important;
-  text-transform: none !important;
-  margin-top: -15px !important;
   margin-left: -1px !important;
-  z-index: 100;
+  text-transform: none !important;
+  font-size: inherit !important;
 }
 
 .group:hover .group-remove-button {
