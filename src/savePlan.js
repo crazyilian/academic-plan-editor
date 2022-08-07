@@ -98,7 +98,7 @@ function create_xlsx(alldata, callback) {
     for (const [i, grade] of gradeGroups.entries()) {
       ws.column(3 + i).setWidth(6);
       ws.cell(5, 3 + i).number(grade.name).style(scenter);
-      const profiles = grade.profile.filter(x => x.length > 0);
+      const profiles = grade.profile.filter(x => x);
       if (profiles.length === 1) {
         ws.cell(3, 3 + i, 4, 3 + i, true).string(profiles[0]).style(srot90).style(scenter);
       } else {
