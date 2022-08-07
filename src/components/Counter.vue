@@ -1,5 +1,6 @@
 <template>
   <div
+      v-if="!hide"
       class="mx-1 counter-container"
       :class="{
                 'counter-highlight': highlight,
@@ -51,6 +52,7 @@
       </div>
     </div>
   </div>
+  <div v-else style="width: 48px"/>
 </template>
 
 <script>
@@ -71,6 +73,7 @@ export default {
     checkbox: { type: Boolean, default: false },
     checkboxDisabled: { type: Boolean, default: false },
     showLabel: { type: Boolean, default: false },
+    hide: { type: Boolean, default: false },
   },
   data() {
     return {
@@ -95,6 +98,11 @@ export default {
     startValue() {
       this.stringValue = this.startValue === null ? "" : this.startValue.toString();
       this.value = this.startValue;
+    },
+    hide() {
+      this.$nextTick(() => {
+        this.adjustWidth();
+      })
     }
   },
   mounted() {
@@ -102,6 +110,8 @@ export default {
   },
   methods: {
     adjustWidth() {
+      if (this.hide)
+        return;
       const inp = this.$refs.input;
       inp.style.width = `calc(max(${inp.value.length}ch, 10px) + 2px)`;
     },

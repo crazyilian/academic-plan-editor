@@ -11,6 +11,7 @@
               :disabled="!edit"
               :null-available="nullAvailable"
               :max="99"
+              :hide="(hide[i] || [])[j]"
               @input="counterChange(i, j, $event)"
           />
         </div>
@@ -39,6 +40,7 @@ export default {
     maxs: { type: Array, default: undefined },
     nullAvailable: { type: Boolean, default: false },
     onedit: { type: Function, default: undefined },
+    hide: { type: Array, default: () => [] }
   },
   data() {
     return {

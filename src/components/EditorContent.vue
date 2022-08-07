@@ -170,6 +170,11 @@ export default {
       generalTableCorrect: true,
     };
   },
+  computed: {
+    groupStart() {
+      return this.gradeGroups.reduce((r, group) => [...r, r[r.length - 1] + group.length], [0]);
+    }
+  },
   mounted() {
     this.generalTableReady = true;  // this fixes rendering issues with content of navigation drawer
   },
@@ -221,7 +226,8 @@ export default {
       }
       this.highlight = fillShape2(this.gradeGroups, () => false);
     },
-    setHighlight(ij, i, j, flag) {
+    setHighlight(i, j, flag) {
+      const ij = this.groupStart[i] + j;
       if (this.$refs.table !== undefined) {
         this.$refs.table.$refs.categories.forEach((cat) => cat.$refs.subjects.forEach((subj) => subj.$refs.counters[ij].highlight = flag));
       }
@@ -233,7 +239,7 @@ export default {
       }
       if (this.$refs.generalTable !== undefined) {
         ['s0', 's1', 's2', 's3', 's4'].forEach((s) => this.$refs.generalTable.$refs[s].$refs.summaries.forEach((sum) => sum.$refs.counters[ij].highlight = flag))
-        this.$refs.generalTable.$refs.s5.$refs.summaries.forEach((sum) => sum.$refs.counters[i].highlight = flag)
+        this.$refs.generalTable.$refs.s5.$refs.summaries.forEach((sum) => sum.$refs.counters[this.groupStart[i]].highlight = flag);
       }
     }
   }

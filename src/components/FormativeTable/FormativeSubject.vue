@@ -41,14 +41,13 @@
             :key="grade.id"
         >
           <Counter
-              v-if="isGoodProfile(grade)"
               ref="counters"
+              :hide="!isGoodProfile(grade)"
               :correct="Object.keys(incorrectRulesTop[i][j]).length === 0"
               :start-value="plan[i][j]"
               :max="99"
               @input="counterChange(i, j, $event)"
           />
-          <div v-else ref="counters" style="width: 48px"/>
         </div>
       </div>
     </div>

@@ -63,7 +63,8 @@
             ref="s5"
             name="На уровень образования"
             error-name="Количество часов в год на уровень образования"
-            :grade-groups="gradeGroups.map((group) => [{ id: group[0].id, profile: group.slice(-1)[0].profile }])"
+            :grade-groups="gradeGroups"
+            :hide="section5Hidden"
             :data-raw="section5"
             @set-correct="setCorrect(...$event)"
         />
@@ -96,6 +97,7 @@ export default {
       panels: [...Array(6).keys()],
       correctSections: Array(6).fill(true),
       correct: true,
+      section5Hidden: fillShape2(this.gradeGroups, (i, j) => j !== 0)
     }
   },
   computed: {
@@ -120,13 +122,13 @@ export default {
     },
     edu() {
       const a = this.peryear;
-      return a.map((group) => [group.reduce((r, x) => r + x)]);
+      return a.map((group) => [group.reduce((r, x) => r + x), ...Array(group.length - 1).fill(0)]);
     },
     edumin() {
-      return this.gradeGroups.map(() => [this.config.hours_total_min]);
+      return this.gradeGroups.map((group) => [this.config.hours_total_min, ...Array(group.length - 1).fill(0)]);
     },
     edumax() {
-      return this.gradeGroups.map(() => [this.config.hours_total_max]);
+      return this.gradeGroups.map((group) => [this.config.hours_total_max, ...Array(group.length - 1).fill(0)]);
     },
     weeknum() {
       return this.gradeGroups.map((group) => group.map((grade) => grade.weeknum));
