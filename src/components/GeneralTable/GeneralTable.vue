@@ -97,10 +97,12 @@ export default {
       panels: [...Array(6).keys()],
       correctSections: Array(6).fill(true),
       correct: true,
-      section5Hidden: fillShape2(this.gradeGroups, (i, j) => j !== 0)
     }
   },
   computed: {
+    section5Hidden() {
+      return fillShape2(this.gradeGroups, (i, j) => j !== 0);
+    },
 
     obligatory() {
       return this.obligatoryPlan.reduce((r, x) => r.concat(x)).reduce((r, v) => r.map((r1, i) => r1.map((r2, j) => r2 + v[i][j].value)), fillShape2(this.gradeGroups, () => 0));

@@ -49,6 +49,11 @@ export default {
       countersCorrect: fillShape2(this.gradeGroups, () => true),
     }
   },
+  watch: {
+    values() {
+      this.validate();
+    }
+  },
   mounted() {
     this.validate();
   },
@@ -65,7 +70,7 @@ export default {
       this.correct = true;
       this.countersCorrect.forEach((group) => group.forEach((v, i) => Vue.set(group, i, true)));
       this.messages = [];
-      for (const [i, valueGroup] of [...this.values.entries()].reverse()) {
+      for (const [i, valueGroup] of this.values.entries()) {
         const curMessages = [
           { id: -100 - this.id, key: 'SUMMARY_NULL', gradeIds: [] },
           { id: -200 - this.id, key: 'SUMMARY_TOO_SMALL', gradeIds: [] },
