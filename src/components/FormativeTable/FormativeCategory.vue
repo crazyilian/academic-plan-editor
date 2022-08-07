@@ -74,9 +74,18 @@ export default {
       else
         Vue.set(this.messages, key, message);
     },
-    changeName(i, name) {
-      Vue.set(this.subjects[i], 'newName', name);
-    }
+    changeName(i, newName) {
+      if (!this.subjects.some((s, j) => j !== i && s.newName.toLowerCase() === newName.toLowerCase())) {
+        Vue.set(this.subjects[i], 'newName', newName);
+        return;
+      }
+      window.ipcRenderer.messageBox({
+        'type': 'warning',
+        'title': 'Название предмета...',
+        'message': "Предмет с таким названием уже существует",
+        'detail': `Вы не можете назвать предмет "${newName}", так как предмет с таким названием уже существует.`,
+      });
+    },
   }
 }
 </script>

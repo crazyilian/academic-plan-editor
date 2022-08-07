@@ -36,21 +36,28 @@ export default {
     }
   },
   watch: {
-    editing() { this.onStartEditing(); }
+    editing() { this.onStartEditing(); },
+    value() { this.setVisibleVal(this.value) },
   },
   mounted() {
     autosize(this.$refs.editField);
     this.onStartEditing();
   },
   methods: {
+    setVisibleVal(val) {
+      this.editingValue = val;
+      this.$nextTick(() => {
+        autosize.update(this.$refs.editField)
+      })
+    },
     onStartEditing() {
       if (this.editing) {
-        this.editingValue = this.value;
+        this.setVisibleVal(this.value)
         this.$nextTick(() => this.$refs.editField.focus());
       }
     },
     applyVal(val) {
-      this.editingValue = val;
+      this.setVisibleVal(this.value)
       this.$emit('change', val);
     },
     nameChange(editFlag) {

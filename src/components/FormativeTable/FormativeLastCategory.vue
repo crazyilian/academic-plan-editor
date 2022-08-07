@@ -84,7 +84,16 @@ export default {
       Vue.delete(this.plan.subjects, i);
     },
     nameChange(i, newName) {
-      Vue.set(this.plan.subjects, i, newName)
+      if (!this.plan.subjects.some((s, j) => j !== i && s.toLowerCase() === newName.toLowerCase())) {
+        Vue.set(this.plan.subjects, i, newName);
+        return;
+      }
+      window.ipcRenderer.messageBox({
+        'type': 'warning',
+        'title': 'Название предмета...',
+        'message': "Предмет с таким названием уже существует",
+        'detail': `Вы не можете назвать предмет "${newName}", так как предмет с таким названием уже существует.`,
+      });
     },
   }
 }
