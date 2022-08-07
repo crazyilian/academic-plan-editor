@@ -88,7 +88,9 @@ export default {
   },
   watch: {
     stringValue() {
-      this.adjustWidth();
+      this.$nextTick(() => {
+        this.adjustWidth();
+      })
     },
     startValue() {
       this.stringValue = this.startValue === null ? "" : this.startValue.toString();
