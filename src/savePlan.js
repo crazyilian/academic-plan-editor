@@ -18,12 +18,16 @@ function range(x1, y1, x2, y2) {
   return `${cell(x1, y1)}:${cell(x2, y2)}`
 }
 
-function formulaLine(ws, gn, cl, label, f) {
-  ws.cell(cl, 1, cl, 2, true).string(label)
+function formulaLine(ws, gn, cl, label, f, labelCallback = () => {}) {
   for (let i = 0; i < gn; ++i) {
     f(ws.cell(cl, 3 + i), i);
   }
+  labelCallback(ws.cell(cl, 1, cl, 2, true).string(label));
   return cl + 1;
+}
+
+function flatten2(arr) {
+  return arr.reduce((r, el) => [...r, ...el]);
 }
 
 function create_xlsx(alldata, callback) {
@@ -59,12 +63,27 @@ function create_xlsx(alldata, callback) {
       patternType: 'solid'
     }
   });
+  const srequired = wb.createStyle({
+    fill: {
+      fgColor: "#c6e0b4",
+      type: 'pattern',
+      patternType: 'solid'
+    }
+  });
+  const sadvanced = wb.createStyle({
+    fill: {
+      fgColor: "#79dcff",
+      type: 'pattern',
+      patternType: 'solid'
+    }
+  });
   if (alldata.length === 0) {
     wb.addWorksheet();
   }
   for (const data of alldata) {
     const ws = wb.addWorksheet(data.template.config.name);
-    const gn = data.template.grades.length;
+    const gradeGroups = flatten2(data.gradeGroups);
+    const gn = gradeGroups.length;
     ws.column(1).setWidth(28);
     ws.column(2).setWidth(56);
     ws.column(3 + gn).setWidth(16);
@@ -76,9 +95,9 @@ function create_xlsx(alldata, callback) {
     ws.cell(2, 2, 5, 2, true).string('Учебные предметы, курсы').style(scenter);
     ws.cell(2, 3, 2, 2 + gn, true).string('Количество часов в неделю').style(scenter);
     ws.cell(2, 3 + gn, 5, 3 + gn, true).string('Формы промежуточной аттестации').style(scenter);
-    for (const [i, grade] of data.template.grades.entries()) {
+    for (const [i, grade] of gradeGroups.entries()) {
       ws.column(3 + i).setWidth(6);
-      ws.cell(5, 3 + i).string(grade.name).style(scenter);
+      ws.cell(5, 3 + i).number(grade.name).style(scenter);
       const profiles = grade.profile.filter(x => x.length > 0);
       if (profiles.length === 1) {
         ws.cell(3, 3 + i, 4, 3 + i, true).string(profiles[0]).style(srot90).style(scenter);
@@ -87,16 +106,15 @@ function create_xlsx(alldata, callback) {
         ws.cell(3, 3 + i).string(profiles[1]).style(srot90).style(scenter);
       }
     }
-
-    ws.cell(6, 1, 6, 2 + gn, true).string('Обязательная часть').style(sbold);
+    ws.cell(6, 1, 6, 2 + gn, true).string('Обязательная часть').style(sgray).style(sbold);
     let cl = 7;
     for (const category of data.template.categories) {
       const n = category.subjects.length;
       // const flag = n === 1 && category.subjects[0].name === category.name;
       const flag = false;
-      ws.cell(cl, 1, cl + n - 1, 1 + flag, true).string(category.name).style(sbold);
+      ws.cell(cl, 1, cl + n - 1, 1 + flag, true).string(category.name);
       for (const [i, subject] of category.subjects.entries()) {
-        ws.cell(cl + i, 2).string(subject.name).style(subject.required ? sgray : {}).style(sbold);
+        ws.cell(cl + i, 2).string(subject.name).style(subject.required ? srequired : {});
       }
       cl += n;
     }
@@ -115,9 +133,12 @@ function create_xlsx(alldata, callback) {
 
       for (const [j, subject] of category.entries()) {
         if (!data.template.categories[i].subjects[j].is_module) {
-          for (const [gi, val] of subject.entries()) {
-            if (val !== 0) {
-              ws.cell(cl, 3 + gi).number(val).style(scenter).style(sbold);
+          for (const [gi, val] of flatten2(subject).entries()) {
+            if (val.value !== 0) {
+              ws.cell(cl, 3 + gi).number(val.value).style(scenter);
+            }
+            if (val.advanced) {
+              ws.cell(cl, 3 + gi).style(sadvanced);
             }
           }
         }
@@ -126,45 +147,65 @@ function create_xlsx(alldata, callback) {
       }
     }
     cl = formulaLine(ws, gn, cl, "Итого (количество часов обязательной части)", (c, i) => {
-      c.formula(`SUM(${range(cl - sub, i + 3, cl - 1, i + 3)})`).style(scenter);
-    })
+      c.formula(`SUM(${range(cl - sub, i + 3, cl - 1, i + 3)})`).style(scenter).style(sbold);
+    }, (c) => c.style(sbold))
 
-    ws.cell(cl, 1, cl, 2 + gn, true).string("Часть, формируемая участниками образовательных отношений").style(sbold);
+    ws.cell(cl, 1, cl, 2 + gn, true).string("Часть, формируемая участниками образовательных отношений").style(sgray).style(sbold);
     cl += 1;
-    let start = cl;
-    if (data.formativePlan.subjects.length > 0) {
-      for (const subject of data.formativePlan.subjects) {
-        ws.cell(cl, 1, cl, 2, true).string(subject).style(sbold);
-        cl += 1;
+    const formativeStart = cl;
+
+    const formativeSubjects = {};
+    for (const category of data.formativePlan.categories.values()) {
+      for (const subject of category.subjects.values()) {
+        const plan = flatten2(subject.plan);
+        formativeSubjects[subject.newName] ||= Array(plan.length).fill(0);
+        formativeSubjects[subject.newName].forEach((_, i, self) => self[i] += plan[i]);
       }
-      for (const [i, val] of data.formativePlan.hours.entries()) {
-        const c = ws.cell(start, 3 + i, cl - 1, 3 + i, true);
+    }
+    for (const [subject, values] of Object.entries(formativeSubjects)) {
+      ws.cell(cl, 1, cl, 2, true).string(subject);
+      for (const [i, val] of values.entries()) {
         if (val !== 0) {
-          c.number(val).style(scenter).style(sbold);
+          ws.cell(cl, 3 + i).number(val).style(scenter);
         }
       }
-      cl = formulaLine(ws, gn, cl, "Итого (количество часов формируемой части)", (c, i) => {
-        c.formula(`SUM(${range(start, i + 3, cl - 1, i + 3)})`).style(scenter);
-      })
-    } else {
-      cl = formulaLine(ws, gn, cl, "Итого (количество часов формируемой части)", (c, i) => {
-        c.number(data.formativePlan.hours[i]).style(scenter);
-      })
+      cl += 1;
     }
 
-    ws.cell(7, 3 + gn, cl - 2, 3 + gn, true).string(data.template.config.attestation)
-        .style(scenter).style({ font: { size: 7 } })
+    if (data.formativePlan.subjects.length > 0) {
+      const start = cl;
+      for (const subject of data.formativePlan.subjects) {
+        ws.cell(cl, 1, cl, 2, true).string(subject);
+        cl += 1;
+      }
+      for (const [i, val] of flatten2(data.formativePlan.hours).entries()) {
+        const c = ws.cell(start, 3 + i, cl - 1, 3 + i, true);
+        if (val !== 0) {
+          c.number(val).style(scenter);
+        }
+      }
+    }
+    if (formativeStart !== cl) {
+      cl = formulaLine(ws, gn, cl, "Итого (количество часов формируемой части)", (c, i) => {
+        c.formula(`SUM(${range(formativeStart, i + 3, cl - 1, i + 3)})`).style(scenter).style(sbold);
+      }, (c) => c.style(sbold))
+    } else {
+      cl = formulaLine(ws, gn, cl, "Итого (количество часов формируемой части)", (c) => {
+        c.number(0).style(scenter).style(sbold);
+      }, (c) => c.style(sbold))
+    }
 
-
+    ws.cell(cl, 1, cl, 2 + gn, true).string("Сводка").style(sgray).style(sbold);
+    cl += 1;
     cl = formulaLine(ws, gn, cl, "Итого недельная нагрузка", (c, i) => {
-      c.formula(`${cell(start - 2, i + 3)} + ${cell(cl - 1, i + 3)}`).style(scenter);
+      c.formula(`${cell(formativeStart - 2, i + 3)} + ${cell(cl - 2, i + 3)}`).style(scenter);
     })
     cl = formulaLine(ws, gn, cl, "Максимальная учебная недельная нагрузка", (c, i) => {
-      c.number(data.template.grades[i].max_hours_per_week).style(scenter).style(sgray);
+      c.number(gradeGroups[i].max_hours_per_week).style(scenter);
     })
     cl = formulaLine(ws, gn, cl, "Количество учебных недель", (c, i) => {
-      if (typeof data.weeknum[i] === 'number') {
-        c.number(data.weeknum[i]).style(scenter);
+      if (gradeGroups[i].weeknum !== null) {
+        c.number(gradeGroups[i].weeknum).style(scenter);
       } else {
         c.style(scenter);
       }
@@ -172,10 +213,12 @@ function create_xlsx(alldata, callback) {
     cl = formulaLine(ws, gn, cl, "Количество часов за год по учебному плану", (c, i) => {
       c.formula(`${cell(cl - 3, i + 3)} * ${cell(cl - 1, i + 3)}`).style(scenter);
     })
-    ws.cell(cl - 5, 3 + gn, cl - 1, 3 + gn, true);
     ws.cell(cl, 1, cl, 2, true).string("Итого на уровень образования");
     ws.cell(cl, 3, cl, 2 + gn, true).formula(`SUM(${range(cl - 1, 3, cl - 1, 2 + gn)})`).style(scenter);
     cl += 1;
+
+    ws.cell(6, 3 + gn, cl - 1, 3 + gn, true).string(data.template.config.attestation)
+        .style(scenter).style({ font: { size: 7 } })
 
     for (let i = 0; i < cl - 1; ++i) {
       for (let j = 0; j < 3 + gn; ++j) {
@@ -183,10 +226,12 @@ function create_xlsx(alldata, callback) {
       }
     }
     ws.cell(cl, 1, cl, 2 + gn, true).string(
-        `не менее ${data.template.config.hours_total_min} и не более ${data.template.config.hours_total_max} часов`
-    )
+        `Не менее ${data.template.config.hours_total_min} и не более ${data.template.config.hours_total_max} часов`
+    );
     cl += 1;
-    ws.cell(cl, 1, cl, 2 + gn, true).string('обязательные предметы').style(sgray);
+    ws.cell(cl, 1, cl, 2 + gn, true).string('Обязательные предметы').style(srequired);
+    cl += 1;
+    ws.cell(cl, 1, cl, 2 + gn, true).string('Углублённые предметы').style(sadvanced);
   }
 
   if (!fs.existsSync('./tmp')) {
