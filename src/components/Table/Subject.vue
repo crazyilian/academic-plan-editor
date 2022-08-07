@@ -5,11 +5,11 @@
   >
     <v-tooltip bottom :open-delay="500">
       <template #activator="{ on, attrs} ">
-        <div v-bind="attrs" v-on="on">
+        <div v-bind="attrs" class="checkbox-subj" v-on="on">
           <v-checkbox
               v-model="checkbox"
               :disabled="true"
-              class="pr-4 py-0 ma-0 checkbox-subj"
+              class="pr-4 py-0 ma-0"
               :color="!correct ? 'red' : 'teal'"
           />
         </div>
@@ -154,22 +154,27 @@ export default {
   top: -5px !important;
 }
 
-/* other */
+.subject .checkbox-subj i {
+  color: var(--v-teal-base) !important;
+  opacity: 0.87 !important;
+}
+
+.subject .checkbox-subj .v-input--selection-controls__ripple {
+  color: var(--v-teal-base) !important;
+}
+
+/*.subject .checkbox-subj .v-input--is-disabled i {*/
+/*  color: #9bc99b !important;*/
+/*}*/
 
 .error-subject .checkbox-subj i {
-  color: red !important;
+  color: var(--v-error-base) !important;
 }
 
-.error-subject .checkbox-subj.v-input--is-disabled i {
-  color: #d39292 !important;
+.error-subject .checkbox-subj .v-input--selection-controls__ripple {
+  color: var(--v-error-base) !important;
 }
-
-.subject:not(.error-subject) .checkbox-subj.v-input--is-disabled i {
-  color: #9bc99b !important;
-}
-
-.error-subject .subject-name {
-  color: red;
-}
-
+/*.error-subject .checkbox-subj .v-input--is-disabled i {*/
+/*  color: #d39292 !important;*/
+/*}*/
 </style>
