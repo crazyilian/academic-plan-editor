@@ -25,13 +25,14 @@
     <v-expansion-panel-content>
       <FormativeLastSubject
           v-for="(subject, i) in plan.subjects"
+          ref="subjects"
           :key="subject"
           :num="i + 1"
           :name="subject"
           @remove-subject="removeSubject(i)"
           @change-name="nameChange(i, $event)"
       />
-      <div style="display: flex; width: 100%; justify-content: center">
+      <div ref="addBtnContainer" style="display: flex; width: 100%; justify-content: center">
         <v-btn text style="text-transform: none" class="px-3" @click="addSubject">
           <span class="mr-2">Добавить предмет</span>
           <v-icon color="teal">mdi-plus</v-icon>
@@ -72,7 +73,12 @@ export default {
       return name;
     },
     addSubject() {
-      Vue.set(this.plan.subjects, this.plan.subjects.length, this.getNextName());
+      const n = this.plan.subjects.length;
+      Vue.set(this.plan.subjects, n, this.getNextName());
+      this.$nextTick(() => {
+        this.$refs.subjects[n].editName();
+        this.$refs.addBtnContainer.scrollIntoView();
+      })
     },
     removeSubject(i) {
       Vue.delete(this.plan.subjects, i);
