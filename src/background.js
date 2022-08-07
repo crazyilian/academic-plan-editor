@@ -44,9 +44,8 @@ ipcMain.handle('get-cur-project', () => {
 });
 
 ipcMain.handle('get-templates', () => {
-  const templatesPath = path.join(extraResources, 'plan-templates');
-  const filename = fs.readdirSync(templatesPath).find(file => path.parse(file).ext === '.xlsx');
-  const filepath = path.join(templatesPath, filename);
+  const filename = fs.readdirSync(extraResources).find(file => path.parse(file).ext === '.xlsx');
+  const filepath = path.join(extraResources, filename);
   return parseTable(filepath);
 })
 
