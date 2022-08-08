@@ -195,7 +195,18 @@ function createIpcListeners(win) {
           filters: [extensionFilters[options.type]]
         });
         if (ppath !== undefined) {
-          fs.moveSync(tempFilename, ppath, { overwrite: true })
+          try {
+            fs.moveSync(tempFilename, ppath, { overwrite: true })
+          } catch (err) {
+            if (err.code === 'EPERM') {
+              dialog.showMessageBoxSync(win, {
+                'type': 'error',
+                'title': 'Ошибка сохранения...',
+                'message': "Сохранение не может быть выполнено, так как файл открыт в другой программе",
+                'detail': "Закройте файл и повторите попытку.",
+              })
+            }
+          }
         }
       });
     }
