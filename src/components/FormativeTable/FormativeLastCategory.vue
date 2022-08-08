@@ -8,8 +8,12 @@
         Формируемая часть
       </div>
       <div style="flex-grow: 1"/>
-      <div style="display: flex; flex-direction: row-reverse; min-height: 32px;">
-        <div v-for="(group, i) in gradeGroups" :key="group[0].id" style="display: flex">
+      <div style="display: flex; flex: 0 1 auto; min-height: 32px;">
+        <div
+            v-for="[i, group] in gradeGroups.map((g, i, s) => [s.length - i - 1, s[s.length - i - 1]])"
+            :key="group[0].id"
+            style="display: flex"
+        >
           <Counter
               v-for="(grade, j) in group"
               :key="grade.id"

@@ -82,6 +82,12 @@ function create_xlsx(alldata, callback) {
   }
   for (const data of alldata) {
     const ws = wb.addWorksheet(data.template.config.name);
+
+    data.gradeGroups.reverse();
+    data.obligatoryPlan.forEach((category) => category.forEach((subject) => subject.reverse()));
+    data.formativePlan.hours.reverse();
+    data.formativePlan.categories.forEach((category) => category.subjects.forEach((subject) => subject.plan.reverse()));
+
     const gradeGroups = flatten2(data.gradeGroups);
     const gn = gradeGroups.length;
     ws.column(1).setWidth(28);
@@ -162,7 +168,7 @@ function create_xlsx(alldata, callback) {
         if (subject.newName in formativeSubjects)
           formativeSubjects[subject.newName].forEach((_, i, self) => self[i] += plan[i]);
         else {
-          formativeSubjects[subject.newName] = structuredClone(plan);
+          formativeSubjects[subject.newName] = plan.slice();
         }
       }
     }

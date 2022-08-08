@@ -1,8 +1,12 @@
 <template>
   <div class="general-row">
     <div class="general-row-name">{{ name }}</div>
-    <div style="display: flex; flex-wrap: wrap; flex-direction: row-reverse">
-      <div v-for="(group, i) in gradeGroups" :key="group[0].id" style="display: flex">
+    <div style="display: flex; flex-wrap: wrap">
+      <div
+          v-for="[i, group] in gradeGroups.map((g, i, s) => [s.length - i - 1, s[s.length - i - 1]])"
+          :key="group[0].id"
+          style="display: flex"
+      >
         <div v-for="(grade, j) in group" :key="grade.id">
           <Counter
               ref="counters"

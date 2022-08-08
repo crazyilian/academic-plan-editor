@@ -1,7 +1,7 @@
 <template>
-  <div style="display: flex; height: 100%; flex-direction: row-reverse">
+  <div style="display: flex; height: 100%">
     <div
-        v-for="(group, i) in gradeGroups"
+        v-for="([i, group], revi) in gradeGroups.map((g, i, s) => [s.length - i - 1, s[s.length - i - 1]])"
         :key="group[0].id"
         style="display: flex"
     >
@@ -10,7 +10,7 @@
           :last="i === gradeGroups.length - 1"
           :group="group"
           class="pb-1"
-          @highlight="setHighlight(i, ...$event)"
+          @highlight="setHighlight(revi, ...$event)"
           @remove-group="removeGroup(i)"
       />
     </div>

@@ -34,8 +34,12 @@
         container-style="width: 65%; margin-left: 24px; margin-right: 24px; min-width: 20px"
         :messages="messages"
     />
-    <div style="display: flex; flex-direction: row-reverse">
-      <div v-for="(group, i) in gradeGroups" :key="group[0].id" style="display: flex">
+    <div style="display: flex">
+      <div
+          v-for="[i, group] in gradeGroups.map((g, i, s) => [s.length - i - 1, s[s.length - i - 1]])"
+          :key="group[0].id"
+          style="display: flex"
+      >
         <div
             v-for="(grade, j) in group"
             :key="grade.id"
