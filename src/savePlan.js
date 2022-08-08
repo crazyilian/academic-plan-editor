@@ -223,9 +223,13 @@ function create_xlsx(alldata, callback) {
     cl = formulaLine(ws, gn, cl, "Количество часов за год по учебному плану", (c, i) => {
       c.formula(`${cell(cl - 3, i + 3)} * ${cell(cl - 1, i + 3)}`).style(scenter);
     })
-    ws.cell(cl, 1, cl, 2, true).string("Итого на уровень образования");
-    if (gn > 0)
-      ws.cell(cl, 3, cl, 2 + gn, true).formula(`SUM(${range(cl - 1, 3, cl - 1, 2 + gn)})`).style(scenter);
+    ws.cell(cl, 1, cl, 2, true).string("Итого на уровень образования").style(sbold);
+    let cy = 3;
+    for (const group of data.gradeGroups) {
+      const ny = cy + group.length;
+      ws.cell(cl, cy, cl, ny - 1, true).formula(`SUM(${range(cl - 1, cy, cl - 1, ny - 1)})`).style(scenter).style(sbold);
+      cy = ny;
+    }
     cl += 1;
 
     ws.cell(6, 3 + gn, cl - 1, 3 + gn, true).string(data.template.config.attestation)
