@@ -71,6 +71,7 @@ export default {
   border: solid gray thin;
   transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
 }
+
 .horizontal-resize-bar:active {
   background-color: #9f9f9f;
 }
@@ -84,7 +85,8 @@ export default {
   justify-content: flex-end;
 }
 
-.horizontal-resize-bar-container:hover .horizontal-resize-bar {
+.horizontal-resize-bar-container:hover .horizontal-resize-bar,
+.horizontal-resize-bar-container:active .horizontal-resize-bar {
   height: 8px;
 }
 
@@ -96,11 +98,13 @@ export default {
   display: none;
 }
 
-.horizontal-resize-bar-container:hover .horizontal-resize-bar span:nth-child(2) {
+.horizontal-resize-bar-container:hover .horizontal-resize-bar span:nth-child(2),
+.horizontal-resize-bar-container:active .horizontal-resize-bar span:nth-child(2) {
   display: block;
 }
 
-.horizontal-resize-bar-container:hover .horizontal-resize-bar span:nth-child(1) {
+.horizontal-resize-bar-container:hover .horizontal-resize-bar span:nth-child(1),
+.horizontal-resize-bar-container:active .horizontal-resize-bar span:nth-child(1) {
   display: none;
 }
 
