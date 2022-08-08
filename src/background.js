@@ -255,7 +255,7 @@ async function createWindow() {
   if (isDevelopment) {
     showApp(win);
   } else {
-    win.once('ready-to-show', () => showApp(win));
+    showApp(win);
   }
 }
 
