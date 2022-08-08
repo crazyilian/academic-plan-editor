@@ -88,7 +88,7 @@ function createMenu(win) {
 }
 
 function emptyProject() {
-  return { tabs: [], gradeId: 0 };
+  return { tabs: [], gradeId: 0, version: app.getVersion() };
 }
 
 function applyProject(projectPath, project) {
