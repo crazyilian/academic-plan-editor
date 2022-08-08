@@ -27,7 +27,7 @@
       </div>
     </div>
     <div style="display: flex; flex-grow: 1; min-height: 0">
-      <VerticalLine v-if="last"/>
+      <VerticalLine v-if="last" right/>
       <div v-if="!editing" style="display: flex; min-height: 0; width: 100%">
         <div v-for="(grade, j) in group" :key="grade.id">
           <Grade
