@@ -71,6 +71,9 @@ export default {
   border: solid gray thin;
   transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
 }
+.horizontal-resize-bar:active {
+  background-color: #9f9f9f;
+}
 
 .horizontal-resize-bar-container {
   height: 8px;
