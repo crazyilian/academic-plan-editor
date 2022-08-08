@@ -10,7 +10,7 @@
           ref="messageContainer"
           :style="containerStyle"
           class="text--secondary message-container"
-          style="width: 100%; height: 100%; min-height: 32px; display: flex; align-items: center"
+          style="min-height: 32px; display: flex; align-items: center"
           v-on="on"
           @mouseover="updateTooltip"
       >

@@ -1,7 +1,7 @@
 <template>
   <div class="general-row">
     <div class="general-row-name">{{ name }}</div>
-    <div style="display: flex; flex-wrap: wrap">
+    <ScrollSync style="display: flex" group="grades" horizontal>
       <div
           v-for="[i, group] in gradeGroups.map((g, i, s) => [s.length - i - 1, s[s.length - i - 1]])"
           :key="group[0].id"
@@ -20,7 +20,7 @@
           />
         </div>
       </div>
-    </div>
+    </ScrollSync>
   </div>
 </template>
 

@@ -8,7 +8,7 @@
         Формируемая часть
       </div>
       <div style="flex-grow: 1"/>
-      <div style="display: flex; flex: 0 1 auto; min-height: 32px;">
+      <ScrollSync style="display: flex; flex: 0 1 auto; min-height: 32px;" group="grades" horizontal>
         <div
             v-for="[i, group] in gradeGroups.map((g, i, s) => [s.length - i - 1, s[s.length - i - 1]])"
             :key="group[0].id"
@@ -24,7 +24,7 @@
               @input="counterChange(i, j, $event)"
           />
         </div>
-      </div>
+      </ScrollSync>
       <template #actions>
         <div/>
       </template>

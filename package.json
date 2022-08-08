@@ -22,6 +22,7 @@
     "fs": "^0.0.1-security",
     "fs-extra": "^10.1.0",
     "vue": "^2.6.14",
+    "vue-scroll-sync": "^1.0.5",
     "vuetify": "^2.6.0",
     "xlsx": "^0.18.5"
   },

@@ -18,14 +18,16 @@
       <div v-else class="pa-2" style="text-align: center">Не обязательный<br>предмет</div>
     </v-tooltip>
 
-    <div style="min-width: 0; width: 35%; display: inline-block; word-wrap: break-word" class="subject-name">
-      {{ name }}
+    <div style="display: flex; flex: 1 1 0; min-width: 0; align-items: stretch">
+      <div style="min-width: 0; flex: 3 1 0; display: inline-block; word-wrap: break-word" class="subject-name">
+        {{ name }}
+      </div>
+      <Message
+          container-style="flex: 7 1 0; margin-left: 24px; margin-right: 24px; min-width: 20px"
+          :messages="messages"
+      />
     </div>
-    <Message
-        container-style="width: 65%; margin-left: 24px; margin-right: 24px; min-width: 20px"
-        :messages="messages"
-    />
-    <div style="display: flex">
+    <ScrollSync style="display: flex" group="grades" horizontal>
       <div
           v-for="[i, group] in gradeGroups.map((g, i, s) => [s.length - i - 1, s[s.length - i - 1]])"
           :key="group[0].id"
@@ -45,7 +47,7 @@
             @checkbox-change="setAdvanced(i, j, $event)"
         />
       </div>
-    </div>
+    </ScrollSync>
   </div>
 </template>
 

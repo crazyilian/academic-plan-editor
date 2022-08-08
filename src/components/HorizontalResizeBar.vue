@@ -18,7 +18,7 @@
 export default {
   name: "HorizontalResizeBar",
   props: {
-    min: { type: Number, default: 35 },
+    min: { type: Number, default: 46 },
     max: { type: Number, default: 300 },
     initial: { type: Number, default: 150 }
   },

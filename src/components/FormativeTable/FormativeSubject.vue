@@ -11,30 +11,32 @@
         </v-hover>
       </div>
     </div>
-    <v-tooltip bottom :open-delay="500" :attach="$refs.tooltipContainer">
-      <template #activator="{ on, attrs}">
-        <div
-            v-bind="attrs"
-            style="min-width: 0; width: 35%;"
-            v-on="on"
-        >
-          <EditableText
-              :value="newName"
-              :editing="editing"
-              @change="changeName"
-          />
-          <div ref="tooltipContainer" class="tooltip-container"/>
+    <div style="display: flex; flex: 1 1 0; min-width: 0; align-items: stretch">
+      <v-tooltip bottom :open-delay="500" :attach="$refs.tooltipContainer">
+        <template #activator="{ on, attrs}">
+          <div
+              v-bind="attrs"
+              style="min-width: 0; flex: 3 1 0"
+              v-on="on"
+          >
+            <EditableText
+                :value="newName"
+                :editing="editing"
+                @change="changeName"
+            />
+            <div ref="tooltipContainer" class="tooltip-container"/>
+          </div>
+        </template>
+        <div class="pa-2" style="text-align: center; max-width: 200px; word-wrap: break-word;">
+          {{ name }}
         </div>
-      </template>
-      <div class="pa-2" style="text-align: center; max-width: 200px; word-wrap: break-word;">
-        {{ name }}
-      </div>
-    </v-tooltip>
-    <Message
-        container-style="width: 65%; margin-left: 24px; margin-right: 24px; min-width: 20px"
-        :messages="messages"
-    />
-    <div style="display: flex">
+      </v-tooltip>
+      <Message
+          container-style="flex: 7 1 0; margin-left: 24px; margin-right: 24px; min-width: 20px"
+          :messages="messages"
+      />
+    </div>
+    <ScrollSync style="display: flex" group="grades" horizontal>
       <div
           v-for="[i, group] in gradeGroups.map((g, i, s) => [s.length - i - 1, s[s.length - i - 1]])"
           :key="group[0].id"
@@ -54,7 +56,7 @@
           />
         </div>
       </div>
-    </div>
+    </ScrollSync>
   </div>
 </template>
 
