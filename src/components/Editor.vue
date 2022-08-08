@@ -28,7 +28,7 @@
 import EditorContent from "@/components/EditorContent";
 import EditorTabs from "@/components/EditorTabs";
 import Vue from "vue";
-import { addGroupToPlan, getProfileGroup, fillShape2, getProfileFormativeCategory, useGlobalGradeId } from "@/gradeProcessing";
+import { getProfileGroup, fillShape2, getProfileFormativeCategory, useGlobalGradeId } from "@/gradeProcessing";
 
 export default {
   name: 'Editor',
@@ -71,8 +71,10 @@ export default {
       const default_grades = getProfileGroup(template.grades, []);
       const gradeGroups = [default_grades];
 
-      let obligatoryPlan = template.categories.map(c => c.subjects.map(() => []));
-      obligatoryPlan = addGroupToPlan(obligatoryPlan, ...gradeGroups)
+      const obligatoryPlan = template.categories.map(c => c.subjects.map((s) => fillShape2(gradeGroups, () => ({
+        value: s.required ? 1 : 0,
+        advanced: false
+      }))));
 
       const formativeDefaultCategory = getProfileFormativeCategory(template.rulesFormative, default_grades, gradeGroups);
 

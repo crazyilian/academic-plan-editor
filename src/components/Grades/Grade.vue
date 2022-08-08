@@ -4,7 +4,7 @@
       @mouseover="setHighlight(true)"
       @mouseleave="setHighlight(false)"
   >
-    <div class="pb-0" style="min-height: 0">
+    <div class="pb-0" style="min-height: 0; flex-grow: 1">
       <v-tooltip bottom :open-delay="500">
         <template #activator="{ on, attrs} ">
           <div
@@ -35,9 +35,9 @@ export default {
   props: {
     grade: { type: Object, default: () => ({}) },
   },
-  data() {
-    return {
-      parsed: parseProfile(this.grade.profile),
+  computed: {
+    parsed() {
+      return parseProfile(this.grade.profile);
     }
   },
   methods: {

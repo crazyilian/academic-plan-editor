@@ -10,6 +10,7 @@
           rows="1"
           style="width: 100%;"
           class="edit-name-area"
+          :placeholder="value"
           :disabled="!editing"
           @keydown.enter="nameChange(true); buttonPress = true;"
           @keydown.esc="nameChange(false); buttonPress = true;"

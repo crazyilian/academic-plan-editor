@@ -59,7 +59,7 @@
 import Counter from "@/components/Counter";
 import Message from "@/components/Table/Message";
 import Vue from "vue";
-import { fillShape2, isEqual } from "@/gradeProcessing";
+import { fillShape2, isEqualProfile } from "@/gradeProcessing";
 import EditableText from "@/components/EditableText";
 
 export default {
@@ -97,7 +97,7 @@ export default {
       this.$emit('change-name', name);
     },
     isGoodProfile(grade) {
-      return isEqual(grade.profile, this.profile);
+      return isEqualProfile(grade.profile, this.profile);
     },
     counterChange(i, j, value) {
       Vue.set(this.plan[i], j, value)

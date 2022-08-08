@@ -55,9 +55,10 @@
             <div style="display: flex; align-items: center">
               <ProfileMenu
                   :grades="template.grades"
-                  @add-group="addGroup"
+                  @add-group="addGroup($event, true)"
               />
               <BarGradeGroups
+                  ref="barGradeGroups"
                   class="ml-1 mr-2"
                   :grade-groups="gradeGroups"
                   @remove-group="removeGroup"
@@ -124,7 +125,7 @@
           @set-correct="generalTableCorrect = $event"
           @highlight="setHighlight(...$event)"
           @remove-group="removeGroup"
-          @add-group="addGroup"
+          @add-group="addGroup($event, false)"
       />
     </v-navigation-drawer>
   </div>
@@ -140,7 +141,7 @@ import FormativeTable from "@/components/FormativeTable/FormativeTable";
 import EditableText from "@/components/EditableText";
 import HorizontalResizeBar from "@/components/HorizontalResizeBar";
 import ProfileMenu from "@/components/Grades/ProfileMenu";
-import { isEqual, getProfileFormativeCategory, fillShape2, getGroupProfile } from "@/gradeProcessing";
+import { isEqualProfile, getProfileFormativeCategory, fillShape2, getGroupProfile } from "@/gradeProcessing";
 
 export default {
   name: 'EditorContent',
@@ -189,7 +190,7 @@ export default {
     switchGeneralTable() {
       this.showGeneralTable = !this.showGeneralTable;
     },
-    addGroup(group) {
+    addGroup(group, main) {
       const profile = getGroupProfile(group);
       const n = this.gradeGroups.length;
       Vue.set(this.gradeGroups, n, group);
@@ -204,13 +205,20 @@ export default {
       this.formativePlan.categories.forEach((category) => category.subjects.forEach((subject) => {
         Vue.set(subject.plan, n, Array(group.length).fill(0));
       }))
-      if (!this.formativePlan.categories.some((category) => isEqual(category.profile, profile))) {
+      if (!this.formativePlan.categories.some((category) => isEqualProfile(category.profile, profile))) {
         const category = getProfileFormativeCategory(this.template.rulesFormative, group, this.gradeGroups);
         if (category !== undefined) {
           Vue.set(this.formativePlan.categories, this.formativePlan.categories.length, category);
         }
       }
       this.highlight = fillShape2(this.gradeGroups, () => false);
+      if (profile.length === 3) {
+        this.$nextTick(() => {
+          const barGradeGroups = main ? this.$refs.barGradeGroups : this.$refs.generalTable.$refs.barGradeGroups;
+          const newGroup = barGradeGroups.$refs.groups.slice(-1)[0];
+          newGroup.editGroupName();
+        })
+      }
     },
     removeGroup(i) {
       const profile = this.gradeGroups[i].slice(-1)[0].profile;
@@ -222,8 +230,8 @@ export default {
       this.formativePlan.categories.forEach((category) => category.subjects.forEach((subject) => {
         Vue.delete(subject.plan, i);
       }))
-      if (!this.gradeGroups.some((group) => isEqual(group.slice(-1)[0].profile, profile))) {
-        const ind = this.formativePlan.categories.findIndex((category) => isEqual(category.profile, profile));
+      if (!this.gradeGroups.some((group) => isEqualProfile(getGroupProfile(group), profile))) {
+        const ind = this.formativePlan.categories.findIndex((category) => isEqualProfile(category.profile, profile));
         if (ind !== -1) {
           Vue.delete(this.formativePlan.categories, ind);
         }

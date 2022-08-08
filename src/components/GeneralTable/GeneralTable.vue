@@ -7,6 +7,7 @@
             @add-group="$emit('add-group', $event)"
         />
         <BarGradeGroups
+            ref="barGradeGroups"
             style="margin-right: 24px; min-height: 44px;"
             :grade-groups="gradeGroups"
             @remove-group="$emit('remove-group', $event)"
@@ -88,7 +89,7 @@
 import Section from "@/components/GeneralTable/Section";
 import BarGradeGroups from "@/components/Grades/BarGradeGroups";
 import Vue from "vue";
-import { fillShape2, planType, isEqual } from "@/gradeProcessing";
+import { fillShape2, planType, isEqualProfile } from "@/gradeProcessing";
 import HorizontalResizeBar from "@/components/HorizontalResizeBar";
 import ProfileMenu from "@/components/Grades/ProfileMenu";
 
@@ -151,7 +152,7 @@ export default {
     },
     advancedCountMin() {
       return fillShape2(this.gradeGroups, (i, j, group, grade) =>
-          this.curPlanType === '10-11' && !isEqual(grade.profile, this.grades[0].profile) ? 3 : 0
+          this.curPlanType === '10-11' && !isEqualProfile(grade.profile, this.grades[0].profile) ? 3 : 0
       )
     },
 

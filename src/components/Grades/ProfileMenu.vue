@@ -32,7 +32,7 @@ export default {
   },
   methods: {
     chooseProfile(profile) {
-      const group = getProfileGroup(this.grades, profile);
+      const group = getProfileGroup(this.grades, profile, true);
       this.$emit('add-group', group);
     }
   }

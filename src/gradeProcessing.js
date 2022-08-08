@@ -22,11 +22,14 @@ function getDefaultGroup(grades) {
   return group;
 }
 
-function getProfileGroup(grades, profile) {
+function getProfileGroup(grades, profile, update = false) {
   const default_group = getDefaultGroup(grades);
-  const prof_grades = [...grades.filter(g => isEqual(g.profile, profile)), ...default_group];
+  const prof_grades = [...grades.filter(g => isEqualProfile(g.profile, profile)), ...default_group];
   const group = default_group.map(grade => prof_grades.filter(g => g.name === grade.name)[0])
-  return structuredClone(group).map(grade => ({ ...grade, weeknum: null, id: useGlobalGradeId() }));
+  const res = structuredClone(group).map(grade => ({ ...grade, weeknum: null, id: useGlobalGradeId() }));
+  if (update)
+    return res.map(grade => ({...grade, profile: profile }));
+  return res;
 }
 
 
@@ -78,14 +81,13 @@ function getProfileMenu(grades) {
   }
   profiles = profiles.filter(p => p.length !== 2);
 
-  return menu;
-}
+  menu.push({ type: 'divider' }, {
+    type: 'value',
+    name: 'Свой профиль...',
+    data: [grades[0].profile[0], null, 'Название профиля']
+  })
 
-function addGroupToPlan(plan, ...groups) {
-  return groups.reduce((p, group) => p.map(c => c.map(s => [...s, group.map(() => ({
-    'value': 0,
-    'advanced': false
-  }))])), plan);
+  return menu;
 }
 
 function fillShape2(gradeGroups, mp) {
@@ -141,11 +143,24 @@ function getGroupProfile(group) {
 }
 
 function parseProfile(profile) {
+  if (profile.length === 3) {  // custom profile
+    return {
+      first: profile[2],
+      last: profile[2],
+      pretty: profile[2]
+    };
+  }
   return {
     first: profile[0],
-    last: profile[1].filter(s => s).slice(-1)[0],
+    last: profile.filter(s => s).slice(-1)[0],
     pretty: profile.filter(s => s).join(': ')
   }
+}
+
+function isEqualProfile(p1_, p2_) {
+  const p1 = p1_.length === 3 ? [p1_[0]] : p1_;
+  const p2 = p2_.length === 3 ? [p2_[0]] : p2_;
+  return isEqual(p1, p2);
 }
 
 export {
@@ -153,7 +168,6 @@ export {
   getDefaultGroup,
   getProfileGroup,
   getProfileMenu,
-  addGroupToPlan,
   fillShape2,
   unique,
   isEqual,
@@ -164,5 +178,6 @@ export {
   getFormativeSubjectName,
   planType,
   getGroupProfile,
-  parseProfile
+  parseProfile,
+  isEqualProfile
 }

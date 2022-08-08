@@ -12,6 +12,7 @@ export default new Vuetify({
       light: {
         teal: "#25a825",
         create: "#51bb19",
+        createLight: "#8cd566",
         error: "#ff5252",
         errorSecondary: "#cc6e6e",
         errorLight: "#ff9f9f",

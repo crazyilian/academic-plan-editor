@@ -6,6 +6,7 @@
         style="display: flex"
     >
       <Group
+          ref="groups"
           :last="i === gradeGroups.length - 1"
           :group="group"
           class="pb-1"
