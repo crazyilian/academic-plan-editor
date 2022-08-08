@@ -50,6 +50,9 @@ export default {
     },
   },
   methods: {
+    correct() {
+      return this.$refs.categories.every(c => c.correct);
+    },
     modelChange(newPanels) {
       if (!this.changeShapeFlag) {
         this.panels = newPanels;

@@ -43,15 +43,30 @@ export default {
     }
   },
   mounted() {
-    window.ipcRenderer.handle.exportProject((event, options) => {
+    window.ipcRenderer.handle.exportProject(async (event, options) => {
       if (this.project === undefined) {
-        window.ipcRenderer.messageBox({
+        await window.ipcRenderer.messageBox({
           'type': 'warning',
           'title': 'Сохранение...',
           'message': 'Вы не выбрали проект для сохранения',
           'detail': 'Чтобы сохранить, откройте существующий или создайте новый проект'
         });
         return;
+      }
+      if (!this.correct()) {
+        const buttonId = await window.ipcRenderer.messageBox({
+          'type': 'question',
+          'title': 'Сохранение...',
+          'message': 'Один из учебных планов не соответсвует критериям. Всё равно сохранить проект?',
+          'detail': 'Несоответствия критериям выделены красным с объяснением ошибки.',
+          'buttons': ['Да', 'Нет'],
+          'cancelId': 1,
+          'defaultId': 0,
+          'noLink': true,
+        });
+        const save = [true, false][buttonId];
+        if (!save)
+          return;
       }
       window.ipcRenderer.exportProject({
         type: options.type,
@@ -60,6 +75,9 @@ export default {
     });
   },
   methods: {
+    correct() {
+      return this.$refs.editorContent.every(e => e.correct());
+    },
     closeTab(i) {
       Vue.delete(this.project.tabs, i);
       if (this.activeTab > 0 && this.activeTab >= this.project.tabs.length) {

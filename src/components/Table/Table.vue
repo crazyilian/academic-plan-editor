@@ -37,6 +37,9 @@ export default {
     }
   },
   methods: {
+    correct() {
+      return this.$refs.categories.every(c => c.correct);
+    },
     validate(i, j) {
       const rules = this.rules.filter((r) =>
           r.subjects.some((s) => s[0] === i && s[1] === j)

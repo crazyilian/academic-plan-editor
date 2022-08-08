@@ -180,6 +180,9 @@ export default {
     this.generalTableReady = true;  // this fixes rendering issues with content of navigation drawer
   },
   methods: {
+    correct() {
+      return this.generalTableCorrect && this.$refs.table.correct() && this.$refs.formativeTable.correct();
+    },
     editFullname() {
       this.editingFullname = true;
     },
