@@ -55,28 +55,12 @@ function create_xlsx(alldata, callback) {
   })
   const scenter = wb.createStyle({ alignment: { horizontal: 'center' } });
   const sbold = wb.createStyle({ font: { bold: true } });
+  const sfont11 = wb.createStyle({ font: { size: 11 } });
   const srot90 = wb.createStyle({ alignment: { textRotation: 90 } })
-  const sgray = wb.createStyle({
-    fill: {
-      fgColor: "#CCCCCC",
-      type: 'pattern',
-      patternType: 'solid'
-    }
-  });
-  const srequired = wb.createStyle({
-    fill: {
-      fgColor: "#c6e0b4",
-      type: 'pattern',
-      patternType: 'solid'
-    }
-  });
-  const sadvanced = wb.createStyle({
-    fill: {
-      fgColor: "#79dcff",
-      type: 'pattern',
-      patternType: 'solid'
-    }
-  });
+  const createBgStyle = (col) => wb.createStyle({ fill: { fgColor: col, type: 'pattern', patternType: 'solid' } });
+  const sgray = createBgStyle('#CCCCCC');
+  const srequired = createBgStyle('#c6e0b4')
+  const sadvanced = createBgStyle('#79dcff');
   if (alldata.length === 0) {
     wb.addWorksheet();
   }
@@ -93,10 +77,11 @@ function create_xlsx(alldata, callback) {
     ws.column(1).setWidth(28);
     ws.column(2).setWidth(56);
     ws.column(3 + gn).setWidth(16);
+    ws.row(1).setHeight(24);
     ws.row(2).setHeight(34);
     ws.row(3).setHeight(80);
     ws.row(4).setHeight(75);
-    ws.cell(1, 1, 1, 3 + gn, true).string(data.template.config.title).style(scenter);
+    ws.cell(1, 1, 1, 3 + gn, true).string(data.template.config.title).style(scenter).style(sfont11);
     ws.cell(2, 1, 5, 1, true).string('Предметные области').style(scenter);
     ws.cell(2, 2, 5, 2, true).string('Учебные предметы, курсы').style(scenter);
     if (gn > 0)
