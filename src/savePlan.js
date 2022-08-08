@@ -27,7 +27,7 @@ function formulaLine(ws, gn, cl, label, f, labelCallback = () => {}) {
 }
 
 function flatten2(arr) {
-  return arr.reduce((r, el) => [...r, ...el]);
+  return arr.reduce((r, el) => [...r, ...el], []);
 }
 
 function create_xlsx(alldata, callback) {
@@ -93,7 +93,8 @@ function create_xlsx(alldata, callback) {
     ws.cell(1, 1, 1, 3 + gn, true).string(data.template.config.title).style(scenter);
     ws.cell(2, 1, 5, 1, true).string('Предметные области').style(scenter);
     ws.cell(2, 2, 5, 2, true).string('Учебные предметы, курсы').style(scenter);
-    ws.cell(2, 3, 2, 2 + gn, true).string('Количество часов в неделю').style(scenter);
+    if (gn > 0)
+      ws.cell(2, 3, 2, 2 + gn, true).string('Количество часов в неделю').style(scenter);
     ws.cell(2, 3 + gn, 5, 3 + gn, true).string('Формы промежуточной аттестации').style(scenter);
     for (const [i, grade] of gradeGroups.entries()) {
       ws.column(3 + i).setWidth(6);
@@ -217,7 +218,8 @@ function create_xlsx(alldata, callback) {
       c.formula(`${cell(cl - 3, i + 3)} * ${cell(cl - 1, i + 3)}`).style(scenter);
     })
     ws.cell(cl, 1, cl, 2, true).string("Итого на уровень образования");
-    ws.cell(cl, 3, cl, 2 + gn, true).formula(`SUM(${range(cl - 1, 3, cl - 1, 2 + gn)})`).style(scenter);
+    if (gn > 0)
+      ws.cell(cl, 3, cl, 2 + gn, true).formula(`SUM(${range(cl - 1, 3, cl - 1, 2 + gn)})`).style(scenter);
     cl += 1;
 
     ws.cell(6, 3 + gn, cl - 1, 3 + gn, true).string(data.template.config.attestation)
