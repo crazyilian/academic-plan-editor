@@ -132,7 +132,7 @@ export default {
         'type': 'question',
         'title': 'Удаление...',
         'message': 'Вы уверены, что хотите удалить проект из этого списка?',
-        'detail': proj.valid ? 'Файл проекта не удалится.' : 'Проекта уже не существует.',
+        'detail': proj.valid ? `Файл проекта "${proj.path}" не удалится.` : `Файл проекта "${proj.path}" не найден.`,
         'buttons': ['Да', 'Нет'],
         'cancelId': 1,
         'defaultId': 0,
