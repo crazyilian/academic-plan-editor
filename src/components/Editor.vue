@@ -18,8 +18,25 @@
       >
         <EditorContent ref="editorContent" v-bind="d"/>
       </div>
+
+      <div
+          :class="{'display-none': project.tabs.length > 0}"
+          style="display: flex; justify-content: center; align-items: flex-start; width: 100%; height: 100%;"
+      >
+        <div style="width: 50%" class="elevation-5 pa-3 mt-3 rounded">
+          <p>Здесть будет отображаться редактор учебного плана.</p>
+          <p>
+            Чтобы создать учебный план, нажмите на кнопку "Создать УП" в левом меню, а затем выберите нужный уровень
+            образования.
+          </p>
+          <p>
+            Чтобы сохранить план как таблицу xlsx, нажмите на кнопку "Проект" в левом верхнем углу, а затем выберите
+            поле "Сохранить как".
+          </p>
+</div>
     </div>
   </div>
+</div>
 </template>
 
 <script>
@@ -76,7 +93,7 @@ export default {
   },
   methods: {
     correct() {
-      return this.$refs.editorContent.every(e => e.correct());
+      return this.$refs.editorContent === undefined || this.$refs.editorContent.every(e => e.correct());
     },
     closeTab(i) {
       Vue.delete(this.project.tabs, i);
