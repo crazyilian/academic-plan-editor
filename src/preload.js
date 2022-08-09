@@ -5,6 +5,7 @@ import { contextBridge, ipcRenderer } from 'electron'
 // Expose ipcRenderer to the client
 contextBridge.exposeInMainWorld('ipcRenderer', {
   isDevelopment: (options) => ipcRenderer.invoke('is-development', options),
+  appVersion: (options) => ipcRenderer.invoke('app-version', options),
 
   messageBox: (options) => ipcRenderer.invoke('message-box', options),
 

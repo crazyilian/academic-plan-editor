@@ -1,6 +1,9 @@
 <template>
   <div style="display: flex; flex-direction: column; align-items: center; width: 100%">
-    <h2 class="mb-16 mt-10">Редактор учебных планов</h2>
+    <div class="mb-16 mt-10" style="display: flex; flex-direction: column; align-items: center">
+      <h2>Редактор учебных планов</h2>
+      <h5>v{{ appVersion }}</h5>
+    </div>
     <div style="display: flex; justify-content: center; gap: min(50px, 5%); width: 100%">
       <v-card class="start-page-card">
         <div class="start-page-content">
@@ -83,10 +86,12 @@ export default {
       createLoading: false,
       projectList: [],
       projectListModel: undefined,
-      notificationModel: false
+      notificationModel: false,
+      appVersion: ''
     }
   },
   mounted() {
+    window.ipcRenderer.appVersion().then((r) => this.appVersion = r)
     this.updateProjectList();
   },
   methods: {

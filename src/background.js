@@ -42,15 +42,14 @@ ipcMain.handle('get-cur-project', () => {
   }
   return applyProject(projectPath);
 });
-
 ipcMain.handle('get-templates', () => {
   const filename = fs.readdirSync(extraResources).find(file => path.parse(file).ext === '.xlsx');
   const filepath = path.join(extraResources, filename);
   return parseTable(filepath);
 })
-
-
 ipcMain.handle('get-project-list', () => getProjectList());
+ipcMain.handle('is-development', () => isDevelopment);
+ipcMain.handle('app-version', () => app.getVersion());
 
 function createMenu(win) {
   const exportFileTypes = ['xlsx', 'planeditor'];
@@ -270,7 +269,6 @@ function showApp(win) {
 }
 
 async function createWindow() {
-  ipcMain.handle('is-development', () => isDevelopment);
   // Create the browser window.
   const win = new BrowserWindow({
     width: screen.width,
