@@ -34,7 +34,7 @@ function gradesFormat(grades) {
 function gradesOfProfile(grades, isprofile = true) {
   if (!isprofile)
     return gradesFormat(grades);
-  const profile = grades.slice(-1)[0].profile.filter(s => s).join(': ');
+  const profile = parseProfile(getGroupProfile(grades)).pretty;
   return gradesFormat(grades) + ` профиля "${profile}"`;
 }
 

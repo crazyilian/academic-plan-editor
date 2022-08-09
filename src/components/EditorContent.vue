@@ -141,7 +141,14 @@ import FormativeTable from "@/components/FormativeTable/FormativeTable";
 import EditableText from "@/components/EditableText";
 import HorizontalResizeBar from "@/components/HorizontalResizeBar";
 import ProfileMenu from "@/components/Grades/ProfileMenu";
-import { isEqualProfile, getProfileFormativeCategory, fillShape2, getGroupProfile } from "@/gradeProcessing";
+import {
+  isEqualProfile,
+  getProfileFormativeCategory,
+  fillShape2,
+  getGroupProfile,
+  getObligatoryDefaultValues,
+  getFormativeDefaultValues
+} from "@/gradeProcessing";
 
 export default {
   name: 'EditorContent',
@@ -196,17 +203,19 @@ export default {
     addGroup(group, main) {
       const profile = getGroupProfile(group);
       const n = this.gradeGroups.length;
+
       Vue.set(this.gradeGroups, n, group);
+
       this.obligatoryPlan.forEach((category, i) => category.forEach((subject, j) => {
-        const planSubj = this.template.categories[i].subjects[j];
-        Vue.set(subject, n, Array(group.length).fill(null).map(() => ({
-          value: planSubj.required ? 1 : 0,
-          advanced: false
-        })))
-      }))
+        Vue.set(subject, n,
+            getObligatoryDefaultValues([i, j], group, this.template.rulesObligatory, this.template.categories));
+      }));
+
       Vue.set(this.formativePlan.hours, n, Array(group.length).fill(0));
+
       this.formativePlan.categories.forEach((category) => category.subjects.forEach((subject) => {
-        Vue.set(subject.plan, n, Array(group.length).fill(0));
+        Vue.set(subject.plan, n,
+            getFormativeDefaultValues(subject.name, group, this.template.rulesFormative));
       }))
       if (!this.formativePlan.categories.some((category) => isEqualProfile(category.profile, profile))) {
         const category = getProfileFormativeCategory(this.template.rulesFormative, group, this.gradeGroups);
@@ -214,6 +223,7 @@ export default {
           Vue.set(this.formativePlan.categories, this.formativePlan.categories.length, category);
         }
       }
+
       this.highlight = fillShape2(this.gradeGroups, () => false);
       if (profile.length === 3) {
         this.$nextTick(() => {
@@ -224,7 +234,7 @@ export default {
       }
     },
     removeGroup(i) {
-      const profile = this.gradeGroups[i].slice(-1)[0].profile;
+      const profile = getGroupProfile(this.gradeGroups[i]);
       Vue.delete(this.gradeGroups, i);
       this.obligatoryPlan.forEach((category) => category.forEach((subject) => {
         Vue.delete(subject, i)

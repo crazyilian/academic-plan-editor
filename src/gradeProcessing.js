@@ -28,7 +28,7 @@ function getProfileGroup(grades, profile, update = false) {
   const group = default_group.map(grade => prof_grades.filter(g => g.name === grade.name)[0])
   const res = structuredClone(group).map(grade => ({ ...grade, weeknum: null, id: useGlobalGradeId() }));
   if (update)
-    return res.map(grade => ({...grade, profile: profile }));
+    return res.map(grade => ({ ...grade, profile: profile }));
   return res;
 }
 
@@ -106,20 +106,20 @@ function useGlobalGradeId() {
   return gradeId += 1;
 }
 
-function getProfileFormativeCategory(rules_, group, gradeGroups) {
-  const profile = group.slice(-1)[0].profile;
-  const rules = rules_.filter(rule => group.some(grade => rule.grades.includes(grade.index)));
+function getProfileFormativeCategory(rulesFormative, group, gradeGroups) {
+  const profile = getGroupProfile(group);
+  const rules = rulesFormative.filter(rule => group.some(grade => rule.grades.includes(grade.index)));
   const subjects = rules.reduce((s, r) => [...s, ...r.subjects], []).filter(unique);
   if (subjects.length === 0) {
     return undefined;
   }
   const category = {
-    name: `Особенности профиля "${profile.filter(s => s).join(': ')}"`,
-    profile: structuredClone(profile),
+    name: `Особенности профиля "${parseProfile(profile).pretty}"`,
+    profile: profile.slice(),
     subjects: subjects.map(s => ({
       name: s,
       newName: s,
-      plan: fillShape2(gradeGroups, () => 0)
+      plan: gradeGroups.map(group => getFormativeDefaultValues(s, group, rules))
     }))
   };
   return category;
@@ -138,8 +138,11 @@ function planType(grade) {
   return '10-11';
 }
 
-function getGroupProfile(group) {
-  return group.slice(-1)[0].profile;
+function getGroupProfile(group, convertCustom = false) {
+  const profile = group.slice(-1)[0].profile;
+  if (convertCustom && profile.length === 3)
+    return [profile[0]];
+  return profile;
 }
 
 function parseProfile(profile) {
@@ -163,6 +166,43 @@ function isEqualProfile(p1_, p2_) {
   return isEqual(p1, p2);
 }
 
+function getObligatoryDefaultValues(subjectCoor, group, rulesObligatory, templateCategories) {
+  const gradeInds = group.map(g => g.index);
+  const rulesGroup = rulesObligatory.filter((r) =>
+      isEqual(r.subjects, [subjectCoor]) && r.grades.length === 1 && gradeInds.includes(r.grades[0])
+  );
+  return group.map((grade) => {
+    const rules = rulesGroup.filter((r) => r.grades[0] === grade.index);
+    let value = 0;
+    let advanced = false;
+    if (templateCategories[subjectCoor[0]].subjects[subjectCoor[1]].required)
+      value = 1;
+    rules.forEach((rule) => {
+      if (rule.min !== undefined)
+        value = Math.max(value, rule.min);
+      if (rule.advanced !== undefined)
+        advanced ||= rule.advanced;
+    });
+    return { value: value, advanced: advanced };
+  });
+}
+
+function getFormativeDefaultValues(subjectName, group, rulesFormative) {
+  const gradeInds = group.map(g => g.index);
+  const rulesGroup = rulesFormative.filter((r) =>
+      isEqual(r.subjects, [subjectName]) && r.grades.length === 1 && gradeInds.includes(r.grades[0])
+  );
+  return group.map((grade) => {
+    const rules = rulesGroup.filter((r) => r.grades[0] === grade.index);
+    let value = 0;
+    rules.forEach((rule) => {
+      if (rule.min !== undefined)
+        value = Math.max(value, rule.min);
+    });
+    return value;
+  });
+}
+
 export {
   allNumbers,
   getDefaultGroup,
@@ -179,5 +219,7 @@ export {
   planType,
   getGroupProfile,
   parseProfile,
-  isEqualProfile
+  isEqualProfile,
+  getObligatoryDefaultValues,
+  getFormativeDefaultValues
 }
