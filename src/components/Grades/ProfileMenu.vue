@@ -1,6 +1,6 @@
 <template>
   <Menu v-model="model" :data="data" @choose="chooseProfile">
-    <v-btn icon color="teal" style="margin-top: 8px">
+    <v-btn icon color="teal" style="margin-top: 15px">
       <v-icon size="30">mdi-plus</v-icon>
     </v-btn>
   </Menu>
