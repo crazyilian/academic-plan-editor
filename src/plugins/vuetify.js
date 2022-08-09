@@ -12,6 +12,7 @@ export default new Vuetify({
       light: {
         teal: "#25a825",
         create: "#51bb19",
+        createDark: "#216700",
         createLight: "#8cd566",
         error: "#ff5252",
         errorSecondary: "#cc6e6e",
@@ -19,7 +20,6 @@ export default new Vuetify({
         edit: "#deca35",
         editSecondary: "#c1b459",
         accent: "#525252",
-
       },
     },
   },

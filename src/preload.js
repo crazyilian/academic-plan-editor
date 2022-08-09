@@ -11,6 +11,9 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
   getCurrentProject: (options) => ipcRenderer.invoke('get-cur-project', options),
   getTemplates: (options) => ipcRenderer.invoke('get-templates', options),
 
+  getProjectList: (options) => ipcRenderer.invoke('get-project-list', options),
+  removeFromProjectList: (options) => ipcRenderer.invoke('remove-project-list', options),
+
   openProject: (options) => ipcRenderer.invoke('open-project', options),
   createProject: (options) => ipcRenderer.invoke('create-project', options),
   exportProject: (options) => ipcRenderer.send('export-project', options),

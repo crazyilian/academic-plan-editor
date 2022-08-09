@@ -9,7 +9,7 @@
             :templates="templates"
             :project="project"
         />
-        <OpenProject v-else/>
+        <StartPage v-else/>
       </v-container>
       <div
           v-else
@@ -30,14 +30,14 @@
 
 <script>
 import Editor from "@/components/Editor";
-import OpenProject from "@/components/OpenProject";
+import StartPage from "@/components/StartPage";
 import { setGlobalGradeId, getGlobalGradeId } from "@/gradeProcessing";
 
 export default {
   name: 'App',
 
   components: {
-    OpenProject,
+    StartPage,
     Editor,
   },
 

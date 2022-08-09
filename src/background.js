@@ -49,6 +49,9 @@ ipcMain.handle('get-templates', () => {
   return parseTable(filepath);
 })
 
+
+ipcMain.handle('get-project-list', () => getProjectList());
+
 function createMenu(win) {
   const exportFileTypes = ['xlsx', 'planeditor'];
   const template = [
@@ -99,7 +102,7 @@ function applyProject(projectPath, project) {
   }
   if (!fs.existsSync(projectPath)) {
     dialog.showMessageBoxSync(mainWindow, {
-      message: `Невозможно открыть проект ${path.parse(projectPath).base}`,
+      message: `Невозможно открыть проект "${path.parse(projectPath).name}"`,
       detail: `Проекта ${projectPath} больше не существует`,
       title: 'Ошибка',
       type: 'error',
@@ -110,10 +113,45 @@ function applyProject(projectPath, project) {
   }
   setTitlePath(projectPath);
   store.set('lastProjectPath', projectPath);
+  addPathToProjectList(projectPath);
   if (project === undefined) {
     project = fs.readJSONSync(projectPath);
   }
   return project;
+}
+
+function getProjectList() {
+  const paths = store.get('projectList') || [];
+  paths.forEach(ppath => {
+    ppath.valid = fs.existsSync(ppath.path);
+    ppath.name = path.parse(ppath.path).name;
+  });
+  paths.sort((a, b) => b.date - a.date);
+  return paths;
+}
+
+function addPathToProjectList(ppath, save = true) {
+  if (ppath === undefined)
+    return;
+  const paths = removePathFromProjectList(ppath, false);
+  paths.push({
+    path: ppath,
+    date: (new Date()).getTime()
+  });
+  if (save)
+    store.set('projectList', paths);
+  return paths;
+}
+
+function removePathFromProjectList(ppath, save = true) {
+  const paths = store.get('projectList') || [];
+  const oldi = paths.findIndex((p) => p.path === ppath);
+  if (oldi !== -1)
+    paths.splice(oldi, 1)
+  if (save)
+    store.set('projectList', paths);
+
+  return paths;
 }
 
 function saveProject(project, filepath) {
@@ -126,16 +164,22 @@ function saveProject(project, filepath) {
   fs.outputJsonSync(filepath, project)
 }
 
-function openProject(win) {
-  const ppaths = dialog.showOpenDialogSync(win, {
-    defaultPath: store.get('lastProjectPath'),
-    filters: [extensionFilters['planeditor']],
-    properties: ['openFile']
-  });
-  if (ppaths === undefined) {
+function openProject(win, ppath) {
+  if (ppath === undefined) {
+    const ppaths = dialog.showOpenDialogSync(win, {
+      defaultPath: store.get('lastProjectPath'),
+      filters: [extensionFilters['planeditor']],
+      properties: ['openFile']
+    });
+    if (ppaths === undefined) {
+      return false;
+    }
+    ppath = ppaths[0];
+  }
+  const project = applyProject(ppath);
+  if (project === undefined) {
     return false;
   }
-  const project = applyProject(ppaths[0]);
   win.webContents.send('open-project', project);
   return true;
 }
@@ -214,8 +258,11 @@ function createIpcListeners(win) {
   ipcMain.on('save-project', (event, options) => {
     saveProject(options);
   });
-  ipcMain.handle('open-project', () => openProject(win));
+  ipcMain.handle('open-project', (event, ppath) => openProject(win, ppath));
   ipcMain.handle('create-project', () => createProject(win));
+
+  ipcMain.handle('remove-project-list', (event, ppath) => removePathFromProjectList(ppath))
+
 }
 
 function showApp(win) {
