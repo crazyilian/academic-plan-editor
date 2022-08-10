@@ -52,10 +52,14 @@ ipcMain.handle('is-development', () => isDevelopment);
 ipcMain.handle('app-version', () => app.getVersion());
 
 function createMenu(win) {
+  if (win === undefined)
+    return;
+  const projectOpened = store.get('lastProjectPath') !== undefined;
   const exportFileTypes = ['xlsx', 'planeditor'];
   const template = [
     {
-      label: 'Проект', submenu: [
+      label: 'Проект',
+      submenu: [
         {
           label: 'Открыть',
           click: () => openProject(win),
@@ -64,26 +68,28 @@ function createMenu(win) {
           label: 'Создать',
           click: () => createProject(win),
         },
-        { type: 'separator' },
-        {
-          label: 'Сохранить',
-          click: () => { win.webContents.send('save-project'); }
-        },
-        {
-          label: 'Сохранить как',
-          submenu: exportFileTypes.map(type => ({
-            label: `Сохранить как .${type}`,
-            click: () => { win.webContents.send('export-project', { all: true, type })}
-          })),
-        },
-        { type: 'separator' },
-        {
-          label: 'Закрыть',
-          click: () => closeProject(win),
-        }
+        ...(projectOpened ? [
+          { type: 'separator' },
+          {
+            label: 'Сохранить',
+            click: () => { win.webContents.send('save-project'); }
+          },
+          {
+            label: 'Сохранить как',
+            submenu: exportFileTypes.map(type => ({
+              label: `Сохранить как .${type}`,
+              click: () => { win.webContents.send('export-project', { all: true, type })}
+            })),
+          },
+          { type: 'separator' },
+          {
+            label: 'Закрыть',
+            click: () => closeProject(win),
+          }
+        ] : []),
       ]
     },
-    ...(isDevelopment ? [{ role: 'toggleDevTools' },] : [])
+    ...(isDevelopment ? [{ role: 'toggleDevTools' }] : [])
   ]
   const menu = Menu.buildFromTemplate(template)
   Menu.setApplicationMenu(menu)
@@ -97,6 +103,7 @@ function applyProject(projectPath, project) {
   if (projectPath === undefined) {
     store.delete('lastProjectPath');
     setTitlePath(undefined);
+    createMenu(mainWindow);
     return undefined;
   }
   if (!fs.existsSync(projectPath)) {
@@ -109,6 +116,7 @@ function applyProject(projectPath, project) {
       store.delete('lastProjectPath');
       setTitlePath(undefined);
     })
+    createMenu(mainWindow);
     return undefined;
   }
   setTitlePath(projectPath);
@@ -117,6 +125,7 @@ function applyProject(projectPath, project) {
   if (project === undefined) {
     project = fs.readJSONSync(projectPath);
   }
+  createMenu(mainWindow);
   return project;
 }
 
