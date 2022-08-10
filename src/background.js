@@ -8,6 +8,7 @@ import fs from "fs-extra"
 import savePlan from "@/savePlan"
 import Store from 'electron-store'
 import { parseTable } from "@/parseTable"
+import * as packagejson from '../package.json';
 
 const gotTheLock = app.requestSingleInstanceLock()
 
@@ -26,6 +27,13 @@ let mainWindow = undefined;
 const store = new Store({
   cwd: isDevelopment ? path.join(__dirname, '../savings') : app.getPath('userData')
 })
+const webPreferences = {
+  // Use pluginOptions.nodeIntegration, leave this alone
+  // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
+  nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
+  contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION,
+  preload: path.join(__dirname, 'preload.js'),
+}
 
 app.setName("Редактор учебных планов")
 
@@ -49,7 +57,14 @@ ipcMain.handle('get-templates', () => {
 })
 ipcMain.handle('get-project-list', () => getProjectList());
 ipcMain.handle('is-development', () => isDevelopment);
-ipcMain.handle('app-version', () => app.getVersion());
+ipcMain.handle('app-info', () => ({
+  version: app.getVersion(),
+  author: packagejson.author,
+  name: app.getName(),
+  copyrightYear: '2022' + (new Date().getFullYear() > 2022 ? '-' + new Date().getFullYear().toString() : ''),
+  description: packagejson.description,
+  arch: process.arch
+}));
 
 function createMenu(win) {
   if (win === undefined)
@@ -89,10 +104,19 @@ function createMenu(win) {
         ] : []),
       ]
     },
+    {
+      label: 'Помощь',
+      submenu: [
+        {
+          label: 'О программе',
+          click: () => createAboutWindow(win),
+        },
+      ]
+    },
     ...(isDevelopment ? [{ role: 'toggleDevTools' }] : [])
   ]
   const menu = Menu.buildFromTemplate(template)
-  Menu.setApplicationMenu(menu)
+  win.setMenu(menu);
 }
 
 function emptyProject() {
@@ -274,13 +298,9 @@ function createIpcListeners(win) {
 
 }
 
-function showApp(win) {
-  win.maximize();
-}
-
 function getUrl(url) {
   const base = process.env.WEBPACK_DEV_SERVER_URL || 'app://./index.html/';
-  return new URL(url, base).href;
+  return base + '#' + url;
 }
 
 async function createWindow() {
@@ -288,13 +308,7 @@ async function createWindow() {
   const win = new BrowserWindow({
     width: screen.width,
     height: screen.height,
-    webPreferences: {
-      // Use pluginOptions.nodeIntegration, leave this alone
-      // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
-      nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
-      contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION,
-      preload: path.join(__dirname, 'preload.js'),
-    },
+    webPreferences,
     autoHideMenuBar: false,
     show: false,
     title: app.getName(),
@@ -302,21 +316,40 @@ async function createWindow() {
   mainWindow = win;
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
-    await win.loadURL(getUrl(''))
+    await win.loadURL(getUrl('/'))
     if (!process.env.IS_TEST) win.webContents.openDevTools()
   } else {
     createProtocol('app')
     // Load the index.html when not in development
-    win.loadURL(getUrl(''))
+    win.loadURL(getUrl('/'))
   }
   createMenu(win);
   createHandlers(win);
   createIpcListeners(win);
   if (isDevelopment) {
-    showApp(win);
+    win.maximize();
   } else {
-    win.once('ready-to-show', () => showApp(win));
+    win.once('ready-to-show', () => win.maximize());
   }
+}
+
+function createAboutWindow(win) {
+  const child = new BrowserWindow({
+    parent: win,
+    modal: true,
+    show: false,
+    title: 'О программе',
+    width: 450,
+    height: 350,
+    resizable: true,
+    minimizable: false,
+    maximizable: false,
+    webPreferences,
+  });
+  child.setMenu(null);
+  child.loadURL(getUrl('/about'))
+  child.once('ready-to-show', () => child.show());
+  child.on('close', () => child.hide());
 }
 
 app.on('second-instance', () => {

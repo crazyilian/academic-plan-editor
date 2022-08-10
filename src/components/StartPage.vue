@@ -91,7 +91,7 @@ export default {
     }
   },
   mounted() {
-    window.ipcRenderer.appVersion().then((r) => this.appVersion = r)
+    window.ipcRenderer.appInfo().then((info) => this.appVersion = info.version)
     this.updateProjectList();
   },
   methods: {
