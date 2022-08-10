@@ -100,14 +100,15 @@ function applyProject(projectPath, project) {
     return undefined;
   }
   if (!fs.existsSync(projectPath)) {
-    dialog.showMessageBoxSync(mainWindow, {
+    dialog.showMessageBox(mainWindow, {
       message: `Невозможно открыть проект "${path.parse(projectPath).name}"`,
       detail: `Проекта ${projectPath} больше не существует`,
       title: 'Ошибка',
       type: 'error',
+    }).then(() => {
+      store.delete('lastProjectPath');
+      setTitlePath(undefined);
     })
-    store.delete('lastProjectPath');
-    setTitlePath(undefined);
     return undefined;
   }
   setTitlePath(projectPath);
@@ -300,7 +301,7 @@ async function createWindow() {
   if (isDevelopment) {
     showApp(win);
   } else {
-    showApp(win);
+    win.once('ready-to-show', () => showApp(win));
   }
 }
 
