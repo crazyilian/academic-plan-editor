@@ -42,7 +42,7 @@
                       </div>
                     </v-tooltip>
                     <div style="font-size: 0.7rem; display: flex; align-items: center;" class="text--secondary px-1">
-                      {{ new Date(proj.date).toLocaleDateString() }}
+                      {{ parseDate(proj.date) }}
                     </div>
                     <div @click.stop="removeProject(i)">
                       <v-hover v-slot="{ hover }">
@@ -95,6 +95,15 @@ export default {
     this.updateProjectList();
   },
   methods: {
+    parseDate(date) {
+      return new Date(date).toLocaleString('ru-RU', {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric'
+      });
+    },
     createProject() {
       this.createLoading = true;
       window.ipcRenderer.createProject().then((r) => this.createLoading = r);
