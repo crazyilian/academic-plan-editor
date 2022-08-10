@@ -278,6 +278,11 @@ function showApp(win) {
   win.maximize();
 }
 
+function getUrl(url) {
+  const base = process.env.WEBPACK_DEV_SERVER_URL || 'app://./index.html/';
+  return new URL(url, base).href;
+}
+
 async function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({
@@ -297,12 +302,12 @@ async function createWindow() {
   mainWindow = win;
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
-    await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
+    await win.loadURL(getUrl(''))
     if (!process.env.IS_TEST) win.webContents.openDevTools()
   } else {
     createProtocol('app')
     // Load the index.html when not in development
-    win.loadURL('app://./index.html')
+    win.loadURL(getUrl(''))
   }
   createMenu(win);
   createHandlers(win);
