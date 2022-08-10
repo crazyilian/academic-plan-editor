@@ -57,14 +57,22 @@ ipcMain.handle('get-templates', () => {
 })
 ipcMain.handle('get-project-list', () => getProjectList());
 ipcMain.handle('is-development', () => isDevelopment);
-ipcMain.handle('app-info', () => ({
-  version: app.getVersion(),
-  author: packagejson.author,
-  name: app.getName(),
-  copyrightYear: '2022' + (new Date().getFullYear() > 2022 ? '-' + new Date().getFullYear().toString() : ''),
-  description: packagejson.description,
-  arch: process.arch
-}));
+ipcMain.handle('app-info', () => {
+  const year = new Date().getFullYear();
+  let arch = process.arch;
+  if (arch === 'x64')
+    arch = '64-bit';
+  else if (arch === 'ia32')
+    arch = '32-bit';
+  return {
+    version: app.getVersion(),
+    author: packagejson.author,
+    name: app.getName(),
+    copyrightYear: '2022' + (year > 2022 ? `-${year}` : ''),
+    description: packagejson.description,
+    arch: arch
+  };
+});
 
 function createMenu(win) {
   if (win === undefined)
