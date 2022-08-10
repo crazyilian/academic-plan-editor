@@ -8,7 +8,7 @@
       <v-card class="start-page-card">
         <div class="start-page-content">
           <span class="start-page-card-title">Создать или открыть проект</span>
-          <v-list style="max-height: 300px; overflow-y: auto" class="show-scrollbar">
+          <v-list style="max-height: 420px; overflow-y: auto" class="show-scrollbar">
             <v-list-item-group
                 :value="projectListModel"
                 color="indigo"
@@ -24,7 +24,9 @@
                   <div style="display: flex">
                     <v-tooltip bottom :open-delay="500">
                       <template #activator="{ on, attrs} ">
-                        <span v-bind="attrs" class="start-page-proj-name" v-on="on">{{ proj.name }}</span>
+                        <div v-bind="attrs" class="start-page-proj-name" v-on="on">
+                          <span>{{ proj.name }}</span>
+                        </div>
                       </template>
                       <div class="pa-2" style="text-align: center; font-family: monospace">
                         {{ proj.path }}
@@ -161,8 +163,8 @@ export default {
 
 
 .start-page-card {
-  width: 30%;
-  min-width: 291px;
+  width: 35%;
+  min-width: 420px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -192,10 +194,16 @@ export default {
 
 .start-page-list-item-disabled {
   cursor: default !important;
+  background-color: #ff00000a;
 }
 
 .start-page-list-item-disabled .start-page-proj-name {
   color: rgba(0, 0, 0, 0.6);
+}
+
+.start-page-proj-name {
+  display: flex;
+  align-items: center;
 }
 
 .start-page-list-item-disabled:before {
