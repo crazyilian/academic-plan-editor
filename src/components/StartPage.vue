@@ -6,6 +6,7 @@
       <h5>v{{ appVersion }}</h5>
     </div>
     <div style="display: flex; flex-direction: column; align-items: center; width: 100%; min-height: 0; flex-grow: 1">
+      <div style="flex: 1 1 0; max-height: 50px"/>
       <v-card class="start-page-card">
           <span class="start-page-card-title">Создать или открыть проект</span>
           <v-list style="overflow-y: auto" class="show-scrollbar">
@@ -21,19 +22,19 @@
                   :class="{ 'start-page-list-item-disabled': !proj.valid }"
               >
                 <div style="display: flex; justify-content: space-between; width: 100%">
-                  <div style="display: flex">
-                    <v-tooltip bottom :open-delay="500">
-                      <template #activator="{ on, attrs} ">
-                        <div v-bind="attrs" class="start-page-proj-name" v-on="on">
+                  <v-tooltip bottom :open-delay="500">
+                    <template #activator="{ on, attrs} ">
+                      <div style="display: flex" v-bind="attrs" v-on="on">
+                        <div class="start-page-proj-name">
                           <span>{{ proj.name }}</span>
                         </div>
-                      </template>
-                      <div class="pa-2" style="text-align: center; font-family: monospace">
-                        {{ proj.path }}
+                        <v-icon class="pl-1 copy-icon" size="12" @click.stop="copyPath(i)">mdi-content-copy</v-icon>
                       </div>
-                    </v-tooltip>
-                    <v-icon class="pl-1 copy-icon" size="12" @click.stop="copyPath(i)">mdi-content-copy</v-icon>
-                  </div>
+                    </template>
+                    <div class="pa-2" style="text-align: center; font-family: monospace">
+                      {{ proj.path }}
+                    </div>
+                  </v-tooltip>
                   <div style="display: flex; align-items: stretch">
                     <v-tooltip v-if="!proj.valid" bottom :open-delay="500">
                       <template #activator="{ on, attrs} ">
@@ -170,7 +171,8 @@ export default {
   justify-content: space-between;
   padding: 16px;
   max-height: min(420px, 100%);
-  margin-top: 3%
+  min-height: 135px;
+  flex: 20 1 0;
 }
 
 .start-page-card-title {
