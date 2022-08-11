@@ -41,6 +41,10 @@ app.setName("Редактор учебных планов")
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }])
 
+function ipcMainOn(channel, callback) {
+  ipcMain.removeAllListeners(channel);
+  ipcMain.on(channel, callback)
+}
 
 ipcMain.handle('get-cur-project', () => {
   let projectPath = undefined;
@@ -264,7 +268,7 @@ function createHandlers(win) {
 }
 
 function createIpcListeners(win) {
-  ipcMain.on('export-project', (event, options) => {
+  ipcMainOn('export-project', (event, options) => {
     if (options.type === 'planeditor') {
       const ppath = dialog.showSaveDialogSync(win, {
         defaultPath: store.get('lastProjectPath') || 'Учебный план.planeditor',
@@ -297,7 +301,7 @@ function createIpcListeners(win) {
       });
     }
   });
-  ipcMain.on('save-project', (event, options) => {
+  ipcMainOn('save-project', (event, options) => {
     saveProject(options);
   });
   ipcMain.handle('open-project', (event, ppath) => openProject(win, ppath));

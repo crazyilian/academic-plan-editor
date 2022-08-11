@@ -2,6 +2,11 @@ import { contextBridge, ipcRenderer } from 'electron'
 
 // https://www.electronjs.org/docs/latest/tutorial/ipc
 
+function ipcRendererOn(channel, callback) {
+  ipcRenderer.removeAllListeners(channel);
+  ipcRenderer.on(channel, callback)
+}
+
 // Expose ipcRenderer to the client
 contextBridge.exposeInMainWorld('ipcRenderer', {
   isDevelopment: (options) => ipcRenderer.invoke('is-development', options),
@@ -21,9 +26,9 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
   saveProject: (options) => ipcRenderer.send('save-project', options),
 
   handle: {
-    showApp: (callback) => ipcRenderer.on('show-app', callback),
-    exportProject: (callback) => ipcRenderer.on('export-project', callback),
-    saveProject: (callback) => ipcRenderer.on('save-project', callback),
-    openProject: (callback) => ipcRenderer.on('open-project', callback),
+    showApp: (callback) => ipcRendererOn('show-app', callback),
+    exportProject: (callback) => ipcRendererOn('export-project', callback),
+    saveProject: (callback) => ipcRendererOn('save-project', callback),
+    openProject: (callback) => ipcRendererOn('open-project', callback),
   }
 });
