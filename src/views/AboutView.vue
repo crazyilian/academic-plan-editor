@@ -11,7 +11,7 @@
       </div>
     </div>
     <div style="display: flex; justify-content: flex-end" class="mt-2">
-      <v-btn ref="ok" class="ok-btn" color="indigo" dark @click="closeWindow">Ок</v-btn>
+      <v-btn ref="ok" class="ok-btn" color="indigo" dark @click="closeWindow" @keydown.esc="closeWindow">Ок</v-btn>
     </div>
   </div>
 </template>
@@ -28,7 +28,7 @@ export default {
   },
   mounted() {
     window.ipcRenderer.appInfo().then((info) => this.info = info)
-    this.$refs.ok.focus()
+    this.$refs.ok.$el.focus()
   },
   methods: {
     closeWindow() {
