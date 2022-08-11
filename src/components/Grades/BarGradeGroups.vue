@@ -1,6 +1,6 @@
 <template>
   <div style="height: 100%; display: flex; flex-direction: column">
-    <ScrollSync horizontal :class="{'show-scrollbar': showScrollbar}" group="grades" style="height: 8px">
+    <ScrollSync horizontal class="show-scrollbar" group="grades" style="height: 8px; overflow-x: auto">
       <div :style="{width: `${gradesNum * 48}px`}" style="height: 1px"/>
     </ScrollSync>
     <ScrollSync
@@ -36,11 +36,6 @@ export default {
   props: {
     gradeGroups: { type: Array, default: () => [] }
   },
-  data() {
-    return {
-      showScrollbar: false,
-    }
-  },
   computed: {
     gradesNum() {
       return this.gradeGroups.reduce((r, g) => r + g.length, 0);
@@ -49,16 +44,7 @@ export default {
   mounted() {
     this.resizeWindow();
   },
-  created() {
-    window.addEventListener("resize", this.resizeWindow);
-  },
-  destroyed() {
-    window.removeEventListener("resize", this.resizeWindow);
-  },
   methods: {
-    resizeWindow() {
-      this.showScrollbar = this.gradesNum * 48 > window.innerWidth * 0.45;
-    },
     removeGroup(i) {
       this.$emit('remove-group', i);
     },
