@@ -41,9 +41,6 @@ export default {
       return this.gradeGroups.reduce((r, g) => r + g.length, 0);
     }
   },
-  mounted() {
-    this.resizeWindow();
-  },
   methods: {
     removeGroup(i) {
       this.$emit('remove-group', i);
