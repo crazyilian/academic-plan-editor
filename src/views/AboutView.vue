@@ -23,7 +23,7 @@ export default {
   data() {
     return {
       info: {},
-      imageSource: require('@/assets/logo.png')
+      imageSource: require('@/assets/icon.png')
     }
   },
   mounted() {

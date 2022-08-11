@@ -34,6 +34,7 @@ const webPreferences = {
   contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION,
   preload: path.join(__dirname, 'preload.js'),
 }
+const icon = path.join(__dirname, '../src/assets/icon.png')
 
 app.setName("Редактор учебных планов")
 
@@ -317,6 +318,7 @@ async function createWindow() {
     width: screen.width,
     height: screen.height,
     webPreferences,
+    icon,
     autoHideMenuBar: false,
     show: false,
     title: app.getName(),
@@ -353,6 +355,7 @@ function createAboutWindow(win) {
     minimizable: false,
     maximizable: false,
     webPreferences,
+    icon
   });
   child.setMenu(null);
   child.loadURL(getUrl('/about'))

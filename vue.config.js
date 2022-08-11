@@ -11,7 +11,7 @@ module.exports = defineConfig({
         copyright: "Copyright © 2022 Ilian Andrianov",
         win: {
           target: "nsis",
-          // icon: 'public/favicon.ico'
+          icon: 'src/assets/icon.png'
         },
         nsis: {
           oneClick: false,
