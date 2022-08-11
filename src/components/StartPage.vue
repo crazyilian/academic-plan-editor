@@ -7,67 +7,69 @@
     </div>
     <div style="display: flex; flex-direction: column; align-items: center; width: 100%; min-height: 0; flex-grow: 1">
       <div style="flex: 1 1 0; max-height: 50px"/>
-      <v-card class="start-page-card">
-        <span class="start-page-card-title">Создать или открыть проект</span>
-        <v-list style="overflow-y: auto" class="show-scrollbar">
-          <v-list-item-group
-              :value="projectListModel"
-              color="indigo"
-              @change="changeModel"
-          >
-            <v-list-item
-                v-for="(proj, i) in projectList"
-                :key="i"
-                class="start-page-list-item"
-                :class="{ 'start-page-list-item-disabled': !proj.valid }"
+      <div style="flex: 20 1 0; min-height: 135px">
+        <v-card class="start-page-card">
+          <span class="start-page-card-title">Создать или открыть проект</span>
+          <v-list style="overflow-y: auto" class="show-scrollbar">
+            <v-list-item-group
+                :value="projectListModel"
+                color="indigo"
+                @change="changeModel"
             >
-              <div style="display: flex; justify-content: space-between; width: 100%">
-                <v-tooltip bottom :open-delay="500">
-                  <template #activator="{ on, attrs} ">
-                    <div style="display: flex" v-bind="attrs" v-on="on">
-                      <div class="start-page-proj-name">
-                        <span>{{ proj.name }}</span>
-                      </div>
-                      <v-icon class="pl-1 copy-icon" size="12" @click.stop="copyPath(i)">mdi-content-copy</v-icon>
-                    </div>
-                  </template>
-                  <div class="pa-2" style="text-align: center; font-family: monospace">
-                    {{ proj.path }}
-                  </div>
-                </v-tooltip>
-                <div style="display: flex; align-items: stretch">
-                  <v-tooltip v-if="!proj.valid" bottom :open-delay="500">
+              <v-list-item
+                  v-for="(proj, i) in projectList"
+                  :key="i"
+                  class="start-page-list-item"
+                  :class="{ 'start-page-list-item-disabled': !proj.valid }"
+              >
+                <div style="display: flex; justify-content: space-between; width: 100%">
+                  <v-tooltip bottom :open-delay="500">
                     <template #activator="{ on, attrs} ">
-                      <v-icon v-bind="attrs" color="error" v-on="on">mdi-alert</v-icon>
+                      <div style="display: flex" v-bind="attrs" v-on="on">
+                        <div class="start-page-proj-name">
+                          <span>{{ proj.name }}</span>
+                        </div>
+                        <v-icon class="pl-1 copy-icon" size="12" @click.stop="copyPath(i)">mdi-content-copy</v-icon>
+                      </div>
                     </template>
-                    <div class="pa-2" style="text-align: center; max-width: 200px; word-wrap: break-word;">
-                      Файл не найден
+                    <div class="pa-2" style="text-align: center; font-family: monospace">
+                      {{ proj.path }}
                     </div>
                   </v-tooltip>
-                  <div style="font-size: 0.7rem; display: flex; align-items: center;" class="text--secondary px-1">
-                    {{ parseDate(proj.date) }}
-                  </div>
-                  <div @click.stop="removeProject(i)">
-                    <v-hover v-slot="{ hover }">
-                      <v-icon v-if="hover" color="error">mdi-close-circle</v-icon>
-                      <v-icon v-else color="errorSecondary">mdi-close-circle-outline</v-icon>
-                    </v-hover>
+                  <div style="display: flex; align-items: stretch">
+                    <v-tooltip v-if="!proj.valid" bottom :open-delay="500">
+                      <template #activator="{ on, attrs} ">
+                        <v-icon v-bind="attrs" color="error" v-on="on">mdi-alert</v-icon>
+                      </template>
+                      <div class="pa-2" style="text-align: center; max-width: 200px; word-wrap: break-word;">
+                        Файл не найден
+                      </div>
+                    </v-tooltip>
+                    <div style="font-size: 0.7rem; display: flex; align-items: center;" class="text--secondary px-1">
+                      {{ parseDate(proj.date) }}
+                    </div>
+                    <div @click.stop="removeProject(i)">
+                      <v-hover v-slot="{ hover }">
+                        <v-icon v-if="hover" color="error">mdi-close-circle</v-icon>
+                        <v-icon v-else color="errorSecondary">mdi-close-circle-outline</v-icon>
+                      </v-hover>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </v-list-item>
-          </v-list-item-group>
-        </v-list>
-        <v-divider class="mb-3 mt-3"/>
-        <div style="display: flex; justify-content: flex-end; gap: 8px">
-          <v-btn :loading="createLoading" color="createDark" dark style="text-transform: none" @click="createProject">
-            Создать новый
-          </v-btn>
-          <v-btn :loading="openLoading" color="indigo" dark style="text-transform: none" @click="openProject">
-            Открыть
-          </v-btn>
-        </div>
-      </v-card>
+              </v-list-item>
+            </v-list-item-group>
+          </v-list>
+          <v-divider class="mb-3 mt-3"/>
+          <div style="display: flex; justify-content: flex-end; gap: 8px">
+            <v-btn :loading="createLoading" color="createDark" dark style="text-transform: none" @click="createProject">
+              Создать новый
+            </v-btn>
+            <v-btn :loading="openLoading" color="indigo" dark style="text-transform: none" @click="openProject">
+              Открыть
+            </v-btn>
+          </div>
+        </v-card>
+      </div>
     </div>
     <v-snackbar
         v-model="notificationModel"
@@ -171,8 +173,6 @@ export default {
   justify-content: space-between;
   padding: 16px;
   max-height: min(420px, 100%);
-  min-height: 135px;
-  flex: 20 1 0;
 }
 
 .start-page-card-title {
