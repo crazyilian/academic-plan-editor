@@ -1,7 +1,7 @@
 <template>
   <div class="pa-4 show-scrollbar about-page-container">
     <div style="display: flex">
-      <img :src="imageSource" alt="logo" width="64" height="64" class="mr-4">
+      <img :src="iconSource" alt="logo" width="64" height="64" class="mr-4">
       <div style="display: flex; flex-direction: column; gap: 2px">
         <h3>Редактор учебных планов</h3>
         <span class="mt-2">{{ info.description }}</span>
@@ -23,7 +23,7 @@ export default {
   data() {
     return {
       info: {},
-      imageSource: require('@/assets/icon.png')
+      iconSource: require('@/assets/icon.png')
     }
   },
   mounted() {

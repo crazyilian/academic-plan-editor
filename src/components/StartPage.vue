@@ -1,14 +1,14 @@
 <template>
-  <div style="display: flex; flex-direction: column; align-items: center; width: 100%">
-    <div class="mb-16 mt-10" style="display: flex; flex-direction: column; align-items: center">
+  <div style="display: flex; flex-direction: column; align-items: center; width: 100%; height: 100%">
+    <div class="mb-6" style="display: flex; flex-direction: column; align-items: center">
+      <img :src="iconSource" alt="logo" width="80" height="80" class="mb-3">
       <h2>Редактор учебных планов</h2>
       <h5>v{{ appVersion }}</h5>
     </div>
-    <div style="display: flex; justify-content: center; gap: min(50px, 5%); width: 100%">
+    <div style="display: flex; flex-direction: column; align-items: center; width: 100%; min-height: 0; flex-grow: 1">
       <v-card class="start-page-card">
-        <div class="start-page-content">
           <span class="start-page-card-title">Создать или открыть проект</span>
-          <v-list style="max-height: 420px; overflow-y: auto" class="show-scrollbar">
+          <v-list style="overflow-y: auto" class="show-scrollbar">
             <v-list-item-group
                 :value="projectListModel"
                 color="indigo"
@@ -57,16 +57,15 @@
               </v-list-item>
             </v-list-item-group>
           </v-list>
-        </div>
-        <v-divider class="mb-3 mt-3"/>
-        <div style="display: flex; justify-content: flex-end; gap: 8px">
-          <v-btn :loading="createLoading" color="createDark" dark style="text-transform: none" @click="createProject">
-            Создать новый
-          </v-btn>
-          <v-btn :loading="openLoading" color="indigo" dark style="text-transform: none" @click="openProject">
-            Открыть
-          </v-btn>
-        </div>
+          <v-divider class="mb-3 mt-3"/>
+          <div style="display: flex; justify-content: flex-end; gap: 8px">
+            <v-btn :loading="createLoading" color="createDark" dark style="text-transform: none" @click="createProject">
+              Создать новый
+            </v-btn>
+            <v-btn :loading="openLoading" color="indigo" dark style="text-transform: none" @click="openProject">
+              Открыть
+            </v-btn>
+          </div>
       </v-card>
     </div>
     <v-snackbar
@@ -89,7 +88,8 @@ export default {
       projectList: [],
       projectListModel: undefined,
       notificationModel: false,
-      appVersion: ''
+      appVersion: '',
+      iconSource: require('@/assets/icon.png')
     }
   },
   mounted() {
@@ -169,18 +169,14 @@ export default {
   flex-direction: column;
   justify-content: space-between;
   padding: 16px;
-}
-
-.start-page-content {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  flex-grow: 1;
+  max-height: min(420px, 100%);
+  margin-top: 3%
 }
 
 .start-page-card-title {
   font-weight: 500;
   font-size: 1.1rem;
+  margin-bottom: 8px;
 }
 
 .start-page-list-item {
