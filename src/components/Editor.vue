@@ -65,7 +65,16 @@ export default {
           'type': 'warning',
           'title': 'Сохранение...',
           'message': 'Вы не выбрали проект для сохранения',
-          'detail': 'Чтобы сохранить, откройте существующий или создайте новый проект'
+          'detail': 'Чтобы сохранить, откройте существующий или создайте новый проект.'
+        });
+        return;
+      }
+      if (this.project.tabs.length === 0 && options.type === 'xlsx') {
+        await window.ipcRenderer.messageBox({
+          'type': 'warning',
+          'title': 'Сохранение...',
+          'message': 'Вы не создали ни одного учебного плана',
+          'detail': 'Чтобы сохранить проект как таблицу .xlsx, создайте хотя бы один учебный план.'
         });
         return;
       }
