@@ -17,7 +17,7 @@ module.exports = defineConfig({
           oneClick: false,
           allowToChangeInstallationDirectory: true,
           allowElevation: false,
-          artifactName: "Установщик - ${productName} ${version}.${ext}",
+          artifactName: "Установщик - ${productName} ${version} ${arch}.${ext}",
           perMachine: false,
         },
         extraResources: [
