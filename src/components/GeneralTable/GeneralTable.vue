@@ -133,8 +133,9 @@ export default {
       return this.gradeGroups.map((group) => group.map((grade) => grade.max_hours_per_week));
     },
     peryear() {
-      const a = this.perweek;
-      return a.map((r1, i) => r1.map((r2, j) => r2 * this.gradeGroups[i][j].weeknum))
+      const perweek = this.perweek;
+      const weeknum = this.weeknum;
+      return perweek.map((r1, i) => r1.map((r2, j) => r2 * weeknum[i][j]))
     },
     edu() {
       const a = this.peryear;
@@ -147,7 +148,7 @@ export default {
       return this.gradeGroups.map((group) => [this.config.hours_total_max, ...Array(group.length - 1).fill(0)]);
     },
     weeknum() {
-      return this.gradeGroups.map((group) => group.map((grade) => grade.weeknum));
+      return this.gradeGroups.map((group) => group.map((grade) => grade.weeknum || null));
     },
     advancedCount() {
       return this.obligatoryPlan.reduce((r, x) => r.concat(x)).reduce((r, v) => r.map((r1, i) => r1.map((r2, j) => r2 + v[i][j].advanced)), fillShape2(this.gradeGroups, () => 0));
