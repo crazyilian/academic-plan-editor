@@ -17,6 +17,7 @@ import fs from "fs-extra";
         name: 10,
         profile: ["Инженерный", "Космический"],
         max_hours_per_week: 34,
+        weeknum: 33,
         index: 0,
       },
       ...
@@ -166,7 +167,8 @@ function parseSheet(sh, name) {
       profile: [
         table[x - 1][y].val,
         ...(table[x - 2][y].val ? [table[x - 2][y].val.replace(/^-$/, '')] : [])
-      ]
+      ],
+      weeknum: null
     })
   }
   const [OB, FO, CO, BG] = splitTable([
@@ -232,6 +234,13 @@ function parseSheet(sh, name) {
         for (let y = 1; table[x][y].val !== ""; ++y) {
           template.grades.filter(g => g.name === parseInt(table[x][y].val)).forEach(g => {
             g.max_hours_per_week = parseInt(table[x + 1][y].val);
+          })
+        }
+        x += 2;
+      } else if (strEq(val, 'Количество учебных недель')) {
+        for (let y = 1; table[x][y].val !== ""; ++y) {
+          template.grades.filter(g => g.name === parseInt(table[x][y].val)).forEach(g => {
+            g.weeknum = parseInt(table[x + 1][y].val) || null;
           })
         }
         x += 2;
