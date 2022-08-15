@@ -37,7 +37,7 @@
                   dark
                   depressed
                   :outlined="pageNum === 0"
-                  @click="pageNum = 0"
+                  @click="setPageNum(0)"
               >
                 <span>Обязательная часть</span>
               </v-btn>
@@ -47,7 +47,7 @@
                   dark
                   depressed
                   :outlined="pageNum === 1"
-                  @click="pageNum = 1"
+                  @click="setPageNum(1)"
               >
                 <span>Формируемая часть</span>
               </v-btn>
@@ -266,6 +266,12 @@ export default {
         ['s0', 's1', 's2', 's3', 's4', 's6'].forEach((s) => this.$refs.generalTable.$refs[s].$refs.summaries.forEach((sum) => sum.$refs.counters[ij].highlight = flag))
         this.$refs.generalTable.$refs.s5.$refs.summaries.forEach((sum) => sum.$refs.counters[this.groupStart[i]].highlight = flag);
       }
+    },
+    setPageNum(i) {
+      this.pageNum = i;
+      setTimeout(() => {
+        this.$refs.formativeTable.$refs.categories.forEach((category) => category.$refs.subjects.forEach((subject) => subject.$refs.editableName.updateSize()));
+      }, 100)
     }
   }
 };

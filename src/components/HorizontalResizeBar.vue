@@ -6,7 +6,7 @@
           class="horizontal-resize-bar noselect"
           @mousedown="dragStart($event)"
       >
-        <span style="margin-top: -1.5px; transform: scaleX(15)">-</span>
+        <span style="margin-top: 0; transform: scaleX(7)">–</span>
         <span style="margin-top: -0.5px; transform: scaleX(10)">=</span>
       </div>
     </div>

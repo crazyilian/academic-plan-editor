@@ -20,6 +20,7 @@
               v-on="on"
           >
             <EditableText
+                ref="editableName"
                 :value="newName"
                 :editing="editing"
                 @change="changeName"

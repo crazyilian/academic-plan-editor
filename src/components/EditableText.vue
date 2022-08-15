@@ -48,6 +48,9 @@ export default {
   methods: {
     setVisibleVal(val) {
       this.editingValue = val;
+      this.updateSize();
+    },
+    updateSize() {
       this.$nextTick(() => {
         autosize.update(this.$refs.editField)
       })
