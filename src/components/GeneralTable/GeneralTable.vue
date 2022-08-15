@@ -128,6 +128,8 @@ export default {
       return a.map((r1, i) => r1.map((r2, j) => r2 + b[i][j]))
     },
     perweekmax() {
+      if (this.gradeGroups.every((group) => group.every((grade) => grade.max_hours_per_week === null)))
+        return undefined;
       return this.gradeGroups.map((group) => group.map((grade) => grade.max_hours_per_week));
     },
     peryear() {
@@ -166,7 +168,7 @@ export default {
     section2() {
       return [
         { name: 'Часов в неделю', values: this.perweek, edit: false },
-        { type: 'max', values: this.perweekmax }
+        ...(this.perweekmax !== undefined ? [{ type: 'max', values: this.perweekmax }] : [])
       ];
     },
     section3() {

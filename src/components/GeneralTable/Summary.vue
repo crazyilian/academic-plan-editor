@@ -82,13 +82,13 @@ export default {
         ];
         for (const [j, value] of valueGroup.entries()) {
           let bad = false;
-          if (value === null) {
+          if (value === null && this.edit) {
             bad = true;
             curMessages[0].gradeIds.push(j);
           } else if (this.mins !== undefined && value < this.mins[i][j]) {
             bad = true;
             curMessages[1].gradeIds.push(j);
-          } else if (this.maxs !== undefined && value > this.maxs[i][j]) {
+          } else if (this.maxs !== undefined && this.maxs[i][j] !== null && value > this.maxs[i][j]) {
             bad = true;
             curMessages[2].gradeIds.push(j);
           }

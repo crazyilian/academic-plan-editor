@@ -168,7 +168,8 @@ function parseSheet(sh, name) {
         table[x - 1][y].val,
         ...(table[x - 2][y].val ? [table[x - 2][y].val.replace(/^-$/, '')] : [])
       ],
-      weeknum: null
+      weeknum: null,
+      max_hours_per_week: null
     })
   }
   const [OB, FO, CO, BG] = splitTable([
@@ -233,7 +234,7 @@ function parseSheet(sh, name) {
       } else if (strEq(val, 'Максимальное количество часов')) {
         for (let y = 1; table[x][y].val !== ""; ++y) {
           template.grades.filter(g => g.name === parseInt(table[x][y].val)).forEach(g => {
-            g.max_hours_per_week = parseInt(table[x + 1][y].val);
+            g.max_hours_per_week = parseInt(table[x + 1][y].val) || null;
           })
         }
         x += 2;
