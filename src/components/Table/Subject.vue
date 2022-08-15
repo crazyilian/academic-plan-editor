@@ -19,11 +19,11 @@
     </v-tooltip>
 
     <div style="display: flex; flex: 1 1 0; min-width: 0; align-items: stretch">
-      <div style="min-width: 0; flex: 3 1 0; display: inline-block; word-wrap: break-word" class="subject-name">
+      <div style="min-width: 0; flex: 3 1 0; max-width: 300px; display: inline-block; word-wrap: break-word" class="subject-name">
         {{ name }}
       </div>
       <Message
-          container-style="flex: 7 1 0; margin-left: 24px; margin-right: 24px; min-width: 20px"
+          container-style="flex: 3 1 0; margin-left: 24px; margin-right: 24px; min-width: 20px"
           :messages="messages"
       />
     </div>

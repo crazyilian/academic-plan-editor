@@ -16,7 +16,7 @@
         <template #activator="{ on, attrs}">
           <div
               v-bind="attrs"
-              style="min-width: 0; flex: 3 1 0"
+              style="min-width: 0; flex: 3 1 0; max-width: 300px; "
               v-on="on"
           >
             <EditableText
@@ -33,7 +33,7 @@
         </div>
       </v-tooltip>
       <Message
-          container-style="flex: 7 1 0; margin-left: 24px; margin-right: 24px; min-width: 20px"
+          container-style="flex: 3 1 0; margin-left: 24px; margin-right: 24px; min-width: 20px"
           :messages="messages"
       />
     </div>
